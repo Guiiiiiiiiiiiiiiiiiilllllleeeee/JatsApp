@@ -1,59 +1,69 @@
 package com.jatsapp.common;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Message implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private MessageType type;
 
-    // IDs para la Base de Datos
+    // --- Identificadores ---
     private int senderId;
-    private int receiverId; // Puede ser ID de Usuario o ID de Grupo
+    private String senderName; // Útil para mostrar quién envía sin hacer consultas extra
+    private int receiverId;    // ID del Usuario destino o ID del Grupo
 
-    // Nombres para mostrar en el Cliente (UI)
-    private String senderName;
-    private String receiverName;
+    private boolean isGroupChat; // true = receiverId es un Grupo; false = es un Usuario
 
-    private boolean isGroupChat;
+    // --- Contenido ---
+    private String content;           // Texto del mensaje, contraseña, o código 2FA
+    private LocalDateTime timestamp;  // Fecha y hora
 
-    // Contenido
-    private String content;
-
-    // Archivos
+    // --- Archivos (Para FILE_MESSAGE) ---
     private String fileName;
-    private byte[] fileData;
-    private String serverFilePath; // Ruta donde se guardó en el servidor (para BD)
+    private byte[] fileData;       // Los bytes del archivo (solo al subir/descargar)
+    private String serverFilePath; // Ruta interna en el servidor
 
-    public Message() {}
+    // --- Listas (Para respuestas del servidor) ---
+    private List<User> contactList;      // Para responder a GET_CONTACTS
+    private List<Message> historyList;   // Para responder a GET_HISTORY
 
-    // Constructor rápido
+    // Constructor vacío
+    public Message() {
+        this.timestamp = LocalDateTime.now();
+    }
+
+    // Constructor rápido para mensajes simples
     public Message(MessageType type, String content) {
         this.type = type;
         this.content = content;
+        this.timestamp = LocalDateTime.now();
     }
 
-    // Getters y Setters
+    // --- Getters y Setters ---
+
     public MessageType getType() { return type; }
     public void setType(MessageType type) { this.type = type; }
 
     public int getSenderId() { return senderId; }
     public void setSenderId(int senderId) { this.senderId = senderId; }
 
-    public int getReceiverId() { return receiverId; }
-    public void setReceiverId(int receiverId) { this.receiverId = receiverId; }
-
     public String getSenderName() { return senderName; }
     public void setSenderName(String senderName) { this.senderName = senderName; }
 
-    public String getReceiverName() { return receiverName; }
-    public void setReceiverName(String receiverName) { this.receiverName = receiverName; }
+    public int getReceiverId() { return receiverId; }
+    public void setReceiverId(int receiverId) { this.receiverId = receiverId; }
 
     public boolean isGroupChat() { return isGroupChat; }
     public void setGroupChat(boolean groupChat) { isGroupChat = groupChat; }
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
@@ -63,4 +73,10 @@ public class Message implements Serializable {
 
     public String getServerFilePath() { return serverFilePath; }
     public void setServerFilePath(String serverFilePath) { this.serverFilePath = serverFilePath; }
+
+    public List<User> getContactList() { return contactList; }
+    public void setContactList(List<User> contactList) { this.contactList = contactList; }
+
+    public List<Message> getHistoryList() { return historyList; }
+    public void setHistoryList(List<Message> historyList) { this.historyList = historyList; }
 }
