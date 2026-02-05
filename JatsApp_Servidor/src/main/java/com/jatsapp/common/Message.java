@@ -3,39 +3,51 @@ package com.jatsapp.common;
 import java.io.Serializable;
 
 public class Message implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private MessageType type;
 
-    // Datos de usuario
-    private String sender;          // Quién envía
-    private String receiver;        // A quién (Usuario o Grupo)
-    private boolean isGroupChat;    // ¿Es para un grupo?
+    // IDs para la Base de Datos
+    private int senderId;
+    private int receiverId; // Puede ser ID de Usuario o ID de Grupo
+
+    // Nombres para mostrar en el Cliente (UI)
+    private String senderName;
+    private String receiverName;
+
+    private boolean isGroupChat;
 
     // Contenido
-    private String content;         // Texto del mensaje, Contraseña hash, o Código 2FA
+    private String content;
 
-    // Datos de Ficheros (Opcional)
+    // Archivos
     private String fileName;
-    private byte[] fileData;        // Bytes de la imagen (solo se llena si type == FILE_MESSAGE)
+    private byte[] fileData;
+    private String serverFilePath; // Ruta donde se guardó en el servidor (para BD)
 
-    // Constructor vacío (necesario para Gson)
     public Message() {}
 
-    // Constructor rápido para mensajes de texto
-    public Message(MessageType type, String sender, String content) {
+    // Constructor rápido
+    public Message(MessageType type, String content) {
         this.type = type;
-        this.sender = sender;
         this.content = content;
     }
 
-    // Getters y Setters (OBLIGATORIOS para que Gson funcione)
+    // Getters y Setters
     public MessageType getType() { return type; }
     public void setType(MessageType type) { this.type = type; }
 
-    public String getSender() { return sender; }
-    public void setSender(String sender) { this.sender = sender; }
+    public int getSenderId() { return senderId; }
+    public void setSenderId(int senderId) { this.senderId = senderId; }
 
-    public String getReceiver() { return receiver; }
-    public void setReceiver(String receiver) { this.receiver = receiver; }
+    public int getReceiverId() { return receiverId; }
+    public void setReceiverId(int receiverId) { this.receiverId = receiverId; }
+
+    public String getSenderName() { return senderName; }
+    public void setSenderName(String senderName) { this.senderName = senderName; }
+
+    public String getReceiverName() { return receiverName; }
+    public void setReceiverName(String receiverName) { this.receiverName = receiverName; }
 
     public boolean isGroupChat() { return isGroupChat; }
     public void setGroupChat(boolean groupChat) { isGroupChat = groupChat; }
@@ -48,4 +60,7 @@ public class Message implements Serializable {
 
     public byte[] getFileData() { return fileData; }
     public void setFileData(byte[] fileData) { this.fileData = fileData; }
+
+    public String getServerFilePath() { return serverFilePath; }
+    public void setServerFilePath(String serverFilePath) { this.serverFilePath = serverFilePath; }
 }
