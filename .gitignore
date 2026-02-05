@@ -11,5 +11,3 @@ target/
 *.iml
 .vscode/
 .idea/workspace.xml
-.idea/workspace.xml
-/.idea
