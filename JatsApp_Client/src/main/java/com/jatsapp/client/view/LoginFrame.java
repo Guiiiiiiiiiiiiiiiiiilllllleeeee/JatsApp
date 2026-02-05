@@ -78,7 +78,7 @@ public class LoginFrame extends JFrame {
         // 2. Preparamos el mensaje JSON
         Message msg = new Message();
         msg.setType(MessageType.LOGIN);
-        msg.setSender(user);
+        msg.setSenderName(user);
         msg.setContent(pass); // En un caso real, esto debería ir hasheado aquí también, pero el servidor lo hará
 
         // 3. Enviamos por la red

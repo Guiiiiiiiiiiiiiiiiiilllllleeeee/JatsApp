@@ -127,7 +127,34 @@ public class ClientSocket {
      * Decide qué hacer con el mensaje que acaba de llegar
      */
     private void handleMessage(Message msg) {
-        switch (msg.getType()) {
-            case LOGIN_OK:
-                if (loginFrame != null) loginFrame.onLoginSuccess();
-                break;
+        // Usamos SwingUtilities.invokeLater para asegurar que tocamos la interfaz en el hilo correcto
+        SwingUtilities.invokeLater(() -> {
+            switch (msg.getType()) {
+                case LOGIN_OK:
+                    if (loginFrame != null) loginFrame.onLoginSuccess();
+                    break;
+
+                case LOGIN_FAIL:
+                    if (loginFrame != null) {
+                        JOptionPane.showMessageDialog(loginFrame, "Error: Usuario o contraseña incorrectos.");
+                    }
+                    break;
+
+                case TEXT_MESSAGE:
+                    if (chatFrame != null) chatFrame.recibirMensaje(msg);
+                    break;
+
+                case require_2FA:
+                    String codigo = JOptionPane.showInputDialog("Introduce el código de verificación (Email):");
+                    if (codigo != null && !codigo.isEmpty()) {
+                        Message verifyMsg = new Message();
+                        verifyMsg.setType(MessageType.VERIFY_2FA);
+                        verifyMsg.setSenderName(myUsername);
+                        verifyMsg.setContent(codigo);
+                        send(verifyMsg);
+                    }
+                    break;
+            }
+        });
+    }
+}

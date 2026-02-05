@@ -63,4 +63,5 @@ public class Message implements Serializable {
 
     public String getServerFilePath() { return serverFilePath; }
     public void setServerFilePath(String serverFilePath) { this.serverFilePath = serverFilePath; }
+
 }

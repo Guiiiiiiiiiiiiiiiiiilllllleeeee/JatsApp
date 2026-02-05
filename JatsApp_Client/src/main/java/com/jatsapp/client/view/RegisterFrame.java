@@ -89,7 +89,7 @@ public class RegisterFrame extends JFrame {
         Message msg = new Message();
         msg.setType(MessageType.REGISTER);
         msg.setContent(jsonData); // Enviamos todo junto
-        msg.setSender(user);
+        msg.setSenderName(user);
 
         // 4. Enviar
         ClientSocket.getInstance().send(msg);
