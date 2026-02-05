@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/User.java" afterDir="false" />
-    </list>
+    <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,12 +26,12 @@
     &quot;assignee&quot;: &quot;Guiiiiiiiiiiiiiiiiiilllllleeeee&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git&quot;,
-    &quot;accountId&quot;: &quot;e0e25b11-af51-4550-b717-5ed126a73dba&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git",
+    "accountId": "804ec656-8dda-4da6-b048-aed0a5a2b84c"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -53,7 +51,7 @@
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/guill/Documents/GitHub/JatsApp/JatsApp_Client/src/main/java/com/jatsapp/common",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "com.android.studio.ml.bot.mainConfigurable",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
@@ -61,13 +59,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\java\com\jatsapp\common" />
     </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

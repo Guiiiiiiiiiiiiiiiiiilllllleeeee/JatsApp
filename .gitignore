@@ -1,0 +1,12 @@
+# Database credentials and configuration
+**/config.properties
+*.db
+
+# Java build files
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
