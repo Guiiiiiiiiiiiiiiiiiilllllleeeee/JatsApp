@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="" />
+    <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/User.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,13 +45,20 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/guill/Documents/GitHub/JatsApp",
+    "last_opened_file_path": "C:/Users/guill/Documents/GitHub/JatsApp/JatsApp_Client/src/main/java/com/jatsapp/common",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\java\com\jatsapp\common" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
