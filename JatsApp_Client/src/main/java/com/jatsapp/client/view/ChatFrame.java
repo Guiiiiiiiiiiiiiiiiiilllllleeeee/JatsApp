@@ -6,6 +6,8 @@ import com.jatsapp.common.MessageType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,133 +16,134 @@ public class ChatFrame extends JFrame {
 
     private JList<String> listaContactos;
     private DefaultListModel<String> modeloContactos;
-    private JTextArea areaChat;
+    private JTextPane areaChat;
+    private HTMLEditorKit kit;
+    private HTMLDocument doc;
     private JTextField txtMensaje;
-    private JButton btnEnviar;
     private JLabel lblTituloChat;
-
     private String chatActual = "General";
-
-    // COLORES DE LA APP (Paleta Dark Moderno)
-    private final Color COLOR_FONDO_LISTA = new Color(30, 30, 30);
-    private final Color COLOR_HEADER = new Color(0, 128, 105); // Verde WhatsApp
-    private final Color COLOR_FONDO_CHAT = new Color(20, 20, 20);
-    private final Color COLOR_TEXTO_BLANCO = Color.WHITE;
 
     public ChatFrame() {
         ClientSocket.getInstance().setChatFrame(this);
         String miUsuario = ClientSocket.getInstance().getMyUsername();
         if (miUsuario == null) miUsuario = "Usuario";
 
-        setTitle("JatsApp - " + miUsuario);
-        setSize(950, 650);
+        setTitle("JatsApp Premium - " + miUsuario);
+        setSize(1000, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Layout Principal
         JSplitPane splitPane = new JSplitPane();
-        splitPane.setDividerLocation(280);
-        splitPane.setDividerSize(2); // Divisor fino
+        splitPane.setDividerLocation(300);
+        splitPane.setDividerSize(0);
         splitPane.setBorder(null);
 
-        // --- IZQUIERDA: LISTA DE CONTACTOS ---
+        // ================= IZQUIERDA (CONTACTOS) =================
         JPanel panelIzquierdo = new JPanel(new BorderLayout());
-        panelIzquierdo.setBackground(COLOR_FONDO_LISTA);
+        panelIzquierdo.setBackground(new Color(30, 30, 30));
 
-        // Título estilizado
-        JLabel lblContactos = new JLabel("💬 Mis Chats");
-        lblContactos.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblContactos.setForeground(new Color(200, 200, 200));
-        lblContactos.setBorder(new EmptyBorder(20, 20, 20, 20));
-        panelIzquierdo.add(lblContactos, BorderLayout.NORTH);
+        // Header Izq
+        JLabel lblLogo = new JLabel("JatsApp");
+        lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblLogo.setForeground(Color.WHITE);
+        lblLogo.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panelIzquierdo.add(lblLogo, BorderLayout.NORTH);
 
+        // 1. PRIMERO CREAMOS EL MODELO (DATOS)
         modeloContactos = new DefaultListModel<>();
-        modeloContactos.addElement("📢 Chat General");
-        modeloContactos.addElement("👥 Grupo: Clase PSP");
-        modeloContactos.addElement("👤 Pepe");
-        modeloContactos.addElement("👤 María");
+        modeloContactos.addElement("Chat General");
+        modeloContactos.addElement("Grupo: Java Fans");
+        modeloContactos.addElement("Pepe");
+        modeloContactos.addElement("María");
 
+        // 2. LUEGO CREAMOS LA LISTA (SOLO UNA VEZ)
         listaContactos = new JList<>(modeloContactos);
-        listaContactos.setBackground(COLOR_FONDO_LISTA);
-        listaContactos.setForeground(new Color(220, 220, 220));
-        listaContactos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        listaContactos.setFixedCellHeight(50); // Celdas más altas
-        listaContactos.setSelectionBackground(new Color(50, 50, 50)); // Color al seleccionar
-        listaContactos.setSelectionForeground(COLOR_TEXTO_BLANCO);
-        listaContactos.setBorder(new EmptyBorder(10, 10, 10, 10));
+        listaContactos.setCellRenderer(new ContactRenderer()); // Tu renderizador pro
+        listaContactos.setBackground(new Color(30, 30, 30));
+        listaContactos.setBorder(null);
+
+        // --- AQUÍ ESTÁ LA LÍNEA MÁGICA ---
+        listaContactos.setFixedCellHeight(70); // Altura fija para que quepa el avatar
+        // ---------------------------------
 
         listaContactos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String seleccionado = listaContactos.getSelectedValue();
-                if (seleccionado != null) cambiarChat(seleccionado);
+                String sel = listaContactos.getSelectedValue();
+                if (sel != null) cambiarChat(sel);
             }
         });
-
         panelIzquierdo.add(new JScrollPane(listaContactos), BorderLayout.CENTER);
 
-        // --- DERECHA: CONVERSACIÓN ---
+        // ================= DERECHA (CHAT) =================
         JPanel panelDerecho = new JPanel(new BorderLayout());
+        panelDerecho.setBackground(new Color(20, 20, 20));
 
-        // Header
-        JPanel headerChat = new JPanel(new BorderLayout());
-        headerChat.setBackground(COLOR_HEADER);
-        headerChat.setBorder(new EmptyBorder(15, 20, 15, 20));
+        // Header Chat
+        JPanel headerChat = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        headerChat.setBackground(new Color(25, 25, 25));
+        headerChat.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(40,40,40)));
+        headerChat.setPreferredSize(new Dimension(0, 70));
 
-        lblTituloChat = new JLabel("Selecciona un chat...");
-        lblTituloChat.setForeground(COLOR_TEXTO_BLANCO);
+        lblTituloChat = new JLabel("Selecciona un chat");
         lblTituloChat.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        headerChat.add(lblTituloChat, BorderLayout.WEST);
-
-        // Icono de usuario o menú a la derecha (Simulado)
-        JLabel lblIcono = new JLabel("⋮");
-        lblIcono.setForeground(COLOR_TEXTO_BLANCO);
-        lblIcono.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        headerChat.add(lblIcono, BorderLayout.EAST);
-
+        lblTituloChat.setForeground(Color.WHITE);
+        lblTituloChat.setBorder(new EmptyBorder(10, 20, 0, 0));
+        headerChat.add(lblTituloChat);
         panelDerecho.add(headerChat, BorderLayout.NORTH);
 
-        // Area Chat
-        areaChat = new JTextArea();
+        // Area Chat (HTML)
+        areaChat = new JTextPane();
         areaChat.setEditable(false);
-        areaChat.setBackground(COLOR_FONDO_CHAT);
-        areaChat.setForeground(new Color(230, 230, 230));
-        areaChat.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 15));
-        areaChat.setLineWrap(true);
-        areaChat.setWrapStyleWord(true);
-        areaChat.setBorder(new EmptyBorder(20, 20, 20, 20)); // Márgenes internos
+        areaChat.setContentType("text/html");
+        areaChat.setBackground(new Color(20, 20, 20));
 
-        JScrollPane scrollChat = new JScrollPane(areaChat);
-        scrollChat.setBorder(null); // Quitar bordes feos del scroll
-        panelDerecho.add(scrollChat, BorderLayout.CENTER);
+        kit = new HTMLEditorKit();
+        doc = new HTMLDocument();
+        areaChat.setEditorKit(kit);
+        areaChat.setDocument(doc);
 
-        // Panel Escribir
-        JPanel panelEscribir = new JPanel(new BorderLayout(10, 10));
-        panelEscribir.setBackground(COLOR_FONDO_LISTA);
-        panelEscribir.setBorder(new EmptyBorder(15, 20, 15, 20));
+        // CSS Mejorado
+        String css = "body { font-family: 'Segoe UI'; background-color: #141414; color: #ddd; padding: 20px; }"
+                + ".bubble-me { background-color: #008f6d; padding: 10px 15px; margin-bottom: 8px; border-radius: 15px; text-align: right; color: white; margin-left: 80px; }"
+                + ".bubble-other { background-color: #333333; padding: 10px 15px; margin-bottom: 8px; border-radius: 15px; text-align: left; color: white; margin-right: 80px; }"
+                + ".sender { font-size: 11px; color: #bbb; margin-bottom: 4px; display:block; }";
+        ((HTMLDocument)areaChat.getDocument()).getStyleSheet().addRule(css);
+
+        panelDerecho.add(new JScrollPane(areaChat), BorderLayout.CENTER);
+
+        // Input Area
+        JPanel panelInput = new JPanel(new BorderLayout(15, 0));
+        panelInput.setBackground(new Color(25, 25, 25));
+        panelInput.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         txtMensaje = new JTextField();
         txtMensaje.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        txtMensaje.putClientProperty("JTextField.placeholderText", "Escribe un mensaje aquí..."); // Propiedad de FlatLaf
 
-        btnEnviar = new JButton("➤");
-        btnEnviar.setBackground(COLOR_HEADER);
-        btnEnviar.setForeground(COLOR_TEXTO_BLANCO);
-        btnEnviar.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        // Magia FlatLaf
+        txtMensaje.putClientProperty("JTextField.placeholderText", "Escribe un mensaje...");
+        txtMensaje.putClientProperty("JTextField.showClearButton", true);
+        txtMensaje.putClientProperty("JComponent.roundRect", true);
+
+        JButton btnEnviar = new JButton("➤");
+        btnEnviar.setBackground(null);
+        btnEnviar.setBorder(null);
+        btnEnviar.setForeground(new Color(0, 200, 150));
+        btnEnviar.setFont(new Font("Segoe UI", Font.BOLD, 24));
         btnEnviar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnEnviar.setPreferredSize(new Dimension(60, 40));
 
-        panelEscribir.add(txtMensaje, BorderLayout.CENTER);
-        panelEscribir.add(btnEnviar, BorderLayout.EAST);
-        panelDerecho.add(panelEscribir, BorderLayout.SOUTH);
+        panelInput.add(txtMensaje, BorderLayout.CENTER);
+        panelInput.add(btnEnviar, BorderLayout.EAST);
 
-        // Acciones
+        panelDerecho.add(panelInput, BorderLayout.SOUTH);
+
+        // Eventos
         btnEnviar.addActionListener(e -> enviarMensaje());
         txtMensaje.addActionListener(e -> enviarMensaje());
 
-        // Unir
         splitPane.setLeftComponent(panelIzquierdo);
         splitPane.setRightComponent(panelDerecho);
-
         add(splitPane);
         setVisible(true);
     }
@@ -149,10 +152,8 @@ public class ChatFrame extends JFrame {
         this.chatActual = nombre;
         lblTituloChat.setText(nombre);
         areaChat.setText("");
-        // Header decorativo en el chat
-        areaChat.append("------------------------------------------------\n");
-        areaChat.append(" 🔒 Estás chateando con " + nombre + "\n");
-        areaChat.append("------------------------------------------------\n\n");
+        // Reset CSS al limpiar
+        ((HTMLDocument)areaChat.getDocument()).getStyleSheet().addRule("body { font-family: 'Segoe UI'; background-color: #141414; }");
     }
 
     private void enviarMensaje() {
@@ -172,12 +173,19 @@ public class ChatFrame extends JFrame {
 
     public void recibirMensaje(Message msg) {
         String user = msg.getSenderName();
-        // Decoración simple: si soy yo, pongo "Tú"
-        if(user.equals(ClientSocket.getInstance().getMyUsername())) {
-            areaChat.append(" ⭐ Tú:\n " + msg.getContent() + "\n\n");
+        String content = msg.getContent();
+        boolean soyYo = user.equals(ClientSocket.getInstance().getMyUsername());
+
+        String html;
+        if (soyYo) {
+            html = "<div style='text-align: right;'><div class='bubble-me'>" + content + "</div></div>";
         } else {
-            areaChat.append(" 👤 " + user + ":\n " + msg.getContent() + "\n\n");
+            html = "<div style='text-align: left;'><div class='bubble-other'><span class='sender'>" + user + "</span>" + content + "</div></div>";
         }
-        areaChat.setCaretPosition(areaChat.getDocument().getLength());
+
+        try {
+            kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
+            areaChat.setCaretPosition(doc.getLength());
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
