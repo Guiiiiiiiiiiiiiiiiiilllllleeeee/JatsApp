@@ -1,7 +1,11 @@
+CREATE DATABASE IF NOT EXISTS jatsapp_db;
+
+USE jatsapp_db;
+
 -- 1. TABLA DE USUARIOS
 -- Contiene login, seguridad (Pass + 2FA) y estado.
 CREATE TABLE IF NOT EXISTS usuarios (
-    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
     nombre_usuario TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,       -- Necesario para enviar el código 2FA
     password_hash TEXT NOT NULL,      -- Contraseña cifrada (SHA-256)
@@ -19,7 +23,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- 2. TABLA DE GRUPOS
 -- Define el grupo y quién es el "Jefe" (Admin).
 CREATE TABLE IF NOT EXISTS grupos (
-    id_grupo INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_grupo INTEGER PRIMARY KEY AUTO_INCREMENT,
     nombre_grupo TEXT NOT NULL,
     id_admin INTEGER NOT NULL,
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +55,7 @@ CREATE TABLE IF NOT EXISTS contactos (
 -- 5. TABLA DE MENSAJES (UNIFICADA)
 -- Guarda tanto chats privados como grupales y soporta archivos.
 CREATE TABLE IF NOT EXISTS mensajes (
-    id_mensaje INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_mensaje INTEGER PRIMARY KEY AUTO_INCREMENT,
 
     -- QUIÉN
     id_emisor INTEGER NOT NULL,
