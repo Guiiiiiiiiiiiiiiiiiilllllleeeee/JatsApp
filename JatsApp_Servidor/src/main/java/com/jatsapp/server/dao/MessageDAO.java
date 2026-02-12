@@ -45,15 +45,19 @@ public class MessageDAO {
 
     // Historial Privado (A <-> B)
     public List<Message> getPrivateHistory(int user1, int user2) {
-        String sql = "SELECT * FROM mensajes WHERE tipo_destinatario = 'USUARIO' AND " +
-                "((id_emisor = ? AND id_destinatario = ?) OR (id_emisor = ? AND id_destinatario = ?)) " +
-                "ORDER BY fecha_envio ASC";
+        String sql = "SELECT m.*, u.nombre_usuario AS sender_name FROM mensajes m " +
+                "JOIN usuarios u ON m.id_emisor = u.id_usuario " +
+                "WHERE m.tipo_destinatario = 'USUARIO' AND " +
+                "((m.id_emisor = ? AND m.id_destinatario = ?) OR (m.id_emisor = ? AND m.id_destinatario = ?)) " +
+                "ORDER BY m.fecha_envio ASC";
         return fetchMessages(sql, user1, user2, user2, user1);
     }
 
     // Historial Grupo
     public List<Message> getGroupHistory(int groupId) {
-        String sql = "SELECT * FROM mensajes WHERE tipo_destinatario = 'GRUPO' AND id_destinatario = ? ORDER BY fecha_envio ASC";
+        String sql = "SELECT m.*, u.nombre_usuario AS sender_name FROM mensajes m " +
+                "JOIN usuarios u ON m.id_emisor = u.id_usuario " +
+                "WHERE m.tipo_destinatario = 'GRUPO' AND m.id_destinatario = ? ORDER BY m.fecha_envio ASC";
         return fetchMessages(sql, groupId);
     }
 
@@ -72,6 +76,7 @@ public class MessageDAO {
                 Message m = new Message();
                 m.setSenderId(rs.getInt("id_emisor"));
                 m.setReceiverId(rs.getInt("id_destinatario"));
+                m.setSenderName(rs.getString("sender_name"));
 
                 String tipoContenido = rs.getString("tipo_contenido");
                 if ("ARCHIVO".equals(tipoContenido)) {

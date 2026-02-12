@@ -21,6 +21,7 @@ public class ClientHandler implements Runnable {
     private ServerCore serverCore;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private int userId = -1; // -1 significa "no identificado"
 
     private User currentUser;      // Usuario totalmente logueado
     private User tempUser;         // Usuario en proceso de 2FA
@@ -70,25 +71,25 @@ public class ClientHandler implements Runnable {
         switch (msg.getType()) {
             // --- AUTENTICACIÓN ---
             case LOGIN:
-                // Paso 1: Verificar usuario y contraseña
-                // msg.getSenderName() -> usuario, msg.getContent() -> password
-                User foundUser = userDAO.login(msg.getSenderName(), msg.getContent());
+                String usuarioLogin = msg.getSenderName(); // O msg.getContent() según como lo mandes
+                String passwordLogin = msg.getContent();
 
-                if (foundUser != null) {
-                    this.tempUser = foundUser; // Guardamos temporalmente
-
+                User loginUser = userDAO.login(usuarioLogin, passwordLogin);
+                if (loginUser != null) {
                     // Generar código 2FA
                     String code = SecurityService.generate2FACode();
-                    long expiration = System.currentTimeMillis() + (5 * 60 * 1000); // 5 minutos
+                    long expiration = System.currentTimeMillis() + 5 * 60 * 1000; // 5 minutos
+                    userDAO.set2FACode(loginUser.getId(), code, expiration);
+                    emailService.sendEmail(loginUser.getEmail(), "Tu código de acceso JatsApp", "Tu código es: " + code);
 
-                    // Guardar código en BD y enviar Email
-                    userDAO.set2FACode(foundUser.getId(), code, expiration);
-                    emailService.sendEmail(foundUser.getEmail(), "Tu código de acceso JatsApp", "Tu código es: " + code);
+                    // Guardar usuario temporalmente hasta que verifique el código
+                    this.tempUser = loginUser;
+                    this.userId = loginUser.getId();
 
-                    // Avisar al cliente que pida el código
+                    // Pedir al cliente el código
                     sendMessage(new Message(MessageType.require_2FA, "Revisa tu email"));
                 } else {
-                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Credenciales incorrectas"));
+                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Datos incorrectos"));
                 }
                 break;
 
@@ -122,8 +123,14 @@ public class ClientHandler implements Runnable {
                 if (parts.length >= 3) {
                     User newUser = new User(parts[0], parts[1], parts[2]);
                     boolean registered = userDAO.registerUser(newUser);
-                    // Podrías loguearlo automáticamente o pedirle que haga login
-                    sendMessage(new Message(MessageType.LOGIN_OK, registered ? "Registrado. Haz Login." : "Error registro"));
+                    if (registered) {
+                        this.userId = newUser.getId();
+                        sendMessage(new Message(MessageType.REGISTER_OK, "Registro completado"));
+                    } else {
+                        sendMessage(new Message(MessageType.REGISTER_FAIL, "Error en el registro"));
+                    }
+                } else {
+                    sendMessage(new Message(MessageType.REGISTER_FAIL, "Datos de registro incompletos"));
                 }
                 break;
 
@@ -166,7 +173,25 @@ public class ClientHandler implements Runnable {
                 historyResponse.setHistoryList(history);
                 sendMessage(historyResponse);
                 break;
+            // En com.jatsapp.server.ClientHandler -> handleMessage -> switch
 
+            case ADD_CONTACT:
+                String targetUser = msg.getContent();
+                boolean added = userDAO.addContact(this.userId, targetUser);
+
+                if (added) {
+                    sendMessage(new Message(MessageType.ADD_CONTACT_OK, "Usuario añadido."));
+                    // TRUCO PRO: Forzamos una actualización de la lista de contactos inmediatamente
+                    // para que le aparezca al usuario sin tener que reiniciar.
+                    List<User> newContacts = userDAO.getContacts(this.userId);
+                    Message listMsg = new Message();
+                    listMsg.setType(MessageType.LIST_CONTACTS);
+                    listMsg.setContactList(newContacts);
+                    sendMessage(listMsg);
+                } else {
+                    sendMessage(new Message(MessageType.ADD_CONTACT_FAIL, "Usuario no encontrado o ya añadido."));
+                }
+                break;
             default:
                 System.out.println("Comando no reconocido: " + msg.getType());
         }

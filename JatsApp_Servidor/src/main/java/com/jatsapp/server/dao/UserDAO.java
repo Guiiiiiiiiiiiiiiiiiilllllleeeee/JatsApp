@@ -123,18 +123,30 @@ public class UserDAO {
         }
     }
 
-    // 5. OBTENER CONTACTOS
+    // 5. OBTENER CONTACTOS (mejorado: incluye contactos y chats con mensajes)
     public List<User> getContacts(int userId) {
         List<User> contacts = new ArrayList<>();
-        // Query con JOIN para sacar los datos del usuario amigo
-        String sql = "SELECT u.id_usuario, u.nombre_usuario, u.actividad FROM usuarios u " +
-                "JOIN contactos c ON u.id_usuario = c.id_contacto " +
-                "WHERE c.id_propietario = ?";
+        // Nueva consulta: contactos + usuarios con los que ha habido mensajes
+        String sql = "SELECT DISTINCT u.id_usuario, u.nombre_usuario, u.actividad " +
+                "FROM usuarios u " +
+                "WHERE u.id_usuario != ? " +
+                "AND ( " +
+                "    u.id_usuario IN (SELECT c.id_contacto FROM contactos c WHERE c.id_propietario = ?) " +
+                "    OR " +
+                "    u.id_usuario IN ( " +
+                "        SELECT m.id_emisor FROM mensajes m WHERE m.id_destinatario = ? " +
+                "        UNION " +
+                "        SELECT m.id_destinatario FROM mensajes m WHERE m.id_emisor = ? " +
+                "    ) " +
+                ")";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, userId);
+            pstmt.setInt(1, userId); // u.id_usuario != ?
+            pstmt.setInt(2, userId); // contactos
+            pstmt.setInt(3, userId); // mensajes recibidos
+            pstmt.setInt(4, userId); // mensajes enviados
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -162,5 +174,58 @@ public class UserDAO {
         } catch (SQLException e) {
             System.err.println("Error actualizando estado de usuario: " + e.getMessage());
         }
+    }
+    // En com.jatsapp.server.dao.UserDAO
+
+    public boolean addContact(int ownerId, String contactUsername) {
+        // 1. Buscamos el ID del usuario que queremos añadir
+        String sqlFind = "SELECT id_usuario FROM usuarios WHERE nombre_usuario = ?";
+        int contactId = -1;
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sqlFind)) {
+
+            pstmt.setString(1, contactUsername);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                contactId = rs.getInt("id_usuario");
+            } else {
+                return false; // El usuario no existe
+            }
+
+            if (contactId == ownerId) return false; // No puedes añadirte a ti mismo
+
+            // 2. Insertamos la relación en la tabla contactos
+            // Usamos IGNORE para que no de error si ya lo tienes añadido
+            String sqlInsert = "INSERT IGNORE INTO contactos (id_propietario, id_contacto, fecha_agregado) VALUES (?, ?, NOW())";
+
+            try (PreparedStatement pstmtInsert = conn.prepareStatement(sqlInsert)) {
+                pstmtInsert.setInt(1, ownerId);
+                pstmtInsert.setInt(2, contactId);
+                return pstmtInsert.executeUpdate() > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // En UserDAO.java
+    public int getIdByUsername(String username) {
+        String sql = "SELECT id_usuario FROM usuarios WHERE nombre_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id_usuario");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // No encontrado
     }
 }

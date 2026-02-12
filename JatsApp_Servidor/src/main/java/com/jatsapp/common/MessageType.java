@@ -26,5 +26,8 @@ public enum MessageType {
     LIST_CONTACTS,
 
     GET_HISTORY,
-    HISTORY_RESPONSE
+    HISTORY_RESPONSE,
+    ADD_CONTACT,        // Cliente pide añadir a alguien
+    ADD_CONTACT_OK,     // Servidor dice "Hecho"
+    ADD_CONTACT_FAIL    // Servidor dice "No existe ese usuario"
 }
