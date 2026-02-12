@@ -143,10 +143,12 @@ public class ChatFrame extends JFrame {
 
         // CSS para las burbujas
         String css = "body { font-family: 'Segoe UI', sans-serif; background-color: #141414; color: #ddd; padding: 10px; }"
-                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 5px; }"
-                + ".bubble-me { background-color: #008f6d; padding: 8px 12px; border-radius: 12px; float: right; color: white; }"
-                + ".bubble-other { background-color: #333333; padding: 8px 12px; border-radius: 12px; float: left; color: white; }"
-                + ".sender { font-size: 9px; color: #aaa; display: block; margin-bottom: 2px; }";
+                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 5px; clear: both; }"
+                + ".bubble-me { background-color: #008f6d; padding: 8px 12px; border-radius: 12px; float: right; color: white; max-width: 60%; position: relative; }"
+                + ".bubble-other { background-color: #333333; padding: 8px 12px; border-radius: 12px; float: left; color: white; max-width: 60%; position: relative; }"
+                + ".sender { font-size: 10px; color: #4fc3f7; font-weight: bold; display: block; margin-bottom: 3px; }"
+                + ".timestamp { font-size: 9px; color: rgba(255,255,255,0.6); display: block; text-align: right; margin-top: 4px; }"
+                + ".status { font-size: 10px; margin-left: 5px; }";
 
         try {
             ((HTMLDocument) areaChat.getDocument()).getStyleSheet().addRule(css);
@@ -401,20 +403,31 @@ public class ChatFrame extends JFrame {
 
     // Versión completa con estado de mensaje
     private void agregarBurbuja(String usuario, String texto, boolean esMio, int messageId, boolean delivered, boolean read) {
+        // Obtener hora actual en formato HH:mm
+        String timestamp = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+
         String html;
         if (esMio) {
-            // Mensaje mío: mostrar indicador de estado
+            // Mensaje mío: mostrar "Tú" + indicador de estado + hora
             String statusIcon = getStatusIcon(delivered, read);
             String statusId = messageId > 0 ? "msg-status-" + messageId : "";
-            html = "<div class='msg-container'><div class='bubble-me'>" + texto +
-                   " <span class='status' id='" + statusId + "'>" + statusIcon + "</span></div></div>";
+            html = "<div class='msg-container'><div class='bubble-me'>" +
+                   "<span class='sender'>Tú</span>" +
+                   texto +
+                   "<span class='timestamp'>" + timestamp + " <span class='status' id='" + statusId + "'>" + statusIcon + "</span></span>" +
+                   "</div></div>";
 
             // Guardar en el mapa para futuras actualizaciones
             if (messageId > 0) {
                 messageSentMap.put(messageId, statusId);
             }
         } else {
-            html = "<div class='msg-container'><div class='bubble-other'><span class='sender'>" + usuario + "</span>" + texto + "</div></div>";
+            // Mensaje de otro: mostrar nombre + hora
+            html = "<div class='msg-container'><div class='bubble-other'>" +
+                   "<span class='sender'>" + usuario + "</span>" +
+                   texto +
+                   "<span class='timestamp'>" + timestamp + "</span>" +
+                   "</div></div>";
         }
         try {
             kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
