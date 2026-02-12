@@ -1,5 +1,8 @@
 package com.jatsapp.server.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -7,6 +10,8 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 public class EmailService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     private final Properties configProps;
 
@@ -19,9 +24,12 @@ public class EmailService {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input != null) {
                 configProps.load(input);
+                logger.debug("Configuración de email cargada");
+            } else {
+                logger.warn("No se encontró config.properties para EmailService");
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.error("Error cargando configuración de email", ex);
         }
     }
 
@@ -31,13 +39,14 @@ public class EmailService {
 
         // Validar que las credenciales estén configuradas
         if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-            System.err.println("ERROR: Credenciales de email no configuradas en config.properties. No se enviará correo.");
-            System.err.println("Código 2FA (solo para desarrollo): Ver en la base de datos");
+            logger.warn("⚠️ Credenciales de email no configuradas. Email no enviado a: {}", toEmail);
+            logger.info("📧 Para desarrollo: Verifica el código 2FA en la base de datos");
             return;
         }
 
+        logger.debug("Enviando email a: {} con asunto: {}", toEmail, subject);
+
         // Configuración SMTP (Ejemplo para Gmail)
-        // Estos valores deberían estar en tu config.properties preferiblemente
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -59,11 +68,10 @@ public class EmailService {
             message.setText(body);
 
             Transport.send(message);
-            System.out.println("Correo enviado exitosamente a: " + toEmail);
+            logger.info("✉️ Correo enviado exitosamente a: {}", toEmail);
 
         } catch (MessagingException e) {
-            System.err.println("Error enviando correo: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error enviando correo a {}: {}", toEmail, e.getMessage());
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.jatsapp.server.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +14,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class DatabaseManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
 
     private static DatabaseManager instance;
     private Connection connection;
@@ -32,10 +37,16 @@ public class DatabaseManager {
     private void loadProperties() {
         properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) throw new RuntimeException("Falta config.properties");
+            if (input == null) {
+                logger.error("FATAL: config.properties no encontrado");
+                throw new RuntimeException("Falta config.properties");
+            }
             properties.load(input);
+            logger.info("✓ Configuración cargada correctamente");
+            logger.debug("DB URL: {}", properties.getProperty("db.url"));
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Error cargando config.properties", ex);
+            throw new RuntimeException("Error cargando config.properties", ex);
         }
     }
 
@@ -48,8 +59,13 @@ public class DatabaseManager {
                         properties.getProperty("db.user"),
                         properties.getProperty("db.password")
                 );
+                logger.info("✓ Conexión a base de datos establecida");
             } catch (ClassNotFoundException e) {
+                logger.error("Driver MySQL no encontrado", e);
                 throw new SQLException("Falta el Driver MySQL", e);
+            } catch (SQLException e) {
+                logger.error("Error conectando a BD: {}", properties.getProperty("db.url"), e);
+                throw e;
             }
         }
         return connection;
@@ -57,13 +73,13 @@ public class DatabaseManager {
 
     // --- NUEVO MÉTODO PARA CREAR TABLAS AUTOMÁTICAMENTE ---
     private void initTables() {
-        System.out.println("🛠️ Verificando estructura de base de datos...");
+        logger.info("🛠️ Verificando estructura de base de datos...");
 
         try (Connection conn = getConnection();
              InputStream is = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
 
             if (is == null) {
-                System.err.println("⚠️ No se encontró schema.sql. Saltando creación de tablas.");
+                logger.warn("⚠️ No se encontró schema.sql. Saltando creación de tablas.");
                 return;
             }
 
@@ -80,13 +96,12 @@ public class DatabaseManager {
                         stmt.execute(sql.trim());
                     }
                 }
+                logger.info("✓ Tablas verificadas/creadas exitosamente");
             }
-            System.out.println("✅ Tablas verificadas/creadas correctamente.");
-
         } catch (SQLException e) {
-            System.err.println("❌ Error SQL al iniciar tablas: " + e.getMessage());
+            logger.error("Error inicializando tablas de BD", e);
         } catch (Exception e) {
-            System.err.println("❌ Error leyendo schema.sql: " + e.getMessage());
+            logger.error("Error leyendo schema.sql", e);
         }
     }
 }

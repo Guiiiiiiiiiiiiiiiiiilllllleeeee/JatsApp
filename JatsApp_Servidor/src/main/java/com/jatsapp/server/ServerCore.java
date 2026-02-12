@@ -4,6 +4,9 @@ import com.jatsapp.common.Message;
 import com.jatsapp.server.dao.GroupDAO;
 import com.jatsapp.server.dao.MessageDAO;
 import com.jatsapp.server.dao.UserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +14,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerCore {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerCore.class);
+    private static final Logger activityLogger = LoggerFactory.getLogger("com.jatsapp.server.activity");
 
     private static final int PORT = 5555;
     private volatile boolean isRunning = true;
@@ -29,28 +35,33 @@ public class ServerCore {
     public void startServer() {
         try {
             serverSocket = new ServerSocket(PORT);
-            System.out.println("Servidor iniciado en puerto " + PORT + ". Esperando conexiones...");
+            logger.info("✓ Servidor iniciado en puerto {}", PORT);
+            logger.info("Esperando conexiones...");
+            activityLogger.info("SERVIDOR ESCUCHANDO en puerto {}", PORT);
 
             while (isRunning) {
                 try {
                     Socket clientSocket = serverSocket.accept();
-                    System.out.println("Nueva conexión entrante: " + clientSocket.getInetAddress());
+                    String clientAddress = clientSocket.getInetAddress().getHostAddress();
+
+                    logger.info("Nueva conexión entrante desde: {}", clientAddress);
+                    activityLogger.info("CONEXIÓN ENTRANTE | IP: {}", clientAddress);
 
                     // Creamos un gestor para este cliente y lo lanzamos en un hilo aparte
                     ClientHandler handler = new ClientHandler(clientSocket, this);
-                    new Thread(handler).start();
+                    new Thread(handler, "ClientHandler-" + clientAddress).start();
+
                 } catch (IOException e) {
                     if (isRunning) {
-                        // Si todavía estamos corriendo, reportamos el error
-                        e.printStackTrace();
+                        logger.error("Error aceptando conexión de cliente", e);
                     } else {
-                        // Si no estamos corriendo, probablemente se pidió shutdown y accept lanzó por cierre del socket
-                        System.out.println("Accept interrumpido por shutdown.");
+                        logger.debug("Accept interrumpido por shutdown del servidor");
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error fatal iniciando el servidor en puerto {}", PORT, e);
+            activityLogger.info("ERROR FATAL SERVIDOR | Puerto: {}", PORT);
         } finally {
             closeServerSocket();
         }
@@ -58,17 +69,22 @@ public class ServerCore {
 
     // Permite detener el servidor de forma controlada
     public void stopServer() {
-        System.out.println("Deteniendo servidor...");
+        logger.info("Deteniendo servidor...");
         isRunning = false;
         closeServerSocket();
+
+        // Desconectar todos los clientes
+        logger.info("Desconectando {} clientes activos...", connectedClients.size());
+        connectedClients.clear();
     }
 
     private void closeServerSocket() {
         if (serverSocket != null && !serverSocket.isClosed()) {
             try {
                 serverSocket.close();
+                logger.info("Socket del servidor cerrado correctamente");
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error cerrando socket del servidor", e);
             }
         }
     }
@@ -77,36 +93,59 @@ public class ServerCore {
     public void addClient(int userId, ClientHandler handler) {
         connectedClients.put(userId, handler);
         userDAO.updateActivityStatus(userId, "activo");
-        System.out.println("Usuario ID " + userId + " registrado en la lista de activos.");
+
+        logger.info("Usuario ID {} conectado. Total clientes activos: {}", userId, connectedClients.size());
+        activityLogger.info("LOGIN EXITOSO | UserID: {} | Clientes activos: {}", userId, connectedClients.size());
     }
 
     // Eliminar cliente cuando se desconecta
     public void removeClient(int userId) {
         connectedClients.remove(userId);
         userDAO.updateActivityStatus(userId, "desconectado");
-        System.out.println("Usuario ID " + userId + " desconectado.");
+
+        logger.info("Usuario ID {} desconectado. Total clientes activos: {}", userId, connectedClients.size());
+        activityLogger.info("DESCONEXIÓN | UserID: {} | Clientes activos: {}", userId, connectedClients.size());
     }
 
     // Enviar mensaje privado (1 a 1)
     public void sendPrivateMessage(Message msg) {
+        logger.debug("Enviando mensaje privado: UserID {} -> UserID {}", msg.getSenderId(), msg.getReceiverId());
+
         // 1. Guardar en Base de Datos SIEMPRE (para historial)
-        messageDAO.saveMessage(msg);
+        boolean saved = messageDAO.saveMessage(msg);
+        if (saved) {
+            activityLogger.info("MENSAJE PRIVADO | De: {} | Para: {} | Tipo: {}",
+                              msg.getSenderId(), msg.getReceiverId(), msg.getType());
+        } else {
+            logger.warn("No se pudo guardar mensaje privado en BD");
+        }
 
         // 2. Si el destinatario está online, enviárselo directamente
         ClientHandler recipient = connectedClients.get(msg.getReceiverId());
         if (recipient != null) {
             recipient.sendMessage(msg);
+            logger.debug("Mensaje entregado a destinatario online");
+        } else {
+            logger.debug("Destinatario offline. Mensaje guardado para recuperar después.");
         }
     }
 
     // Enviar mensaje a un grupo (Broadcast selectivo)
     public void sendGroupMessage(Message msg) {
+        logger.debug("Enviando mensaje a grupo: UserID {} -> Grupo {}", msg.getSenderId(), msg.getReceiverId());
+
         // 1. Guardar en Base de Datos
-        messageDAO.saveMessage(msg);
+        boolean saved = messageDAO.saveMessage(msg);
+        if (saved) {
+            activityLogger.info("MENSAJE GRUPO | De: {} | Grupo: {} | Tipo: {}",
+                              msg.getSenderId(), msg.getReceiverId(), msg.getType());
+        }
 
         // 2. Recuperar miembros del grupo y enviar solo a ellos
         List<Integer> memberIds = groupDAO.getGroupMemberIds(msg.getReceiverId());
+        logger.debug("Grupo {} tiene {} miembros", msg.getReceiverId(), memberIds.size());
 
+        int deliveredCount = 0;
         for (Integer memberId : memberIds) {
             // No enviar al emisor
             if (memberId.equals(msg.getSenderId())) {
@@ -116,7 +155,15 @@ public class ServerCore {
             ClientHandler handler = connectedClients.get(memberId);
             if (handler != null) {
                 handler.sendMessage(msg);
+                deliveredCount++;
             }
         }
+
+        logger.debug("Mensaje de grupo entregado a {}/{} miembros online", deliveredCount, memberIds.size() - 1);
+    }
+
+    // Método para obtener número de clientes conectados (usado por MainServer)
+    public int getConnectedClientsCount() {
+        return connectedClients.size();
     }
 }
