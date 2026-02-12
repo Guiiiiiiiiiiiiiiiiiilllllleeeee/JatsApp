@@ -10,6 +10,8 @@ public enum MessageType {
 
     TEXT_MESSAGE,       // Chat normal
     FILE_MESSAGE,       // Envío de imagen/archivo
+    ARCHIVO,            // Alias para compatibilidad con BD
+    IMAGEN,             // Tipo específico de archivo imagen
 
     GET_CONTACTS,       // Pedir lista de amigos
     LIST_CONTACTS,      // Respuesta con la lista

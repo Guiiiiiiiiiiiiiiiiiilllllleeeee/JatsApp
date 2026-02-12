@@ -80,7 +80,7 @@ public class MessageDAO {
                     // Nota: No cargamos los bytes del archivo aquí para no saturar la memoria,
                     // solo la metadata. El cliente pedirá descargar el archivo si quiere.
                 } else {
-                    m.setType(MessageType.TEXTO);
+                    m.setType(MessageType.TEXT_MESSAGE);
                     m.setContent(rs.getString("contenido"));
                 }
 

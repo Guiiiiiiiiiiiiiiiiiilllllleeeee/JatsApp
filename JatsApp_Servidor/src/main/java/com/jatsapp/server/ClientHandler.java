@@ -199,8 +199,20 @@ public class ClientHandler implements Runnable {
             serverCore.removeClient(currentUser.getId());
         }
         try {
-            if (socket != null) socket.close();
-        } catch (IOException e) {}
+            if (in != null) in.close();
+        } catch (IOException e) {
+            // Ignorar
+        }
+        try {
+            if (out != null) out.close();
+        } catch (IOException e) {
+            // Ignorar
+        }
+        try {
+            if (socket != null && !socket.isClosed()) socket.close();
+        } catch (IOException e) {
+            // Ignorar
+        }
     }
 
     public User getCurrentUser() {

@@ -31,12 +31,25 @@ public class DatabaseManager {
         // Carga el archivo desde src/main/resources
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
-                System.out.println("Lo siento, no se encuentra config.properties");
-                return;
+                throw new RuntimeException("FATAL: config.properties no encontrado en src/main/resources/");
             }
             properties.load(input);
+
+            // Validar propiedades críticas
+            validateProperty("db.url");
+            validateProperty("db.user");
+            validateProperty("db.driver");
+
+            System.out.println("✓ config.properties cargado correctamente");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException("Error cargando config.properties", ex);
+        }
+    }
+
+    private void validateProperty(String key) {
+        String value = properties.getProperty(key);
+        if (value == null || value.trim().isEmpty()) {
+            throw new RuntimeException("Propiedad requerida faltante o vacía en config.properties: " + key);
         }
     }
 

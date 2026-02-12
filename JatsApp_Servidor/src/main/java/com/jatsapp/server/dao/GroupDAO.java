@@ -84,4 +84,23 @@ public class GroupDAO {
         }
         return groups;
     }
+
+    // Obtener IDs de miembros de un grupo (para envío selectivo de mensajes)
+    public List<Integer> getGroupMemberIds(int groupId) {
+        List<Integer> memberIds = new ArrayList<>();
+        String sql = "SELECT id_usuario FROM miembros_grupo WHERE id_grupo = ?";
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, groupId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                memberIds.add(rs.getInt("id_usuario"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return memberIds;
+    }
 }

@@ -12,6 +12,9 @@ public class FileService {
     // Carpeta donde se guardarán los archivos dentro del proyecto del servidor
     private static final String STORAGE_DIR = "server_files";
 
+    // Límite de tamaño de archivo: 10MB
+    private static final int MAX_FILE_SIZE = 10 * 1024 * 1024;
+
     public FileService() {
         createStorageDirectory();
     }
@@ -20,6 +23,7 @@ public class FileService {
         File directory = new File(STORAGE_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
+            System.out.println("✓ Carpeta " + STORAGE_DIR + " creada");
         }
     }
 
@@ -32,6 +36,11 @@ public class FileService {
     public String saveFile(byte[] fileData, String originalName) throws IOException {
         if (fileData == null || fileData.length == 0) {
             return null;
+        }
+
+        // Validar tamaño
+        if (fileData.length > MAX_FILE_SIZE) {
+            throw new IOException("Archivo demasiado grande. Máximo permitido: " + (MAX_FILE_SIZE / 1024 / 1024) + "MB");
         }
 
         // Generamos un nombre único para evitar sobrescribir archivos con el mismo nombre

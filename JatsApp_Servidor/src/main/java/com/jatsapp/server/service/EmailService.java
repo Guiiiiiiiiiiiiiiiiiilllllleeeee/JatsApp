@@ -26,6 +26,16 @@ public class EmailService {
     }
 
     public void sendEmail(String toEmail, String subject, String body) {
+        final String username = configProps.getProperty("mail.user");
+        final String password = configProps.getProperty("mail.password");
+
+        // Validar que las credenciales estén configuradas
+        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+            System.err.println("ERROR: Credenciales de email no configuradas en config.properties. No se enviará correo.");
+            System.err.println("Código 2FA (solo para desarrollo): Ver en la base de datos");
+            return;
+        }
+
         // Configuración SMTP (Ejemplo para Gmail)
         // Estos valores deberían estar en tu config.properties preferiblemente
         Properties props = new Properties();
@@ -34,8 +44,6 @@ public class EmailService {
         props.put("mail.smtp.host", configProps.getProperty("mail.host", "smtp.gmail.com"));
         props.put("mail.smtp.port", configProps.getProperty("mail.port", "587"));
 
-        final String username = configProps.getProperty("mail.user"); // Tu email
-        final String password = configProps.getProperty("mail.password"); // Tu contraseña de aplicación
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {

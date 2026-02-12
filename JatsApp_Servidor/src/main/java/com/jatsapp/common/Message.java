@@ -1,6 +1,6 @@
 package com.jatsapp.common;
 
-import java.io.Serializable;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Message implements Serializable {
 
     // --- Contenido ---
     private String content;           // Texto del mensaje, contraseña, o código 2FA
-    private LocalDateTime timestamp;  // Fecha y hora
+    private transient LocalDateTime timestamp;  // Fecha y hora (transient para serialización personalizada)
 
     // --- Archivos (Para FILE_MESSAGE) ---
     private String fileName;
@@ -40,6 +40,18 @@ public class Message implements Serializable {
         this.type = type;
         this.content = content;
         this.timestamp = LocalDateTime.now();
+    }
+
+    // Serialización personalizada para LocalDateTime
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(timestamp != null ? timestamp.toString() : null);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String timestampStr = (String) in.readObject();
+        timestamp = timestampStr != null ? LocalDateTime.parse(timestampStr) : null;
     }
 
     // --- Getters y Setters ---

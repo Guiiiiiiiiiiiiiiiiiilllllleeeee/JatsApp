@@ -1,6 +1,7 @@
 package com.jatsapp.server.dao;
 
 import com.jatsapp.common.User;
+import com.jatsapp.server.service.SecurityService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,8 @@ public class UserDAO {
 
     // 1. REGISTRAR USUARIO
     public boolean registerUser(User user) {
-        // Nota: Asegúrate de que user.getPassword() llegue hasheado o hashealo aquí
+        // Hashear la contraseña antes de guardarla
+        String hashedPassword = SecurityService.hashPassword(user.getPassword());
         String sql = "INSERT INTO usuarios (nombre_usuario, email, password_hash, actividad, fecha_registro) VALUES (?, ?, ?, 'desconectado', NOW())";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
@@ -17,7 +19,7 @@ public class UserDAO {
 
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getEmail());
-            pstmt.setString(3, user.getPassword());
+            pstmt.setString(3, hashedPassword);
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -35,24 +37,29 @@ public class UserDAO {
 
     // 2. LOGIN (Primer paso: Comprobar credenciales)
     public User login(String username, String password) {
-        String sql = "SELECT * FROM usuarios WHERE nombre_usuario = ? AND password_hash = ?";
+        String sql = "SELECT * FROM usuarios WHERE nombre_usuario = ?";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, username);
-            pstmt.setString(2, password); // Recuerda comparar hashes si usas seguridad
 
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt("id_usuario"));
-                user.setUsername(rs.getString("nombre_usuario"));
-                user.setEmail(rs.getString("email"));
-                user.setActivityStatus(rs.getString("actividad"));
-                // NO devolvemos la password por seguridad
-                return user;
+                String storedHash = rs.getString("password_hash");
+                String inputHash = SecurityService.hashPassword(password);
+
+                // Comparar hashes
+                if (storedHash.equals(inputHash)) {
+                    User user = new User();
+                    user.setId(rs.getInt("id_usuario"));
+                    user.setUsername(rs.getString("nombre_usuario"));
+                    user.setEmail(rs.getString("email"));
+                    user.setActivityStatus(rs.getString("actividad"));
+                    // NO devolvemos la password por seguridad
+                    return user;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,8 +100,8 @@ public class UserDAO {
 
                 // Validamos: Código coincide Y no ha caducado
                 if (dbCode != null && dbCode.equals(inputCode) && now < expiration) {
-                    // Opcional: Borrar código tras uso para evitar reuso
-                    // clear2FACode(userId);
+                    // Borrar código inmediatamente tras uso para evitar reuso
+                    clear2FACode(userId);
                     return true;
                 }
             }
@@ -102,6 +109,18 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Método auxiliar para borrar código 2FA
+    private void clear2FACode(int userId) {
+        String sql = "UPDATE usuarios SET codigo_2fa = NULL, fecha_expiracion_codigo = NULL WHERE id_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // 5. OBTENER CONTACTOS
@@ -130,5 +149,18 @@ public class UserDAO {
             e.printStackTrace();
         }
         return contacts;
+    }
+
+    // 6. ACTUALIZAR ESTADO DE ACTIVIDAD
+    public void updateActivityStatus(int userId, String status) {
+        String sql = "UPDATE usuarios SET actividad = ?, ultimo_acceso = NOW() WHERE id_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, status);
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error actualizando estado de usuario: " + e.getMessage());
+        }
     }
 }
