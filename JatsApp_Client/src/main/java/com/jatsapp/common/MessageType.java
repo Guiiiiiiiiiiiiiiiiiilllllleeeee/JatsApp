@@ -7,19 +7,24 @@ public enum MessageType {
     LOGIN_FAIL,         // Login fallido
 
     REGISTER,           // Solicitud de registro
-    REGISTER_OK,        // <--- NUEVO: Registro exitoso
-    REGISTER_FAIL,      // <--- NUEVO: Fallo en registro (usuario duplicado, etc.)
+    REGISTER_OK,        // Registro exitoso
+    REGISTER_FAIL,      // Fallo en registro (usuario duplicado, etc.)
 
     require_2FA,        // Servidor pide código
     VERIFY_2FA,         // Cliente envía código
-    VERIFY_2FA_OK,      // <--- NUEVO: (Opcional, si lo usas en el ClientSocket)
-    VERIFY_2FA_FAIL,    // <--- NUEVO: (Opcional, si lo usas en el ClientSocket)
+    VERIFY_2FA_OK,      // (Opcional, si lo usas en el ClientSocket)
+    VERIFY_2FA_FAIL,    // (Opcional, si lo usas en el ClientSocket)
 
     // --- CHAT ---
     TEXT_MESSAGE,
     FILE_MESSAGE,
     ARCHIVO,
     IMAGEN,
+
+    // --- SOLICITUDES DE CHAT (usuarios desconocidos) ---
+    NEW_CHAT_REQUEST,   // Notifica al receptor que alguien nuevo le escribió
+    ACCEPT_CHAT,        // El receptor acepta el chat (añade contacto automáticamente)
+    REJECT_CHAT,        // El receptor rechaza el chat
 
     // --- DATOS ---
     GET_CONTACTS,
@@ -29,5 +34,9 @@ public enum MessageType {
     HISTORY_RESPONSE,
     ADD_CONTACT,        // Cliente pide añadir a alguien
     ADD_CONTACT_OK,     // Servidor dice "Hecho"
-    ADD_CONTACT_FAIL    // Servidor dice "No existe ese usuario"
+    ADD_CONTACT_FAIL,   // Servidor dice "No existe ese usuario"
+
+    // --- BÚSQUEDA DE USUARIOS ---
+    SEARCH_USER,        // Buscar usuario por nombre
+    SEARCH_USER_RESULT  // Resultado de búsqueda
 }

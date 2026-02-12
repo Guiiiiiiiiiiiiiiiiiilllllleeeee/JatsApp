@@ -253,6 +253,38 @@ public class ClientHandler implements Runnable {
                 }
                 break;
 
+            case SEARCH_USER:
+                // Buscar usuarios por nombre
+                String searchTerm = msg.getContent();
+                logger.debug("Búsqueda de usuarios: '{}' por UserID {}", searchTerm, currentUser.getId());
+
+                List<User> searchResults = userDAO.searchUsers(searchTerm, currentUser.getId());
+                Message searchResponse = new Message(MessageType.SEARCH_USER_RESULT, "Resultados de búsqueda");
+                searchResponse.setContactList(searchResults);
+                sendMessage(searchResponse);
+
+                logger.debug("Encontrados {} usuarios para búsqueda '{}'", searchResults.size(), searchTerm);
+                break;
+
+            case ACCEPT_CHAT:
+                // El usuario acepta un chat de alguien nuevo (añade como contacto automáticamente)
+                int newContactId = msg.getSenderId(); // El ID del usuario que envió el mensaje
+                boolean acceptedAdded = userDAO.addContactById(currentUser.getId(), newContactId);
+
+                if (acceptedAdded) {
+                    logger.info("Chat aceptado: UserID {} añadió a UserID {} como contacto",
+                              currentUser.getId(), newContactId);
+                    activityLogger.info("CHAT ACEPTADO | UserID: {} añadió a UserID: {}",
+                                      currentUser.getId(), newContactId);
+
+                    // Enviar lista de contactos actualizada
+                    List<User> updatedContacts = userDAO.getContacts(currentUser.getId());
+                    Message contactsMsg = new Message(MessageType.LIST_CONTACTS, "Lista actualizada");
+                    contactsMsg.setContactList(updatedContacts);
+                    sendMessage(contactsMsg);
+                }
+                break;
+
             default:
                 logger.warn("Comando no reconocido: {} desde UserID: {}", msg.getType(),
                           currentUser != null ? currentUser.getId() : "NO_AUTENTICADO");

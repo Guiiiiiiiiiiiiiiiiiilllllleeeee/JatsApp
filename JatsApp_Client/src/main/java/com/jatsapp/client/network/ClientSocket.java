@@ -119,6 +119,14 @@ public class ClientSocket {
                 }
                 break;
 
+            // --- NUEVO CHAT DE DESCONOCIDO ---
+            case NEW_CHAT_REQUEST:
+                // Alguien que no tenemos como contacto nos ha escrito
+                if (chatFrame != null) {
+                    chatFrame.onNuevoChatDesconocido(msg.getSenderId(), msg.getSenderName());
+                }
+                break;
+
             case LIST_CONTACTS:
                 if (chatFrame != null) {
                     chatFrame.actualizarContactos(msg.getContactList());
@@ -129,6 +137,22 @@ public class ClientSocket {
                 if (chatFrame != null) {
                     chatFrame.cargarHistorial(msg.getHistoryList());
                 }
+                break;
+
+            // --- BÚSQUEDA DE USUARIOS ---
+            case SEARCH_USER_RESULT:
+                if (chatFrame != null) {
+                    chatFrame.mostrarResultadosBusqueda(msg.getContactList());
+                }
+                break;
+
+            case ADD_CONTACT_OK:
+                // Contacto añadido exitosamente
+                System.out.println("✅ Contacto añadido correctamente");
+                break;
+
+            case ADD_CONTACT_FAIL:
+                JOptionPane.showMessageDialog(chatFrame, "No se pudo añadir el contacto: " + msg.getContent());
                 break;
 
             default:

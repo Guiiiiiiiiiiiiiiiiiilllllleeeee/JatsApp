@@ -123,6 +123,24 @@ public class ServerCore {
         // 2. Si el destinatario está online, enviárselo directamente
         ClientHandler recipient = connectedClients.get(msg.getReceiverId());
         if (recipient != null) {
+            // Verificar si es el PRIMER mensaje entre estos usuarios (nuevo chat)
+            boolean isFirstMessage = !userDAO.hasMessageHistory(msg.getSenderId(), msg.getReceiverId());
+            boolean isContact = userDAO.isContact(msg.getReceiverId(), msg.getSenderId());
+
+            if (isFirstMessage || !isContact) {
+                // Enviar notificación de nuevo chat al receptor
+                Message newChatNotification = new Message(MessageType.NEW_CHAT_REQUEST, "Nuevo mensaje");
+                newChatNotification.setSenderId(msg.getSenderId());
+                newChatNotification.setSenderName(msg.getSenderName());
+                newChatNotification.setReceiverId(msg.getReceiverId());
+                recipient.sendMessage(newChatNotification);
+
+                logger.info("Notificación de nuevo chat enviada: {} -> {}", msg.getSenderId(), msg.getReceiverId());
+                activityLogger.info("NUEVO CHAT | De: {} ({}) | Para: {}",
+                                  msg.getSenderId(), msg.getSenderName(), msg.getReceiverId());
+            }
+
+            // Siempre enviar el mensaje
             recipient.sendMessage(msg);
             logger.debug("Mensaje entregado a destinatario online");
         } else {

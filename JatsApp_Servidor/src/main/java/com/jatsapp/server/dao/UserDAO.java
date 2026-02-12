@@ -228,4 +228,102 @@ public class UserDAO {
         }
         return -1; // No encontrado
     }
+
+    // Verificar si el emisor es contacto del receptor
+    public boolean isContact(int ownerId, int contactId) {
+        String sql = "SELECT COUNT(*) FROM contactos WHERE id_propietario = ? AND id_contacto = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ownerId);
+            pstmt.setInt(2, contactId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Verificar si ya hay historial de mensajes entre dos usuarios
+    public boolean hasMessageHistory(int userId1, int userId2) {
+        String sql = "SELECT COUNT(*) FROM mensajes WHERE " +
+                     "(id_emisor = ? AND id_destinatario = ?) OR (id_emisor = ? AND id_destinatario = ?)";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId1);
+            pstmt.setInt(2, userId2);
+            pstmt.setInt(3, userId2);
+            pstmt.setInt(4, userId1);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Obtener usuario por ID
+    public User getUserById(int userId) {
+        String sql = "SELECT id_usuario, nombre_usuario, email, actividad FROM usuarios WHERE id_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id_usuario"));
+                user.setUsername(rs.getString("nombre_usuario"));
+                user.setEmail(rs.getString("email"));
+                user.setActivityStatus(rs.getString("actividad"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Buscar usuarios por nombre (para que el usuario pueda enviar mensajes a cualquiera)
+    public List<User> searchUsers(String searchTerm, int excludeUserId) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT id_usuario, nombre_usuario, actividad FROM usuarios " +
+                     "WHERE nombre_usuario LIKE ? AND id_usuario != ? LIMIT 20";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + searchTerm + "%");
+            pstmt.setInt(2, excludeUserId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                User user = new User(
+                    rs.getInt("id_usuario"),
+                    rs.getString("nombre_usuario"),
+                    rs.getString("actividad")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    // Añadir contacto por ID (más eficiente que por username)
+    public boolean addContactById(int ownerId, int contactId) {
+        if (contactId == ownerId || contactId <= 0) return false;
+
+        String sql = "INSERT IGNORE INTO contactos (id_propietario, id_contacto, fecha_agregado) VALUES (?, ?, NOW())";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, ownerId);
+            pstmt.setInt(2, contactId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

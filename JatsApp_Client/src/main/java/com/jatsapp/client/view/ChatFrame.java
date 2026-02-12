@@ -321,21 +321,52 @@ public class ChatFrame extends JFrame {
 
     public void recibirMensaje(Message msg) {
         SwingUtilities.invokeLater(() -> {
-            // Solo mostramos el mensaje si pertenece al chat abierto actualmente
-            // O si es del historial
             boolean esMio = msg.getSenderName().equals(ClientSocket.getInstance().getMyUsername());
 
-            // Si el mensaje es de la persona con la que hablo, O si es mio (historial)
+            // Si el contacto actual está seleccionado y es de él o mío, mostrar
             if (contactoActual != null && (msg.getSenderId() == contactoActual.getId() || esMio)) {
-
                 String contenido = msg.getContent();
                 if (msg.getType() == MessageType.FILE_MESSAGE || msg.getType() == MessageType.ARCHIVO) {
                     contenido = "📎 Archivo: " + msg.getFileName();
                 }
-
                 agregarBurbuja(msg.getSenderName(), contenido, esMio);
             }
+            // Si NO es mío y NO es del contacto actual, es un mensaje nuevo de otra persona
+            else if (!esMio && (contactoActual == null || msg.getSenderId() != contactoActual.getId())) {
+                // Verificar si el emisor ya está en la lista de contactos
+                boolean existeEnLista = false;
+                for (int i = 0; i < modeloContactos.size(); i++) {
+                    if (modeloContactos.get(i).getId() == msg.getSenderId()) {
+                        existeEnLista = true;
+                        break;
+                    }
+                }
+
+                // Si no existe en la lista, añadirlo temporalmente
+                if (!existeEnLista) {
+                    User nuevoUsuario = new User(msg.getSenderId(), msg.getSenderName(), "activo");
+                    modeloContactos.addElement(nuevoUsuario);
+                }
+
+                // Mostrar notificación de mensaje nuevo
+                mostrarNotificacionMensaje(msg.getSenderName());
+            }
         });
+    }
+
+    /**
+     * Muestra una notificación visual de que hay un mensaje nuevo
+     */
+    private void mostrarNotificacionMensaje(String remitente) {
+        // Pequeña notificación en la barra de título
+        String tituloActual = getTitle();
+        if (!tituloActual.contains("📩")) {
+            setTitle("📩 " + tituloActual + " - Mensaje de " + remitente);
+        }
+
+        // También podemos hacer que parpadee o emita un sonido
+        // Por ahora solo cambiamos el título
+        java.awt.Toolkit.getDefaultToolkit().beep();
     }
 
     // Método auxiliar para pintar HTML
@@ -367,5 +398,134 @@ public class ChatFrame extends JFrame {
         btn.setBorder(null);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
+    }
+
+    // =================================================================
+    // NUEVO CHAT DE USUARIO DESCONOCIDO
+    // =================================================================
+
+    /**
+     * Llamado cuando recibimos un mensaje de alguien que no tenemos como contacto.
+     * Muestra una notificación y pregunta si queremos aceptar el chat.
+     */
+    public void onNuevoChatDesconocido(int senderId, String senderName) {
+        SwingUtilities.invokeLater(() -> {
+            // Mostrar notificación al usuario
+            int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "📬 " + senderName + " te ha enviado un mensaje.\n\n¿Deseas aceptar el chat y añadirlo a tus contactos?",
+                "Nuevo mensaje de " + senderName,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                // Aceptar el chat - enviar mensaje al servidor
+                aceptarChat(senderId);
+
+                // Actualizar lista de contactos
+                pedirListaContactos();
+
+                // Crear usuario temporal y abrir el chat
+                User nuevoContacto = new User(senderId, senderName, "activo");
+
+                // Añadir a la lista de contactos localmente si no está
+                boolean yaExiste = false;
+                for (int i = 0; i < modeloContactos.size(); i++) {
+                    if (modeloContactos.get(i).getId() == senderId) {
+                        yaExiste = true;
+                        break;
+                    }
+                }
+                if (!yaExiste) {
+                    modeloContactos.addElement(nuevoContacto);
+                }
+
+                // Abrir el chat con el nuevo contacto
+                cambiarChat(nuevoContacto);
+            }
+        });
+    }
+
+    /**
+     * Envía al servidor la aceptación del chat (añade como contacto)
+     */
+    private void aceptarChat(int senderId) {
+        Message msg = new Message();
+        msg.setType(MessageType.ACCEPT_CHAT);
+        msg.setSenderId(senderId); // El ID del usuario que nos escribió
+        ClientSocket.getInstance().send(msg);
+    }
+
+    /**
+     * Muestra los resultados de búsqueda de usuarios para enviar mensajes
+     */
+    public void mostrarResultadosBusqueda(List<User> usuarios) {
+        SwingUtilities.invokeLater(() -> {
+            if (usuarios == null || usuarios.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "No se encontraron usuarios con ese nombre.",
+                    "Sin resultados",
+                    JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Mostrar diálogo con los resultados
+            String[] opciones = new String[usuarios.size()];
+            for (int i = 0; i < usuarios.size(); i++) {
+                User u = usuarios.get(i);
+                opciones[i] = u.getUsername() + " (" + u.getActivityStatus() + ")";
+            }
+
+            String seleccion = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecciona un usuario para iniciar chat:",
+                "Resultados de búsqueda",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+            );
+
+            if (seleccion != null) {
+                // Encontrar el usuario seleccionado
+                int index = -1;
+                for (int i = 0; i < opciones.length; i++) {
+                    if (opciones[i].equals(seleccion)) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index >= 0) {
+                    User usuarioSeleccionado = usuarios.get(index);
+
+                    // Añadir a lista de contactos si no existe
+                    boolean yaExiste = false;
+                    for (int i = 0; i < modeloContactos.size(); i++) {
+                        if (modeloContactos.get(i).getId() == usuarioSeleccionado.getId()) {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    if (!yaExiste) {
+                        modeloContactos.addElement(usuarioSeleccionado);
+                    }
+
+                    // Abrir el chat con ese usuario
+                    cambiarChat(usuarioSeleccionado);
+                }
+            }
+        });
+    }
+
+    /**
+     * Buscar usuarios para enviar mensajes (no necesitan ser contactos)
+     */
+    public void buscarUsuarios(String termino) {
+        Message msg = new Message();
+        msg.setType(MessageType.SEARCH_USER);
+        msg.setContent(termino);
+        ClientSocket.getInstance().send(msg);
     }
 }
