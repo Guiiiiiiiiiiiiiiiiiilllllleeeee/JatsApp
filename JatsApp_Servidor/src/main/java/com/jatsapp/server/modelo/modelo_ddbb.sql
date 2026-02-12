@@ -76,5 +76,11 @@ CREATE TABLE IF NOT EXISTS mensajes (
     -- CUÁNDO
     fecha_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
 
+    -- ESTADO DEL MENSAJE (confirmaciones de lectura)
+    entregado BOOLEAN DEFAULT FALSE,        -- TRUE cuando el receptor lo recibe
+    fecha_entrega DATETIME DEFAULT NULL,    -- Cuándo se entregó
+    leido BOOLEAN DEFAULT FALSE,            -- TRUE cuando el receptor lo lee
+    fecha_lectura DATETIME DEFAULT NULL,    -- Cuándo se leyó
+
     FOREIGN KEY (id_emisor) REFERENCES usuarios(id_usuario)
 );

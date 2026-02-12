@@ -114,10 +114,11 @@ public class ServerCore {
         // 1. Guardar en Base de Datos SIEMPRE (para historial)
         boolean saved = messageDAO.saveMessage(msg);
         if (saved) {
-            activityLogger.info("MENSAJE PRIVADO | De: {} | Para: {} | Tipo: {}",
-                              msg.getSenderId(), msg.getReceiverId(), msg.getType());
+            activityLogger.info("MENSAJE PRIVADO | De: {} | Para: {} | Tipo: {} | ID: {}",
+                              msg.getSenderId(), msg.getReceiverId(), msg.getType(), msg.getMessageId());
         } else {
             logger.warn("No se pudo guardar mensaje privado en BD");
+            return;
         }
 
         // 2. Si el destinatario está online, enviárselo directamente
@@ -140,11 +141,26 @@ public class ServerCore {
                                   msg.getSenderId(), msg.getSenderName(), msg.getReceiverId());
             }
 
-            // Siempre enviar el mensaje
+            // Enviar el mensaje al receptor
             recipient.sendMessage(msg);
-            logger.debug("Mensaje entregado a destinatario online");
+
+            // Marcar como entregado
+            messageDAO.markAsDelivered(msg.getMessageId());
+            msg.setDelivered(true);
+
+            logger.debug("Mensaje {} entregado a destinatario online", msg.getMessageId());
+
+            // Enviar confirmación de entrega al emisor
+            ClientHandler sender = connectedClients.get(msg.getSenderId());
+            if (sender != null) {
+                Message deliveryConfirmation = new Message(MessageType.MESSAGE_DELIVERED, "");
+                deliveryConfirmation.setMessageId(msg.getMessageId());
+                deliveryConfirmation.setDelivered(true);
+                sender.sendMessage(deliveryConfirmation);
+                logger.debug("Confirmación de entrega enviada al emisor {}", msg.getSenderId());
+            }
         } else {
-            logger.debug("Destinatario offline. Mensaje guardado para recuperar después.");
+            logger.debug("Destinatario offline. Mensaje {} guardado para recuperar después.", msg.getMessageId());
         }
     }
 
@@ -183,5 +199,10 @@ public class ServerCore {
     // Método para obtener número de clientes conectados (usado por MainServer)
     public int getConnectedClientsCount() {
         return connectedClients.size();
+    }
+
+    // Obtener ClientHandler de un usuario conectado
+    public ClientHandler getClientHandler(int userId) {
+        return connectedClients.get(userId);
     }
 }

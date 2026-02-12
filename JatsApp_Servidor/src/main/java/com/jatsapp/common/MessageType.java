@@ -26,6 +26,11 @@ public enum MessageType {
     ACCEPT_CHAT,        // El receptor acepta el chat (añade contacto automáticamente)
     REJECT_CHAT,        // El receptor rechaza el chat
 
+    // --- CONFIRMACIONES DE LECTURA ---
+    MESSAGE_DELIVERED,  // Confirma que el mensaje fue entregado al receptor
+    MESSAGE_READ,       // Confirma que el mensaje fue leído por el receptor
+    UPDATE_MESSAGE_STATUS, // Actualiza el estado de un mensaje (para el emisor)
+
     // --- DATOS ---
     GET_CONTACTS,
     LIST_CONTACTS,

@@ -305,6 +305,32 @@ public class ClientHandler implements Runnable {
                 }
                 break;
 
+            case MESSAGE_READ:
+                // El receptor confirma que ha leído un mensaje
+                int messageIdRead = msg.getMessageId();
+                boolean markedRead = messageDAO.markAsRead(messageIdRead);
+
+                if (markedRead) {
+                    logger.debug("Mensaje {} marcado como leído", messageIdRead);
+
+                    // Obtener el mensaje para saber quién es el emisor
+                    Message originalMsg = messageDAO.getMessageById(messageIdRead);
+                    if (originalMsg != null) {
+                        // Enviar confirmación al emisor
+                        ClientHandler sender = serverCore.getClientHandler(originalMsg.getSenderId());
+                        if (sender != null) {
+                            Message readConfirmation = new Message(MessageType.UPDATE_MESSAGE_STATUS, "");
+                            readConfirmation.setMessageId(messageIdRead);
+                            readConfirmation.setDelivered(true);
+                            readConfirmation.setRead(true);
+                            sender.sendMessage(readConfirmation);
+
+                            logger.debug("Confirmación de lectura enviada al emisor {}", originalMsg.getSenderId());
+                        }
+                    }
+                }
+                break;
+
             default:
                 logger.warn("Comando no reconocido: {} desde UserID: {}", msg.getType(),
                           currentUser != null ? currentUser.getId() : "NO_AUTENTICADO");

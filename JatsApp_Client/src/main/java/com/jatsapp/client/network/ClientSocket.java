@@ -119,6 +119,21 @@ public class ClientSocket {
                 }
                 break;
 
+            // --- CONFIRMACIONES DE LECTURA ---
+            case MESSAGE_DELIVERED:
+                // Mensaje entregado al receptor
+                if (chatFrame != null) {
+                    chatFrame.actualizarEstadoMensaje(msg.getMessageId(), true, false);
+                }
+                break;
+
+            case UPDATE_MESSAGE_STATUS:
+                // Actualización completa del estado (entregado + leído)
+                if (chatFrame != null) {
+                    chatFrame.actualizarEstadoMensaje(msg.getMessageId(), msg.isDelivered(), msg.isRead());
+                }
+                break;
+
             // --- NUEVO CHAT DE DESCONOCIDO ---
             case NEW_CHAT_REQUEST:
                 // Alguien que no tenemos como contacto nos ha escrito

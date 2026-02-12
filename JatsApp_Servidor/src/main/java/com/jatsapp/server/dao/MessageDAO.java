@@ -9,8 +9,8 @@ import java.util.List;
 public class MessageDAO {
 
     public boolean saveMessage(Message msg) {
-        String sql = "INSERT INTO mensajes (id_emisor, id_destinatario, tipo_destinatario, tipo_contenido, contenido, ruta_fichero, nombre_fichero, fecha_envio) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO mensajes (id_emisor, id_destinatario, tipo_destinatario, tipo_contenido, contenido, ruta_fichero, nombre_fichero, fecha_envio, entregado, leido) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), FALSE, FALSE)";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -35,7 +35,17 @@ public class MessageDAO {
             }
 
             int affected = pstmt.executeUpdate();
-            return affected > 0;
+
+            if (affected > 0) {
+                // Obtener el ID generado
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        msg.setMessageId(rs.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,9 +84,14 @@ public class MessageDAO {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Message m = new Message();
+                m.setMessageId(rs.getInt("id_mensaje"));
                 m.setSenderId(rs.getInt("id_emisor"));
                 m.setReceiverId(rs.getInt("id_destinatario"));
                 m.setSenderName(rs.getString("sender_name"));
+
+                // Estado del mensaje
+                m.setDelivered(rs.getBoolean("entregado"));
+                m.setRead(rs.getBoolean("leido"));
 
                 String tipoContenido = rs.getString("tipo_contenido");
                 if ("ARCHIVO".equals(tipoContenido)) {
@@ -98,5 +113,81 @@ public class MessageDAO {
             e.printStackTrace();
         }
         return history;
+    }
+
+    // =================================================================
+    // CONFIRMACIONES DE LECTURA
+    // =================================================================
+
+    /**
+     * Marca un mensaje como entregado
+     */
+    public boolean markAsDelivered(int messageId) {
+        String sql = "UPDATE mensajes SET entregado = TRUE, fecha_entrega = NOW() WHERE id_mensaje = ? AND entregado = FALSE";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, messageId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Marca un mensaje como leído
+     */
+    public boolean markAsRead(int messageId) {
+        String sql = "UPDATE mensajes SET leido = TRUE, fecha_lectura = NOW() WHERE id_mensaje = ? AND leido = FALSE";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, messageId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Marca todos los mensajes de un chat como leídos (cuando el usuario abre el chat)
+     */
+    public boolean markChatAsRead(int userId, int contactId) {
+        String sql = "UPDATE mensajes SET leido = TRUE, fecha_lectura = NOW() " +
+                     "WHERE id_destinatario = ? AND id_emisor = ? AND tipo_destinatario = 'USUARIO' AND leido = FALSE";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, contactId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene el estado actual de un mensaje por su ID
+     */
+    public Message getMessageById(int messageId) {
+        String sql = "SELECT * FROM mensajes WHERE id_mensaje = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, messageId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Message m = new Message();
+                m.setMessageId(rs.getInt("id_mensaje"));
+                m.setSenderId(rs.getInt("id_emisor"));
+                m.setReceiverId(rs.getInt("id_destinatario"));
+                m.setDelivered(rs.getBoolean("entregado"));
+                m.setRead(rs.getBoolean("leido"));
+                // Cargar otros campos según necesidad
+                return m;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatFrame extends JFrame {
 
@@ -31,6 +33,9 @@ public class ChatFrame extends JFrame {
 
     // Contacto con el que estamos hablando actualmente
     private User contactoActual = null;
+
+    // Mapa para trackear estado de mensajes: messageId -> estado visual en HTML
+    private Map<Integer, String> messageSentMap = new ConcurrentHashMap<>();
 
     public ChatFrame() {
         // 1. Vincular esta ventana al Socket para recibir mensajes
@@ -329,7 +334,18 @@ public class ChatFrame extends JFrame {
                 if (msg.getType() == MessageType.FILE_MESSAGE || msg.getType() == MessageType.ARCHIVO) {
                     contenido = "📎 Archivo: " + msg.getFileName();
                 }
-                agregarBurbuja(msg.getSenderName(), contenido, esMio);
+
+                // Si es mensaje mío del historial, mostrar con estado
+                if (esMio) {
+                    agregarBurbuja(msg.getSenderName(), contenido, true, msg.getMessageId(), msg.isDelivered(), msg.isRead());
+                } else {
+                    agregarBurbuja(msg.getSenderName(), contenido, false);
+
+                    // Enviar confirmación de lectura al servidor si el chat está abierto
+                    if (msg.getMessageId() > 0 && !msg.isRead()) {
+                        enviarConfirmacionLectura(msg.getMessageId());
+                    }
+                }
             }
             // Si NO es mío y NO es del contacto actual, es un mensaje nuevo de otra persona
             else if (!esMio && (contactoActual == null || msg.getSenderId() != contactoActual.getId())) {
@@ -355,6 +371,15 @@ public class ChatFrame extends JFrame {
     }
 
     /**
+     * Envía confirmación de lectura al servidor
+     */
+    private void enviarConfirmacionLectura(int messageId) {
+        Message readConfirmation = new Message(MessageType.MESSAGE_READ, "");
+        readConfirmation.setMessageId(messageId);
+        ClientSocket.getInstance().send(readConfirmation);
+    }
+
+    /**
      * Muestra una notificación visual de que hay un mensaje nuevo
      */
     private void mostrarNotificacionMensaje(String remitente) {
@@ -371,9 +396,23 @@ public class ChatFrame extends JFrame {
 
     // Método auxiliar para pintar HTML
     private void agregarBurbuja(String usuario, String texto, boolean esMio) {
+        agregarBurbuja(usuario, texto, esMio, 0, false, false);
+    }
+
+    // Versión completa con estado de mensaje
+    private void agregarBurbuja(String usuario, String texto, boolean esMio, int messageId, boolean delivered, boolean read) {
         String html;
         if (esMio) {
-            html = "<div class='msg-container'><div class='bubble-me'>" + texto + "</div></div>";
+            // Mensaje mío: mostrar indicador de estado
+            String statusIcon = getStatusIcon(delivered, read);
+            String statusId = messageId > 0 ? "msg-status-" + messageId : "";
+            html = "<div class='msg-container'><div class='bubble-me'>" + texto +
+                   " <span class='status' id='" + statusId + "'>" + statusIcon + "</span></div></div>";
+
+            // Guardar en el mapa para futuras actualizaciones
+            if (messageId > 0) {
+                messageSentMap.put(messageId, statusId);
+            }
         } else {
             html = "<div class='msg-container'><div class='bubble-other'><span class='sender'>" + usuario + "</span>" + texto + "</div></div>";
         }
@@ -381,6 +420,46 @@ public class ChatFrame extends JFrame {
             kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
             areaChat.setCaretPosition(doc.getLength()); // Auto-scroll al fondo
         } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    /**
+     * Obtiene el icono de estado según el estado del mensaje
+     */
+    private String getStatusIcon(boolean delivered, boolean read) {
+        if (read) {
+            return "<span style='color: #4FC3F7;'>✓✓</span>"; // Azul: leído
+        } else if (delivered) {
+            return "<span style='color: #999;'>✓✓</span>"; // Gris: entregado
+        } else {
+            return "<span style='color: #999;'>✓</span>"; // Gris: enviado
+        }
+    }
+
+    /**
+     * Actualiza el estado visual de un mensaje en el chat
+     */
+    public void actualizarEstadoMensaje(int messageId, boolean delivered, boolean read) {
+        SwingUtilities.invokeLater(() -> {
+            String statusId = messageSentMap.get(messageId);
+            if (statusId != null) {
+                try {
+                    // Buscar y actualizar el elemento en el HTML
+                    String htmlContent = areaChat.getText();
+                    String statusIcon = getStatusIcon(delivered, read);
+                    String newContent = htmlContent.replaceAll(
+                        "id='" + statusId + "'>.*?</span>",
+                        "id='" + statusId + "'>" + statusIcon + "</span>"
+                    );
+
+                    if (!newContent.equals(htmlContent)) {
+                        areaChat.setText(newContent);
+                        areaChat.setCaretPosition(doc.getLength());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error actualizando estado del mensaje: " + e.getMessage());
+                }
+            }
+        });
     }
 
     // Helper para cargar imágenes sin que explote si faltan
