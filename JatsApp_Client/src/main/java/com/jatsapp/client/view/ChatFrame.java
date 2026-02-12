@@ -76,6 +76,20 @@ public class ChatFrame extends JFrame {
         });
         panelIzquierdo.add(new JScrollPane(listaContactos), BorderLayout.CENTER);
 
+        // Botón de Configuración con Imagen (Ajuste de tamaño)
+        JButton btnConfiguracion = new JButton(new ImageIcon(new ImageIcon(getClass().getResource("/images/setting.png")).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
+        btnConfiguracion.setBackground(null);
+        btnConfiguracion.setBorder(null);
+        btnConfiguracion.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnConfiguracion.setToolTipText("Configuración");
+
+        btnConfiguracion.addActionListener(e -> abrirVentanaConfiguracion());
+
+        JPanel panelConfiguracion = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelConfiguracion.setBackground(new Color(30, 30, 30));
+        panelConfiguracion.add(btnConfiguracion);
+        panelIzquierdo.add(panelConfiguracion, BorderLayout.SOUTH); // Agregar el botón al final del panel izquierdo
+
         // ================= DERECHA (CHAT) =================
         JPanel panelDerecho = new JPanel(new BorderLayout());
         panelDerecho.setBackground(new Color(20, 20, 20));
@@ -92,6 +106,7 @@ public class ChatFrame extends JFrame {
         lblTituloChat.setBorder(new EmptyBorder(10, 20, 0, 0));
         headerChat.add(lblTituloChat);
         panelDerecho.add(headerChat, BorderLayout.NORTH);
+
 
         // Area Chat (HTML)
         areaChat = new JTextPane();
@@ -126,21 +141,19 @@ public class ChatFrame extends JFrame {
         txtMensaje.putClientProperty("JTextField.showClearButton", true);
         txtMensaje.putClientProperty("JComponent.roundRect", true);
 
-        JButton btnEnviar = new JButton("➤");
+        // Botón de Enviar con Imagen (Ajuste de tamaño)
+        JButton btnEnviar = new JButton(new ImageIcon(new ImageIcon(getClass().getResource("/images/send.png")).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH)));
         btnEnviar.setBackground(null);
         btnEnviar.setBorder(null);
-        btnEnviar.setForeground(new Color(0, 200, 150));
-        btnEnviar.setFont(new Font("Segoe UI", Font.BOLD, 24));
         btnEnviar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         panelInput.add(txtMensaje, BorderLayout.CENTER);
         panelInput.add(btnEnviar, BorderLayout.EAST);
 
-        panelDerecho.add(panelInput, BorderLayout.SOUTH);
-
-        // Eventos
         btnEnviar.addActionListener(e -> enviarMensaje());
         txtMensaje.addActionListener(e -> enviarMensaje());
+
+        panelDerecho.add(panelInput, BorderLayout.SOUTH);
 
         splitPane.setLeftComponent(panelIzquierdo);
         splitPane.setRightComponent(panelDerecho);
@@ -187,5 +200,14 @@ public class ChatFrame extends JFrame {
             kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
             areaChat.setCaretPosition(doc.getLength());
         } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // Método para abrir la ventana de configuración
+    private void abrirVentanaConfiguracion() {
+        int opcion = JOptionPane.showConfirmDialog(this, "¿Deseas cerrar sesión?", "Configuración", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            // Lógica para cerrar sesión
+            System.exit(0);
+        }
     }
 }
