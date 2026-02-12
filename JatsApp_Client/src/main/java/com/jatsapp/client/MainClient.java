@@ -1,46 +1,50 @@
 package com.jatsapp.client;
 
-import com.formdev.flatlaf.themes.FlatMacDarkLaf; // Usamos el tema Mac (más limpio)
-import com.jatsapp.client.network.ClientSocket;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.jatsapp.client.network.ClientSocket; // Asumo que esta clase existe, pásamela luego
 import com.jatsapp.client.view.LoginFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class MainClient {
 
     public static void main(String[] args) {
 
-        // Configuración de Estilo Global
+        // --- Configuración de Estilo (FlatLaf) ---
         try {
-            // 1. Color de acento (Ese verde bonito para focus, bordes y selecciones)
             UIManager.put("Component.accentColor", new Color(0, 200, 150));
-
-            // 2. Redondeo EXTREMO (Estilo píldora)
-            UIManager.put("Button.arc", 999);       // Botones redondos
-            UIManager.put("Component.arc", 999);    // Inputs redondos
+            UIManager.put("Button.arc", 999);
+            UIManager.put("Component.arc", 999);
             UIManager.put("TextComponent.arc", 999);
-
-            // 3. Grosor de bordes y foco
             UIManager.put("Component.focusWidth", 2);
-            UIManager.put("Component.innerFocusWidth", 1);
-
-            // 4. Scrollbars más finas e invisibles si no se usan
             UIManager.put("ScrollBar.width", 10);
-            UIManager.put("ScrollBar.thumbArc", 999);
 
-            // Cargar el tema
             FlatMacDarkLaf.setup();
-
         } catch (Exception ex) {
-            System.err.println("No se pudo cargar FlatLaf");
+            System.err.println("Advertencia: No se pudo cargar el tema FlatLaf. Se usará el por defecto.");
         }
 
-        // Arrancar
+        // --- Arranque de la UI y Red ---
         SwingUtilities.invokeLater(() -> {
-            System.out.println("🚀 Iniciando JatsApp (Diseño Premium)...");
-            ClientSocket.getInstance().connect("localhost", 8888);
-            new LoginFrame();
+            System.out.println("🚀 Iniciando JatsApp Client...");
+
+            try {
+                // CORRECCIÓN: Puerto cambiado a 5555 (el mismo que ServerCore)
+                ClientSocket.getInstance().connect("localhost", 5555);
+
+                // Abrir pantalla de Login
+                new LoginFrame();
+
+            } catch (IOException e) {
+                // Si el servidor está apagado, mostramos aviso y cerramos
+                JOptionPane.showMessageDialog(null,
+                        "No se pudo conectar al servidor en localhost:5555.\n¿Está encendido?",
+                        "Error de Conexión",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
         });
     }
 }

@@ -1,160 +1,145 @@
 package com.jatsapp.client.network;
 
-import com.google.gson.Gson;
-import com.jatsapp.client.view.ChatFrame;
+import com.jatsapp.client.view.ChatFrame; // (Aún no me lo pasas, pero lo preparo)
 import com.jatsapp.client.view.LoginFrame;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
 
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientSocket {
 
     private static ClientSocket instance;
-    private Socket socket;
-    private DataOutputStream out;
-    private DataInputStream in;
-    private final Gson gson = new Gson();
 
-    // Referencias a las ventanas para poder actualizarlas desde aquí
+    private Socket socket;
+    private ObjectOutputStream out; // CAMBIO: Usamos ObjectOutput
+    private ObjectInputStream in;   // CAMBIO: Usamos ObjectInput
+
     private LoginFrame loginFrame;
     private ChatFrame chatFrame;
 
     private String myUsername;
+    private boolean isConnected = false;
 
-    // MODO OFFLINE: Para probar la interfaz sin servidor
-    private boolean isOfflineMode = false;
-
-    // Singleton: Para tener una única conexión en toda la app
-    public static ClientSocket getInstance() {
-        if (instance == null) instance = new ClientSocket();
+    // Singleton
+    public static synchronized ClientSocket getInstance() {
+        if (instance == null) {
+            instance = new ClientSocket();
+        }
         return instance;
     }
 
     /**
-     * Intenta conectar al servidor. Si falla, activa el modo Offline.
+     * Conecta al servidor. Llamado desde MainClient.
      */
-    public void connect(String ip, int port) {
-        try {
-            this.socket = new Socket(ip, port);
-            this.out = new DataOutputStream(socket.getOutputStream());
-            this.in = new DataInputStream(socket.getInputStream());
+    public void connect(String host, int port) throws IOException {
+        this.socket = new Socket(host, port);
 
-            System.out.println("✅ CONECTADO AL SERVIDOR (" + ip + ":" + port + ")");
-            this.isOfflineMode = false;
+        // IMPORTANTE: Primero crear el Output, luego el Input (regla de Java Sockets)
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
 
-            // Arrancamos el hilo que escucha mensajes
-            new Thread(this::listen).start();
+        this.isConnected = true;
+        System.out.println("✅ Conectado a " + host + ":" + port);
 
-        } catch (IOException e) {
-            System.err.println("⚠️ NO SE PUDO CONECTAR AL SERVIDOR.");
-            System.err.println("👉 Activando MODO OFFLINE para pruebas de interfaz.");
-            this.isOfflineMode = true;
-        }
+        // Iniciar hilo de escucha
+        new Thread(this::listen).start();
     }
 
-    // Setters para que el Socket sepa qué ventanas están abiertas
     public void setLoginFrame(LoginFrame frame) { this.loginFrame = frame; }
     public void setChatFrame(ChatFrame frame) { this.chatFrame = frame; }
 
     public void setMyUsername(String user) { this.myUsername = user; }
     public String getMyUsername() { return myUsername; }
+    public boolean isOfflineMode() { return !isConnected; }
 
     /**
-     * Envía un mensaje al servidor (o simula enviarlo si estamos offline)
+     * Envía un objeto Message al servidor
      */
     public void send(Message msg) {
-        // --- LOGICA MODO OFFLINE (SIMULACIÓN) ---
-        if (isOfflineMode) {
-            System.out.println("[OFFLINE] Simulando envío: " + msg.getType());
-
-            // Si intentas hacer Login, te digo que sí automáticamente
-            if (msg.getType() == MessageType.LOGIN || msg.getType() == MessageType.REGISTER) {
-                // Simulamos un pequeño retraso de red
-                new Thread(() -> {
-                    try { Thread.sleep(500); } catch (InterruptedException e) {}
-                    if (loginFrame != null) loginFrame.onLoginSuccess();
-                }).start();
-            }
-
-            // Si envías un mensaje, te lo devuelvo para que veas que funciona el chat
-            if (msg.getType() == MessageType.TEXT_MESSAGE) {
-                if (chatFrame != null) chatFrame.recibirMensaje(msg);
-            }
-            return;
-        }
-
-        // --- LOGICA REAL (ONLINE) ---
+        if (!isConnected) return;
         try {
-            String json = gson.toJson(msg);
-            out.writeUTF(json);
-            System.out.println("📤 Enviado: " + json);
+            out.writeObject(msg);
+            out.flush();
+            System.out.println("📤 Enviado: " + msg.getType());
         } catch (IOException e) {
             System.err.println("❌ Error enviando mensaje: " + e.getMessage());
+            closeConnection();
         }
     }
 
     /**
-     * Hilo que escucha lo que manda el servidor
+     * Bucle infinito para recibir mensajes
      */
     private void listen() {
         try {
-            while (true) {
-                // 1. Recibir JSON
-                String json = in.readUTF();
-                System.out.println("📥 Recibido: " + json);
+            while (isConnected) {
+                // Leemos el OBJETO directamente (igual que en el servidor)
+                Message msg = (Message) in.readObject();
+                System.out.println("📥 Recibido: " + msg.getType());
 
-                // 2. Convertir a Objeto
-                Message msg = gson.fromJson(json, Message.class);
-
-                // 3. Procesar
-                handleMessage(msg);
+                // Procesamos en el hilo de la interfaz (EDT)
+                SwingUtilities.invokeLater(() -> handleMessage(msg));
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.err.println("❌ Desconectado del servidor");
-            if (!isOfflineMode) {
-                JOptionPane.showMessageDialog(null, "Conexión perdida con el servidor.");
-                System.exit(0);
-            }
+            closeConnection();
         }
     }
 
-    /**
-     * Decide qué hacer con el mensaje que acaba de llegar
-     */
     private void handleMessage(Message msg) {
-        // Usamos SwingUtilities.invokeLater para asegurar que tocamos la interfaz en el hilo correcto
-        SwingUtilities.invokeLater(() -> {
-            switch (msg.getType()) {
-                case LOGIN_OK:
-                    if (loginFrame != null) loginFrame.onLoginSuccess();
-                    break;
+        switch (msg.getType()) {
+            // --- RESPUESTAS DE LOGIN/REGISTRO ---
+            case require_2FA:
+                if (loginFrame != null) loginFrame.onRequire2FA();
+                break;
 
-                case LOGIN_FAIL:
-                    if (loginFrame != null) {
-                        JOptionPane.showMessageDialog(loginFrame, "Error: Usuario o contraseña incorrectos.");
-                    }
-                    break;
+            case LOGIN_OK:
+                if (loginFrame != null) loginFrame.onLoginSuccess();
+                break;
 
-                case TEXT_MESSAGE:
-                    if (chatFrame != null) chatFrame.recibirMensaje(msg);
-                    break;
+            case LOGIN_FAIL:
+                if (loginFrame != null) loginFrame.onLoginFail(msg.getContent());
+                break;
 
-                case require_2FA:
-                    String codigo = JOptionPane.showInputDialog("Introduce el código de verificación (Email):");
-                    if (codigo != null && !codigo.isEmpty()) {
-                        Message verifyMsg = new Message();
-                        verifyMsg.setType(MessageType.VERIFY_2FA);
-                        verifyMsg.setSenderName(myUsername);
-                        verifyMsg.setContent(codigo);
-                        send(verifyMsg);
-                    }
-                    break;
-            }
-        });
+            case REGISTER_FAIL: // Usamos el mismo método de fail para simplificar o uno específico
+                JOptionPane.showMessageDialog(loginFrame, "Error Registro: " + msg.getContent());
+                break;
+
+            // --- CHAT ---
+            case TEXT_MESSAGE:
+            case FILE_MESSAGE:
+            case ARCHIVO:
+                if (chatFrame != null) {
+                    chatFrame.recibirMensaje(msg);
+                }
+                break;
+
+            case LIST_CONTACTS:
+                if (chatFrame != null) {
+                    chatFrame.actualizarContactos(msg.getContactList());
+                }
+                break;
+
+            case HISTORY_RESPONSE:
+                if (chatFrame != null) {
+                    chatFrame.cargarHistorial(msg.getHistoryList());
+                }
+                break;
+
+            default:
+                System.out.println("❓ Tipo desconocido: " + msg.getType());
+        }
+    }
+
+    private void closeConnection() {
+        isConnected = false;
+        try { if (socket != null) socket.close(); } catch (IOException e) {}
+        JOptionPane.showMessageDialog(null, "Conexión perdida con el servidor.");
+        System.exit(0);
     }
 }

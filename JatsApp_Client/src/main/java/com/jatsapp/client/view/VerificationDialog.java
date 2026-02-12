@@ -13,33 +13,42 @@ public class VerificationDialog extends JDialog {
     private JButton btnVerificar;
 
     public VerificationDialog(JFrame parent) {
-        super(parent, "Verificación 2FA", true); // 'true' hace que sea modal (bloquea la ventana de atrás)
-        setSize(300, 180);
+        super(parent, "Verificación 2FA", true); // Modal
+        setSize(350, 200);
         setLocationRelativeTo(parent);
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(15, 15));
 
         // Panel superior (Instrucciones)
         JPanel panelInfo = new JPanel();
-        panelInfo.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-        panelInfo.add(new JLabel("<html><center>Hemos enviado un código a tu email.<br>Introdúcelo abajo:</center></html>"));
+        panelInfo.setBorder(BorderFactory.createEmptyBorder(15, 10, 0, 10));
+        JLabel lblInfo = new JLabel("<html><center>Hemos enviado un código a tu email.<br><b>Introdúcelo aquí para continuar:</b></center></html>");
+        lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
+        panelInfo.add(lblInfo);
         add(panelInfo, BorderLayout.NORTH);
 
         // Panel central (Input)
         JPanel panelInput = new JPanel();
         txtCodigo = new JTextField(10);
-        txtCodigo.setFont(new Font("Arial", Font.BOLD, 16));
+        txtCodigo.setFont(new Font("Monospaced", Font.BOLD, 24)); // Fuente tipo código
         txtCodigo.setHorizontalAlignment(JTextField.CENTER);
         panelInput.add(txtCodigo);
         add(panelInput, BorderLayout.CENTER);
 
-        // Panel inferior (Botón)
+        // Panel inferior (Botones)
         JPanel panelBoton = new JPanel();
         btnVerificar = new JButton("Verificar Código");
+        btnVerificar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnVerificar.setBackground(new Color(0, 200, 150)); // Acento verde
+        btnVerificar.setForeground(Color.WHITE);
+
         panelBoton.add(btnVerificar);
         add(panelBoton, BorderLayout.SOUTH);
 
-        // Acción del botón
+        // Acciones
         btnVerificar.addActionListener(e -> enviarCodigo());
+
+        // Permitir pulsar ENTER para enviar
+        getRootPane().setDefaultButton(btnVerificar);
 
         setVisible(true);
     }
@@ -47,22 +56,27 @@ public class VerificationDialog extends JDialog {
     private void enviarCodigo() {
         String codigo = txtCodigo.getText().trim();
         if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Escribe el código primero.");
+            JOptionPane.showMessageDialog(this, "Por favor, escribe el código.", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String miUsuario = ClientSocket.getInstance().getMyUsername();
-
-        // Crear mensaje de verificación
+        // 1. Crear mensaje
         Message msg = new Message();
         msg.setType(MessageType.VERIFY_2FA);
-        msg.setSenderName(miUsuario);
         msg.setContent(codigo);
+        // Nota: No hace falta setSenderName aquí, el servidor ya sabe quién eres por el socket (tempUser)
 
-        // Enviar
-        ClientSocket.getInstance().send(msg);
+        // 2. Enviar
+        try {
+            ClientSocket.getInstance().send(msg);
 
-        // Cerramos este diálogo (la respuesta la gestionará ClientSocket)
-        this.dispose();
+            // 3. Cerrar diálogo
+            // Asumimos que el código se ha enviado. Si es incorrecto,
+            // el ClientSocket recibirá un LOGIN_FAIL y mostrará un error en el LoginFrame.
+            this.dispose();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error de conexión al enviar el código.");
+        }
     }
 }

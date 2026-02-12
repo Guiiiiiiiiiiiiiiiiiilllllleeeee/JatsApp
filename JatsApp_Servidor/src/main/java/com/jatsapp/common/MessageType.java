@@ -1,21 +1,30 @@
 package com.jatsapp.common;
 
 public enum MessageType {
+    // --- AUTENTICACIÓN ---
     LOGIN,              // Enviar usuario y contraseña
-    REGISTER,           // Registrarse
-    LOGIN_OK,           // Servidor dice: Entraste
-    LOGIN_FAIL,         // Servidor dice: Contraseña mal
-    require_2FA,        // Servidor dice: Dame el código del email
-    VERIFY_2FA,         // Cliente envía el código
+    LOGIN_OK,           // Login correcto
+    LOGIN_FAIL,         // Login fallido
 
-    TEXT_MESSAGE,       // Chat normal
-    FILE_MESSAGE,       // Envío de imagen/archivo
-    ARCHIVO,            // Alias para compatibilidad con BD
-    IMAGEN,             // Tipo específico de archivo imagen
+    REGISTER,           // Solicitud de registro
+    REGISTER_OK,        // <--- NUEVO: Registro exitoso
+    REGISTER_FAIL,      // <--- NUEVO: Fallo en registro (usuario duplicado, etc.)
 
-    GET_CONTACTS,       // Pedir lista de amigos
-    LIST_CONTACTS,      // Respuesta con la lista
+    require_2FA,        // Servidor pide código
+    VERIFY_2FA,         // Cliente envía código
+    VERIFY_2FA_OK,      // <--- NUEVO: (Opcional, si lo usas en el ClientSocket)
+    VERIFY_2FA_FAIL,    // <--- NUEVO: (Opcional, si lo usas en el ClientSocket)
 
-    GET_HISTORY,        // Pedir mensajes antiguos
-    HISTORY_RESPONSE    // Respuesta con la lista de mensajes
+    // --- CHAT ---
+    TEXT_MESSAGE,
+    FILE_MESSAGE,
+    ARCHIVO,
+    IMAGEN,
+
+    // --- DATOS ---
+    GET_CONTACTS,
+    LIST_CONTACTS,
+
+    GET_HISTORY,
+    HISTORY_RESPONSE
 }

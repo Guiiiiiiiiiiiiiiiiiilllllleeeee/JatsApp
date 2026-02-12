@@ -9,101 +9,132 @@ import java.awt.*;
 
 public class LoginFrame extends JFrame {
 
-    // Componentes de la ventana
     private JTextField txtUser;
     private JPasswordField txtPass;
     private JButton btnLogin;
     private JButton btnRegister;
 
     public LoginFrame() {
-        // 1. Configuración básica de la ventana
-        setTitle("JatsApp - Iniciar Sesión");
-        setSize(350, 250);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Al cerrar esto, se acaba el programa
-        setLocationRelativeTo(null); // Centrar en pantalla
-        setLayout(new GridLayout(4, 2, 10, 10)); // Rejilla de 4 filas, 2 columnas
+        super("JatsApp - Iniciar Sesión");
+        setSize(350, 280);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // 2. Crear y añadir componentes
-        add(new JLabel("  Usuario:"));
+        // Panel principal con margen (Padding)
+        JPanel mainPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // --- Componentes ---
+        mainPanel.add(new JLabel("Usuario:"));
         txtUser = new JTextField();
-        add(txtUser);
+        mainPanel.add(txtUser);
 
-        add(new JLabel("  Contraseña:"));
+        mainPanel.add(new JLabel("Contraseña:"));
         txtPass = new JPasswordField();
-        add(txtPass);
+        mainPanel.add(txtPass);
 
-        // Botón Login
-        btnLogin = new JButton("Entrar");
-        btnLogin.setBackground(new Color(100, 200, 100)); // Un verde suave
-
-        // Botón Registro (importante para ir a la otra ventana)
+        // Botones
         btnRegister = new JButton("Crear Cuenta");
+        btnLogin = new JButton("Entrar");
+        btnLogin.setBackground(new Color(0, 200, 150)); // Verde
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        // Añadimos los botones a la ventana
-        add(btnRegister);
-        add(btnLogin);
+        mainPanel.add(btnRegister);
+        mainPanel.add(btnLogin);
 
-        // 3. Dar vida a los botones (Listeners)
+        add(mainPanel);
 
-        // Acción al pulsar "Entrar"
+        // --- Acciones ---
         btnLogin.addActionListener(e -> doLogin());
-
-        // Acción al pulsar "Crear Cuenta"
         btnRegister.addActionListener(e -> irARegistro());
 
-        // 4. Conectar esta ventana con el Socket
-        // (Para que el Socket sepa a quién avisar si el login es OK)
+        // Permitir pulsar Enter en el campo de contraseña para loguearse
+        getRootPane().setDefaultButton(btnLogin);
+
+        // *** IMPORTANTE ***
+        // Registramos esta ventana en el ClientSocket para recibir las respuestas
         ClientSocket.getInstance().setLoginFrame(this);
 
-        // Mostrar ventana
         setVisible(true);
     }
 
-    /**
-     * Lógica para enviar los datos al servidor
-     */
     private void doLogin() {
         String user = txtUser.getText().trim();
-        String pass = new String(txtPass.getPassword()); // Leer contraseña
+        String pass = new String(txtPass.getPassword());
 
-        // Validación básica: no enviar vacíos
         if (user.isEmpty() || pass.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, rellena usuario y contraseña.");
             return;
         }
 
-        // 1. Guardamos el nombre en el cliente (memoria)
+        // Bloquear botón para evitar doble clic
+        btnLogin.setEnabled(false);
+        setTitle("Conectando...");
+
+        // 1. Guardar usuario en memoria (para usarlo luego en el 2FA)
         ClientSocket.getInstance().setMyUsername(user);
 
-        // 2. Preparamos el mensaje JSON
+        // 2. Crear mensaje
         Message msg = new Message();
         msg.setType(MessageType.LOGIN);
         msg.setSenderName(user);
-        msg.setContent(pass); // En un caso real, esto debería ir hasheado aquí también, pero el servidor lo hará
+        msg.setContent(pass);
 
-        // 3. Enviamos por la red
-        ClientSocket.getInstance().send(msg);
-
-        // Feedback visual (opcional)
-        setTitle("JatsApp - Conectando...");
-        btnLogin.setEnabled(false);
+        // 3. Enviar
+        try {
+            ClientSocket.getInstance().send(msg);
+        } catch (Exception e) {
+            onLoginFail("Error de conexión con el servidor.");
+        }
     }
 
-    /**
-     * Cierra esta ventana y abre la de Registro
-     */
     private void irARegistro() {
-        new RegisterFrame(); // Abrir la nueva
-        this.dispose();      // Cerrar la actual
+        new RegisterFrame();
+        this.dispose();
+    }
+
+    // =======================================================
+    // MÉTODOS DE RESPUESTA (Llamados por ClientSocket)
+    // =======================================================
+
+    /**
+     * CASO 1: El servidor dice que las credenciales son correctas,
+     * pero pide el código 2FA.
+     */
+    public void onRequire2FA() {
+        SwingUtilities.invokeLater(() -> {
+            setTitle("Verificando...");
+            // Abrimos el diálogo de verificación modal
+            new VerificationDialog(this);
+            // Nota: No cerramos el LoginFrame aún, esperamos a que el 2FA sea OK
+        });
     }
 
     /**
-     * Este método será llamado por ClientSocket cuando el servidor responda "LOGIN_OK"
+     * CASO 2: Todo correcto (después del 2FA).
      */
     public void onLoginSuccess() {
-        // Cerrar ventana de login
-        this.dispose();
-        // Abrir la ventana del chat principal
-        SwingUtilities.invokeLater(() -> new ChatFrame());
+        SwingUtilities.invokeLater(() -> {
+            // 1. Cerramos la ventana de Login
+            this.dispose();
+
+            System.out.println("✅ Login correcto. Abriendo ChatFrame...");
+
+            // 2. ABRIMOS LA VENTANA PRINCIPAL DEL CHAT
+            new ChatFrame();
+        });
+    }
+
+    /**
+     * CASO 3: Error (pass incorrecta o código 2FA mal)
+     */
+    public void onLoginFail(String reason) {
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(this, "Error: " + reason);
+            setTitle("JatsApp - Iniciar Sesión");
+            btnLogin.setEnabled(true);
+            txtPass.setText(""); // Limpiar contraseña
+        });
     }
 }

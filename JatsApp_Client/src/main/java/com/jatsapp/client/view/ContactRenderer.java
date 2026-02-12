@@ -1,96 +1,91 @@
 package com.jatsapp.client.view;
 
+import com.jatsapp.common.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class ContactRenderer extends JPanel implements ListCellRenderer<String> {
+// CAMBIO: Ahora renderizamos objetos 'User', no 'String'
+public class ContactRenderer extends JPanel implements ListCellRenderer<User> {
 
-    private String nombreActual;
+    private User usuarioActual;
     private boolean seleccionado;
 
     public ContactRenderer() {
-        setLayout(new BorderLayout(15, 0)); // Más espacio entre icono y texto
-        setBorder(new EmptyBorder(10, 15, 10, 15)); // Padding generoso
-        setOpaque(true);
+        // Configuramos el layout y tamaño base
+        setLayout(new BorderLayout());
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setOpaque(false); // Importante para que paintComponent controle el fondo
+        setPreferredSize(new Dimension(200, 70)); // Altura fija para cada fila
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-        this.nombreActual = value;
+    public Component getListCellRendererComponent(JList<? extends User> list, User value, int index, boolean isSelected, boolean cellHasFocus) {
+        this.usuarioActual = value;
         this.seleccionado = isSelected;
-
-        // Colores de fondo de la celda
-        if (isSelected) {
-            setBackground(new Color(45, 55, 65)); // Gris azulado al seleccionar
-        } else {
-            setBackground(new Color(30, 30, 30)); // Fondo normal
-        }
-
-        // El texto lo pintaremos manualmente en paintComponent para más control
         return this;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        // No llamamos a super.paintComponent para tener control total del fondo
+        if (usuarioActual == null) return;
+
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // Activar antialiasing para bordes suaves
+        // Calidad de renderizado (Antialiasing)
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // 0. PINTAR FONDO (Manual para evitar glitches)
+        // 1. FONDO
         if (seleccionado) {
-            g2.setColor(new Color(45, 55, 65)); // Gris azulado (Seleccionado)
+            g2.setColor(new Color(45, 55, 65)); // Seleccionado
         } else {
-            g2.setColor(new Color(30, 30, 30)); // Fondo normal
+            g2.setColor(new Color(30, 30, 30)); // Normal
         }
-        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.fillRoundRect(2, 2, getWidth()-4, getHeight()-4, 10, 10); // Bordes redondeados
 
-        // 1. DIBUJAR AVATAR (CÍRCULO)
-        int size = 45; // Un poco más grande
-        int xAvatar = 15; // Margen izquierdo
-        int yPos = (getHeight() - size) / 2; // Centrado vertical
+        // 2. AVATAR (Círculo con inicial)
+        int size = 45;
+        int xAvatar = 15;
+        int yPos = (getHeight() - size) / 2;
 
-        g2.setColor(getColorPorNombre(nombreActual));
+        g2.setColor(getColorPorNombre(usuarioActual.getUsername()));
         g2.fillOval(xAvatar, yPos, size, size);
 
-        // Letra inicial
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        String inicial = nombreActual.length() > 0 ? nombreActual.substring(0, 1).toUpperCase() : "?";
-        FontMetrics fm = g2.getFontMetrics();
+        String inicial = usuarioActual.getUsername().substring(0, 1).toUpperCase();
 
-        // Centrar letra matemáticamente en el círculo
+        FontMetrics fm = g2.getFontMetrics();
         int textX = xAvatar + (size - fm.stringWidth(inicial)) / 2;
         int textY = yPos + ((size - fm.getHeight()) / 2) + fm.getAscent();
-        g2.drawString(inicial, textX, textY);
+        g2.drawString(inicial, textX, textY - 4);
 
-        // ---------------------------------------------------------
-        // AQUÍ ESTABA EL PROBLEMA: MOVER TEXTO A LA DERECHA (X=80)
-        // ---------------------------------------------------------
-        int xTexto = 80;
-
-        // 2. DIBUJAR NOMBRE
+        // 3. NOMBRE
+        int xTexto = 75;
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        g2.drawString(nombreActual, xTexto, getHeight() / 2 - 5);
+        g2.drawString(usuarioActual.getUsername(), xTexto, getHeight() / 2 - 2);
 
-        // 3. DIBUJAR ESTADO
-        g2.setColor(new Color(170, 170, 170)); // Gris claro
+        // 4. ESTADO (Conectado / Desconectado)
+        // Usamos el campo activityStatus del objeto User
+        String estado = (usuarioActual.getActivityStatus() != null) ? usuarioActual.getActivityStatus() : "desconocido";
+
+        if ("activo".equalsIgnoreCase(estado)) {
+            g2.setColor(new Color(0, 200, 100)); // Verde
+        } else {
+            g2.setColor(Color.GRAY);
+        }
         g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        g2.drawString("Haz clic para chatear", xTexto, getHeight() / 2 + 15);
+        g2.drawString(estado, xTexto, getHeight() / 2 + 15);
 
         g2.dispose();
     }
 
-    // Genera un color pastel bonito basado en el nombre
     private Color getColorPorNombre(String nombre) {
+        if (nombre == null) return Color.GRAY;
         int hash = nombre.hashCode();
-        int r = (hash & 0xFF0000) >> 16;
-        int g = (hash & 0x00FF00) >> 8;
-        int b = hash & 0x0000FF;
-        return new Color((r + 50) % 200, (g + 50) % 200, (b + 100) % 255);
+        return new Color((hash & 0xFF0000) >> 16, (hash & 0x00FF00) >> 8, hash & 0x0000FF).brighter();
     }
 }

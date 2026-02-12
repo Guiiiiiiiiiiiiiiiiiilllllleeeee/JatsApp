@@ -1,11 +1,14 @@
 package com.jatsapp.server.dao;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class DatabaseManager {
 
@@ -13,12 +16,12 @@ public class DatabaseManager {
     private Connection connection;
     private Properties properties;
 
-    // Constructor privado (Patrón Singleton)
     private DatabaseManager() {
         loadProperties();
+        // Al instanciar, intentamos inicializar las tablas
+        initTables();
     }
 
-    // Método para obtener la instancia única
     public static synchronized DatabaseManager getInstance() {
         if (instance == null) {
             instance = new DatabaseManager();
@@ -28,46 +31,62 @@ public class DatabaseManager {
 
     private void loadProperties() {
         properties = new Properties();
-        // Carga el archivo desde src/main/resources
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                throw new RuntimeException("FATAL: config.properties no encontrado en src/main/resources/");
-            }
+            if (input == null) throw new RuntimeException("Falta config.properties");
             properties.load(input);
-
-            // Validar propiedades críticas
-            validateProperty("db.url");
-            validateProperty("db.user");
-            validateProperty("db.driver");
-
-            System.out.println("✓ config.properties cargado correctamente");
-        } catch (IOException ex) {
-            throw new RuntimeException("Error cargando config.properties", ex);
-        }
-    }
-
-    private void validateProperty(String key) {
-        String value = properties.getProperty(key);
-        if (value == null || value.trim().isEmpty()) {
-            throw new RuntimeException("Propiedad requerida faltante o vacía en config.properties: " + key);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
     public Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
             try {
-                // Cargar driver (opcional en versiones nuevas, pero recomendado)
                 Class.forName(properties.getProperty("db.driver"));
-
                 connection = DriverManager.getConnection(
                         properties.getProperty("db.url"),
                         properties.getProperty("db.user"),
                         properties.getProperty("db.password")
                 );
             } catch (ClassNotFoundException e) {
-                throw new SQLException("Driver de base de datos no encontrado", e);
+                throw new SQLException("Falta el Driver MySQL", e);
             }
         }
         return connection;
+    }
+
+    // --- NUEVO MÉTODO PARA CREAR TABLAS AUTOMÁTICAMENTE ---
+    private void initTables() {
+        System.out.println("🛠️ Verificando estructura de base de datos...");
+
+        try (Connection conn = getConnection();
+             InputStream is = getClass().getClassLoader().getResourceAsStream("schema.sql")) {
+
+            if (is == null) {
+                System.err.println("⚠️ No se encontró schema.sql. Saltando creación de tablas.");
+                return;
+            }
+
+            // Leer el archivo completo
+            String script = new BufferedReader(new InputStreamReader(is))
+                    .lines().collect(Collectors.joining("\n"));
+
+            // Separar por punto y coma (;) para ejecutar comando a comando
+            String[] commands = script.split(";");
+
+            try (Statement stmt = conn.createStatement()) {
+                for (String sql : commands) {
+                    if (!sql.trim().isEmpty()) {
+                        stmt.execute(sql.trim());
+                    }
+                }
+            }
+            System.out.println("✅ Tablas verificadas/creadas correctamente.");
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error SQL al iniciar tablas: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("❌ Error leyendo schema.sql: " + e.getMessage());
+        }
     }
 }

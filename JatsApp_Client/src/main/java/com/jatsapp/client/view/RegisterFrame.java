@@ -3,8 +3,6 @@ package com.jatsapp.client.view;
 import com.jatsapp.client.network.ClientSocket;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
-import com.jatsapp.common.User; // Importamos la clase que acabamos de crear
-import com.google.gson.Gson;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,41 +17,51 @@ public class RegisterFrame extends JFrame {
     private JButton btnBack;
 
     public RegisterFrame() {
-        setTitle("JatsApp - Crear Cuenta");
-        setSize(350, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Solo cierra esta ventana, no la app
+        super("JatsApp - Crear Cuenta");
+        setSize(400, 350);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(6, 2, 10, 10));
 
-        // Campos
-        add(new JLabel(" Usuario:"));
+        // Usamos un panel con padding para que no se pegue a los bordes
+        JPanel mainPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // --- Campos ---
+        mainPanel.add(new JLabel("Usuario:"));
         txtUser = new JTextField();
-        add(txtUser);
+        mainPanel.add(txtUser);
 
-        add(new JLabel(" Email:"));
+        mainPanel.add(new JLabel("Email:"));
         txtEmail = new JTextField();
-        add(txtEmail);
+        mainPanel.add(txtEmail);
 
-        add(new JLabel(" Contraseña:"));
+        mainPanel.add(new JLabel("Contraseña:"));
         txtPass = new JPasswordField();
-        add(txtPass);
+        mainPanel.add(txtPass);
 
-        add(new JLabel(" Repetir Pass:"));
+        mainPanel.add(new JLabel("Repetir Contraseña:"));
         txtConfirmPass = new JPasswordField();
-        add(txtConfirmPass);
+        mainPanel.add(txtConfirmPass);
 
-        // Botones
+        // --- Botones ---
         btnBack = new JButton("<< Volver");
         btnRegister = new JButton("Registrarse");
 
-        add(btnBack);
-        add(btnRegister);
+        // Estilo botón principal
+        btnRegister.setBackground(new Color(0, 200, 150));
+        btnRegister.setForeground(Color.WHITE);
+        btnRegister.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-        // Lógica de botones
+        mainPanel.add(btnBack);
+        mainPanel.add(btnRegister);
+
+        add(mainPanel);
+
+        // --- Eventos ---
         btnRegister.addActionListener(e -> attemptRegister());
+
         btnBack.addActionListener(e -> {
-            new LoginFrame(); // Vuelve al login
-            this.dispose();
+            abrirLogin();
         });
 
         setVisible(true);
@@ -65,48 +73,49 @@ public class RegisterFrame extends JFrame {
         String pass = new String(txtPass.getPassword());
         String confirm = new String(txtConfirmPass.getPassword());
 
-        // 1. Validaciones básicas
+        // 1. Validaciones locales
         if (user.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Rellena todos los campos.");
+            JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (!pass.equals(confirm)) {
-            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.");
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        // Validación básica para evitar romper el protocolo del servidor
+        if (user.contains(":") || email.contains(":") || pass.contains(":")) {
+            JOptionPane.showMessageDialog(this, "El carácter ':' no está permitido.", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // 2. Crear objeto User con los datos
-        User newUser = new User(0, user, email);
-
-        // 3. Empaquetarlo en un Message de tipo REGISTER
-        // Truco: Usamos el campo 'content' para la contraseña y 'sender' para el JSON del usuario
-        // O mejor: Enviamos el User como JSON en 'content' y la pass en otro lado?
-        // Simplifiquemos: Mandamos un JSON especial en el contenido.
-
-        RegistrationData data = new RegistrationData(user, email, pass);
-        String jsonData = new Gson().toJson(data);
+        // 2. Preparar mensaje con el formato que espera el SERVIDOR (user:email:pass)
+        // IMPORTANTE: Esto debe coincidir con el split(":") de ClientHandler
+        String payload = user + ":" + email + ":" + pass;
 
         Message msg = new Message();
         msg.setType(MessageType.REGISTER);
-        msg.setContent(jsonData); // Enviamos todo junto
+        msg.setContent(payload);
         msg.setSenderName(user);
 
-        // 4. Enviar
-        ClientSocket.getInstance().send(msg);
+        // 3. Enviar
+        try {
+            ClientSocket.getInstance().send(msg);
 
-        JOptionPane.showMessageDialog(this, "Solicitud enviada. Si todo va bien, podrás loguearte.");
-        this.dispose();
-        new LoginFrame();
+            // Feedback inmediato al usuario
+            JOptionPane.showMessageDialog(this, "Solicitud de registro enviada.\nSi los datos son correctos, podrás iniciar sesión.");
+
+            // Volvemos al login
+            abrirLogin();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error de conexión con el servidor.");
+        }
     }
 
-    // Clase interna auxiliar solo para empaquetar los datos del registro
-    class RegistrationData {
-        String username;
-        String email;
-        String password;
-
-        public RegistrationData(String u, String e, String p) {
-            this.username = u; this.email = e; this.password = p;
-        }
+    private void abrirLogin() {
+        SwingUtilities.invokeLater(() -> {
+            new LoginFrame();
+            this.dispose();
+        });
     }
 }
