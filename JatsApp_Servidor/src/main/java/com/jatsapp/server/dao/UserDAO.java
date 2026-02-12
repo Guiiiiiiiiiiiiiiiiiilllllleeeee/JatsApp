@@ -126,39 +126,27 @@ public class UserDAO {
     // 5. OBTENER CONTACTOS (mejorado: incluye contactos y chats con mensajes)
     public List<User> getContacts(int userId) {
         List<User> contacts = new ArrayList<>();
-        // Nueva consulta: contactos + usuarios con los que ha habido mensajes
-        String sql = "SELECT DISTINCT u.id_usuario, u.nombre_usuario, u.actividad " +
-                "FROM usuarios u " +
-                "WHERE u.id_usuario != ? " +
-                "AND ( " +
-                "    u.id_usuario IN (SELECT c.id_contacto FROM contactos c WHERE c.id_propietario = ?) " +
-                "    OR " +
-                "    u.id_usuario IN ( " +
-                "        SELECT m.id_emisor FROM mensajes m WHERE m.id_destinatario = ? " +
-                "        UNION " +
-                "        SELECT m.id_destinatario FROM mensajes m WHERE m.id_emisor = ? " +
-                "    ) " +
-                ")";
-
+        String sql =
+            "SELECT u.id_usuario, u.nombre_usuario, u.actividad " +
+            "FROM usuarios u " +
+            "WHERE u.id_usuario IN (" +
+            "    SELECT c.id_contacto FROM contactos c WHERE c.id_propietario = ? " +
+            ") AND u.id_usuario != ?";
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, userId); // u.id_usuario != ?
-            pstmt.setInt(2, userId); // contactos
-            pstmt.setInt(3, userId); // mensajes recibidos
-            pstmt.setInt(4, userId); // mensajes enviados
+            pstmt.setInt(1, userId); // contactos explícitos
+            pstmt.setInt(2, userId); // no incluirme a mí mismo
             ResultSet rs = pstmt.executeQuery();
-
             while (rs.next()) {
                 User contact = new User(
-                        rs.getInt("id_usuario"),
-                        rs.getString("nombre_usuario"),
-                        rs.getString("actividad")
+                    rs.getInt("id_usuario"),
+                    rs.getString("nombre_usuario"),
+                    rs.getString("actividad")
                 );
                 contacts.add(contact);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error obteniendo contactos: " + e.getMessage());
         }
         return contacts;
     }
@@ -175,6 +163,22 @@ public class UserDAO {
             System.err.println("Error actualizando estado de usuario: " + e.getMessage());
         }
     }
+
+    /**
+     * Marca todos los usuarios como desconectados.
+     * Útil al iniciar el servidor para limpiar estados inconsistentes.
+     */
+    public void setAllUsersOffline() {
+        String sql = "UPDATE usuarios SET actividad = 'desconectado'";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            int affected = pstmt.executeUpdate();
+            System.out.println("✓ " + affected + " usuarios marcados como desconectados");
+        } catch (SQLException e) {
+            System.err.println("Error marcando usuarios como desconectados: " + e.getMessage());
+        }
+    }
+
     // En com.jatsapp.server.dao.UserDAO
 
     public boolean addContact(int ownerId, String contactUsername) {
@@ -212,14 +216,11 @@ public class UserDAO {
         }
     }
     // En UserDAO.java
-    public int getIdByUsername(String username) {
+    public int getIdByUsername(Connection conn, String username) {
         String sql = "SELECT id_usuario FROM usuarios WHERE nombre_usuario = ?";
-        try (Connection conn = DatabaseManager.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 return rs.getInt("id_usuario");
             }
@@ -365,5 +366,102 @@ public class UserDAO {
             System.err.println("Error actualizando verificación de email: " + e.getMessage());
             return false;
         }
+    }
+
+    // Método para eliminar un contacto
+    public boolean removeContact(int ownerId, String contactUsername) {
+        String checkMessagesSql = "SELECT COUNT(*) FROM mensajes WHERE (id_emisor = ? AND id_destinatario = ?) OR (id_emisor = ? AND id_destinatario = ?)";
+        String deleteContactSql = "DELETE FROM contactos WHERE id_propietario = ? AND id_contacto = (SELECT id_usuario FROM usuarios WHERE nombre_usuario = ?)";
+
+        Connection conn = null;
+        PreparedStatement checkStmt = null;
+        PreparedStatement deleteContactStmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DatabaseManager.getInstance().getConnection();
+            if (conn == null || conn.isClosed()) {
+                System.err.println("❌ No se pudo obtener una conexión válida a la base de datos.");
+                return false;
+            }
+
+            // Obtener el ID del contacto usando la misma conexión
+            int contactId = getIdByUsername(conn, contactUsername);
+            if (contactId == -1) {
+                System.out.println("El usuario no existe: " + contactUsername);
+                return false;
+            }
+
+            // Verificar si hay mensajes entre los usuarios
+            checkStmt = conn.prepareStatement(checkMessagesSql);
+            checkStmt.setInt(1, ownerId);
+            checkStmt.setInt(2, contactId);
+            checkStmt.setInt(3, contactId);
+            checkStmt.setInt(4, ownerId);
+            rs = checkStmt.executeQuery();
+
+            if (rs.next() && rs.getInt(1) == 0) {
+                // No hay mensajes, eliminar contacto
+                deleteContactStmt = conn.prepareStatement(deleteContactSql);
+                deleteContactStmt.setInt(1, ownerId);
+                deleteContactStmt.setString(2, contactUsername);
+                boolean result = deleteContactStmt.executeUpdate() > 0;
+                System.out.println("✅ Contacto eliminado porque no había mensajes.");
+                return result;
+            } else {
+                // Hay mensajes, no eliminar el chat
+                deleteContactStmt = conn.prepareStatement(deleteContactSql);
+                deleteContactStmt.setInt(1, ownerId);
+                deleteContactStmt.setString(2, contactUsername);
+                boolean result = deleteContactStmt.executeUpdate() > 0;
+                System.out.println("✅ Contacto eliminado, pero se conservaron los mensajes.");
+                return result;
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Error al eliminar el contacto: " + e.getMessage());
+            return false;
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {
+                System.err.println("Error cerrando ResultSet: " + e.getMessage());
+            }
+            try { if (checkStmt != null) checkStmt.close(); } catch (Exception e) {
+                System.err.println("Error cerrando PreparedStatement (checkStmt): " + e.getMessage());
+            }
+            try { if (deleteContactStmt != null) deleteContactStmt.close(); } catch (Exception e) {
+                System.err.println("Error cerrando PreparedStatement (deleteContactStmt): " + e.getMessage());
+            }
+            try { if (conn != null) conn.close(); } catch (Exception e) {
+                System.err.println("Error cerrando conexión: " + e.getMessage());
+            }
+        }
+    }
+
+    // Obtener todos los chats relevantes, incluyendo contactos y usuarios con mensajes
+    public List<User> getRelevantChats(int userId) {
+        List<User> chats = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.id_usuario, u.nombre_usuario, u.actividad " +
+                     "FROM usuarios u " +
+                     "LEFT JOIN mensajes m ON (u.id_usuario = m.id_emisor OR u.id_usuario = m.id_destinatario) " +
+                     "LEFT JOIN contactos c ON (u.id_usuario = c.id_contacto AND c.id_propietario = ?) " +
+                     "WHERE (m.id_emisor = ? OR m.id_destinatario = ? OR c.id_contacto IS NOT NULL) " +
+                     "AND u.id_usuario != ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId); // Para contactos
+            pstmt.setInt(2, userId); // Para mensajes como emisor
+            pstmt.setInt(3, userId); // Para mensajes como receptor
+            pstmt.setInt(4, userId); // No incluir al propio usuario
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                User chat = new User(
+                    rs.getInt("id_usuario"),
+                    rs.getString("nombre_usuario"),
+                    rs.getString("actividad")
+                );
+                chats.add(chat);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error obteniendo chats relevantes: " + e.getMessage());
+        }
+        return chats;
     }
 }

@@ -122,7 +122,12 @@ public class LoginFrame extends JFrame {
             System.out.println("✅ Login correcto. Abriendo ChatFrame...");
 
             // 2. ABRIMOS LA VENTANA PRINCIPAL DEL CHAT
-            new ChatFrame();
+            ChatFrame chatFrame = new ChatFrame();
+
+            // 3. Solicitar chats relevantes al servidor
+            Message requestChats = new Message();
+            requestChats.setType(MessageType.GET_RELEVANT_CHATS);
+            ClientSocket.getInstance().send(requestChats);
         });
     }
 

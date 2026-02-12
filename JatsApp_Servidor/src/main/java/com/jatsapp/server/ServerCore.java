@@ -2,6 +2,7 @@ package com.jatsapp.server;
 
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
+import com.jatsapp.common.User;
 import com.jatsapp.server.dao.GroupDAO;
 import com.jatsapp.server.dao.MessageDAO;
 import com.jatsapp.server.dao.UserDAO;
@@ -13,6 +14,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ServerCore {
 
@@ -20,6 +24,7 @@ public class ServerCore {
     private static final Logger activityLogger = LoggerFactory.getLogger("com.jatsapp.server.activity");
 
     private static final int PORT = 5555;
+    private static final int HEARTBEAT_INTERVAL_SECONDS = 30; // Verificar cada 30 segundos
     private volatile boolean isRunning = true;
 
     // Mapa Thread-Safe para guardar usuarios online: ID_USUARIO -> MANEJADOR
@@ -28,6 +33,9 @@ public class ServerCore {
     // ServerSocket como campo para poder cerrarlo desde stopServer()
     private ServerSocket serverSocket;
 
+    // Scheduler para el heartbeat
+    private ScheduledExecutorService heartbeatScheduler;
+
     // DAOs
     private final UserDAO userDAO = new UserDAO();
     private final GroupDAO groupDAO = new GroupDAO();
@@ -35,10 +43,17 @@ public class ServerCore {
 
     public void startServer() {
         try {
+            // Limpiar estados de conexión al iniciar (por si hubo cierre abrupto anterior)
+            logger.info("Limpiando estados de conexión anteriores...");
+            userDAO.setAllUsersOffline();
+
             serverSocket = new ServerSocket(PORT);
             logger.info("✓ Servidor iniciado en puerto {}", PORT);
             logger.info("Esperando conexiones...");
             activityLogger.info("SERVIDOR ESCUCHANDO en puerto {}", PORT);
+
+            // Iniciar el sistema de heartbeat
+            startHeartbeat();
 
             while (isRunning) {
                 try {
@@ -64,7 +79,54 @@ public class ServerCore {
             logger.error("Error fatal iniciando el servidor en puerto {}", PORT, e);
             activityLogger.info("ERROR FATAL SERVIDOR | Puerto: {}", PORT);
         } finally {
+            stopHeartbeat();
             closeServerSocket();
+        }
+    }
+
+    /**
+     * Inicia el sistema de heartbeat que verifica periódicamente los clientes conectados
+     */
+    private void startHeartbeat() {
+        heartbeatScheduler = Executors.newSingleThreadScheduledExecutor();
+        heartbeatScheduler.scheduleAtFixedRate(() -> {
+            try {
+                checkConnectedClients();
+            } catch (Exception e) {
+                logger.error("Error en heartbeat: {}", e.getMessage());
+            }
+        }, HEARTBEAT_INTERVAL_SECONDS, HEARTBEAT_INTERVAL_SECONDS, TimeUnit.SECONDS);
+
+        logger.info("Sistema de heartbeat iniciado (intervalo: {}s)", HEARTBEAT_INTERVAL_SECONDS);
+    }
+
+    /**
+     * Detiene el sistema de heartbeat
+     */
+    private void stopHeartbeat() {
+        if (heartbeatScheduler != null && !heartbeatScheduler.isShutdown()) {
+            heartbeatScheduler.shutdown();
+            logger.info("Sistema de heartbeat detenido");
+        }
+    }
+
+    /**
+     * Verifica el estado de todos los clientes conectados
+     * Envía un PING y elimina los que no responden
+     */
+    private void checkConnectedClients() {
+        if (connectedClients.isEmpty()) return;
+
+        logger.debug("Verificando {} clientes conectados...", connectedClients.size());
+
+        for (var entry : connectedClients.entrySet()) {
+            int userId = entry.getKey();
+            ClientHandler handler = entry.getValue();
+
+            if (!handler.isAlive()) {
+                logger.warn("Cliente {} detectado como desconectado (socket cerrado)", userId);
+                removeClient(userId);
+            }
         }
     }
 
@@ -72,10 +134,14 @@ public class ServerCore {
     public void stopServer() {
         logger.info("Deteniendo servidor...");
         isRunning = false;
+        stopHeartbeat();
         closeServerSocket();
 
-        // Desconectar todos los clientes
+        // Desconectar todos los clientes y actualizar sus estados
         logger.info("Desconectando {} clientes activos...", connectedClients.size());
+        for (Integer userId : connectedClients.keySet()) {
+            userDAO.updateActivityStatus(userId, "desconectado");
+        }
         connectedClients.clear();
     }
 
@@ -97,6 +163,9 @@ public class ServerCore {
 
         logger.info("Usuario ID {} conectado. Total clientes activos: {}", userId, connectedClients.size());
         activityLogger.info("LOGIN EXITOSO | UserID: {} | Clientes activos: {}", userId, connectedClients.size());
+
+        // Notificar a todos los usuarios conectados sobre el cambio de estado
+        broadcastStatusUpdate(userId, "activo");
     }
 
     // Eliminar cliente cuando se desconecta
@@ -106,6 +175,35 @@ public class ServerCore {
 
         logger.info("Usuario ID {} desconectado. Total clientes activos: {}", userId, connectedClients.size());
         activityLogger.info("DESCONEXIÓN | UserID: {} | Clientes activos: {}", userId, connectedClients.size());
+
+        // Notificar a todos los usuarios conectados sobre el cambio de estado
+        broadcastStatusUpdate(userId, "desconectado");
+    }
+
+    /**
+     * Notifica a todos los clientes conectados sobre un cambio de estado de un usuario
+     */
+    private void broadcastStatusUpdate(int userId, String status) {
+        // Obtener el nombre del usuario
+        User user = userDAO.getUserById(userId);
+        String username = (user != null) ? user.getUsername() : "Usuario " + userId;
+
+        Message statusMsg = new Message(MessageType.STATUS_UPDATE, status);
+        statusMsg.setSenderId(userId);
+        statusMsg.setSenderName(username);
+
+        logger.debug("Enviando STATUS_UPDATE a {} clientes: {} -> {}", connectedClients.size(), username, status);
+
+        // Enviar a todos los clientes conectados (excepto al propio usuario)
+        for (var entry : connectedClients.entrySet()) {
+            if (entry.getKey() != userId) {
+                try {
+                    entry.getValue().sendMessage(statusMsg);
+                } catch (Exception e) {
+                    logger.warn("Error enviando STATUS_UPDATE a UserID {}: {}", entry.getKey(), e.getMessage());
+                }
+            }
+        }
     }
 
     // Enviar mensaje privado (1 a 1)
@@ -125,22 +223,11 @@ public class ServerCore {
         // 2. Si el destinatario está online, enviárselo directamente
         ClientHandler recipient = connectedClients.get(msg.getReceiverId());
         if (recipient != null) {
-            // Verificar si es el PRIMER mensaje entre estos usuarios (nuevo chat)
-            boolean isFirstMessage = !userDAO.hasMessageHistory(msg.getSenderId(), msg.getReceiverId());
-            boolean isContact = userDAO.isContact(msg.getReceiverId(), msg.getSenderId());
+            // Sistema estilo WhatsApp: enviar mensaje directamente sin notificaciones especiales
+            // El cliente se encarga de mostrar el mensaje y añadir al emisor a la lista si es necesario
 
-            if (isFirstMessage || !isContact) {
-                // Enviar notificación de nuevo chat al receptor
-                Message newChatNotification = new Message(MessageType.NEW_CHAT_REQUEST, "Nuevo mensaje");
-                newChatNotification.setSenderId(msg.getSenderId());
-                newChatNotification.setSenderName(msg.getSenderName());
-                newChatNotification.setReceiverId(msg.getReceiverId());
-                recipient.sendMessage(newChatNotification);
+            logger.debug("Enviando mensaje {} a destinatario online", msg.getMessageId());
 
-                logger.info("Notificación de nuevo chat enviada: {} -> {}", msg.getSenderId(), msg.getReceiverId());
-                activityLogger.info("NUEVO CHAT | De: {} ({}) | Para: {}",
-                                  msg.getSenderId(), msg.getSenderName(), msg.getReceiverId());
-            }
 
             // Enviar el mensaje al receptor
             recipient.sendMessage(msg);

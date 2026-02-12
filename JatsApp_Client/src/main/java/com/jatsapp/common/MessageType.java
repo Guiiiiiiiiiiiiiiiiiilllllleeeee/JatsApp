@@ -15,6 +15,9 @@ public enum MessageType {
     VERIFY_2FA_OK,      // (Opcional, si lo usas en el ClientSocket)
     VERIFY_2FA_FAIL,    // (Opcional, si lo usas en el ClientSocket)
 
+    DISCONNECT,         // Cliente notifica que se desconecta
+    STATUS_UPDATE,      // Notificación de cambio de estado de un usuario (conectado/desconectado)
+
     // --- CHAT ---
     TEXT_MESSAGE,
     FILE_MESSAGE,
@@ -34,6 +37,7 @@ public enum MessageType {
     // --- DATOS ---
     GET_CONTACTS,
     LIST_CONTACTS,
+    GET_RELEVANT_CHATS, // Obtener chats relevantes (contactos + usuarios con mensajes)
 
     GET_HISTORY,
     HISTORY_RESPONSE,
@@ -43,5 +47,19 @@ public enum MessageType {
 
     // --- BÚSQUEDA DE USUARIOS ---
     SEARCH_USER,        // Buscar usuario por nombre
-    SEARCH_USER_RESULT  // Resultado de búsqueda
+    SEARCH_USER_RESULT, // Resultado de búsqueda
+
+    // --- BÚSQUEDA GLOBAL DE MENSAJES ---
+    SEARCH_MESSAGES,        // Buscar mensajes en todos los chats
+    SEARCH_MESSAGES_RESULT, // Resultado de búsqueda de mensajes
+
+    // --- GESTIÓN DE CONTACTOS ---
+    REMOVE_CONTACT,     // Eliminar contacto
+    DELETE_CONTACT,     // Borrar contacto (alternativo)
+
+    // --- DESCARGA DE ARCHIVOS ---
+    DOWNLOAD_FILE,      // Cliente solicita descargar un archivo por messageId
+    FILE_DOWNLOAD_RESPONSE, // Servidor envía los bytes del archivo
+
+    ERROR               // Error genérico
 }

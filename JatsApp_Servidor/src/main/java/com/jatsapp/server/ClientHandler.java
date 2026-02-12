@@ -115,7 +115,7 @@ public class ClientHandler implements Runnable {
                                       currentUser.getId(), currentUser.getUsername(), clientAddress);
 
                     // Confirmar Login
-                    Message okMsg = new Message(MessageType.LOGIN_OK, "Bienvenido");
+                    Message okMsg = new Message(MessageType.LOGIN_OK, "Login exitoso");
                     okMsg.setSenderId(currentUser.getId());
                     okMsg.setSenderName(currentUser.getUsername());
                     sendMessage(okMsg);
@@ -207,20 +207,31 @@ public class ClientHandler implements Runnable {
             case FILE_MESSAGE:
                 try {
                     logger.info("Archivo recibido de UserID {}: {} ({} bytes)",
-                              currentUser.getId(), msg.getFileName(), msg.getFileData().length);
+                              currentUser.getId(), msg.getFileName(),
+                              msg.getFileData() != null ? msg.getFileData().length : 0);
 
-                    // Guardar archivo
-                    String path = fileService.saveFile(msg.getFileData(), msg.getFileName());
-                    msg.setServerFilePath(path);
-                    msg.setFileData(null); // Limpiar bytes para aligerar
+                    // Guardar archivo en el servidor
+                    if (msg.getFileData() != null && msg.getFileData().length > 0) {
+                        String path = fileService.saveFile(msg.getFileData(), msg.getFileName());
+                        msg.setServerFilePath(path);
+                        // NO limpiar fileData - el receptor necesita los bytes para descargar
+                        // msg.setFileData(null);
 
-                    activityLogger.info("ARCHIVO GUARDADO | UserID: {} | Nombre: {} | Ruta: {}",
-                                      currentUser.getId(), msg.getFileName(), path);
+                        activityLogger.info("ARCHIVO GUARDADO | UserID: {} | Nombre: {} | Ruta: {}",
+                                          currentUser.getId(), msg.getFileName(), path);
+                    }
 
                     processChatMessage(msg, "ARCHIVO");
                 } catch (IOException e) {
                     logger.error("Error guardando archivo de UserID {}", currentUser.getId(), e);
                 }
+                break;
+
+            case DISCONNECT:
+                // El cliente notifica que se va a desconectar
+                logger.info("Cliente solicita desconexión: UserID={}",
+                          currentUser != null ? currentUser.getId() : "no autenticado");
+                running = false; // Terminar el bucle de escucha
                 break;
 
             // --- FUNCIONALIDADES ---
@@ -286,23 +297,24 @@ public class ClientHandler implements Runnable {
                 logger.debug("Encontrados {} usuarios para búsqueda '{}'", searchResults.size(), searchTerm);
                 break;
 
+            case SEARCH_MESSAGES:
+                // Buscar mensajes en todos los chats
+                String messageSearchTerm = msg.getContent();
+                logger.debug("Búsqueda de mensajes: '{}' por UserID {}", messageSearchTerm, currentUser.getId());
+
+                List<Message> messageSearchResults = messageDAO.searchMessages(currentUser.getId(), messageSearchTerm);
+                Message messageSearchResponse = new Message(MessageType.SEARCH_MESSAGES_RESULT, "Resultados de búsqueda de mensajes");
+                messageSearchResponse.setHistoryList(messageSearchResults);
+                sendMessage(messageSearchResponse);
+
+                logger.debug("Encontrados {} mensajes para búsqueda '{}'", messageSearchResults.size(), messageSearchTerm);
+                break;
+
             case ACCEPT_CHAT:
-                // El usuario acepta un chat de alguien nuevo (añade como contacto automáticamente)
-                int newContactId = msg.getSenderId(); // El ID del usuario que envió el mensaje
-                boolean acceptedAdded = userDAO.addContactById(currentUser.getId(), newContactId);
-
-                if (acceptedAdded) {
-                    logger.info("Chat aceptado: UserID {} añadió a UserID {} como contacto",
-                              currentUser.getId(), newContactId);
-                    activityLogger.info("CHAT ACEPTADO | UserID: {} añadió a UserID: {}",
-                                      currentUser.getId(), newContactId);
-
-                    // Enviar lista de contactos actualizada
-                    List<User> updatedContacts = userDAO.getContacts(currentUser.getId());
-                    Message contactsMsg = new Message(MessageType.LIST_CONTACTS, "Lista actualizada");
-                    contactsMsg.setContactList(updatedContacts);
-                    sendMessage(contactsMsg);
-                }
+                // YA NO SE USA - Sistema estilo WhatsApp: no hay aceptar/rechazar
+                // Los mensajes se reciben automáticamente
+                // Se mantiene por compatibilidad pero no hace nada
+                logger.debug("ACCEPT_CHAT recibido pero ya no se usa (sistema WhatsApp)");
                 break;
 
             case MESSAGE_READ:
@@ -328,6 +340,67 @@ public class ClientHandler implements Runnable {
                             logger.debug("Confirmación de lectura enviada al emisor {}", originalMsg.getSenderId());
                         }
                     }
+                }
+                break;
+
+            case REMOVE_CONTACT:
+                logger.info("Eliminando contacto: {} para usuario {}", msg.getContent(), currentUser.getUsername());
+                boolean removed = userDAO.removeContact(currentUser.getId(), msg.getContent());
+                if (removed) {
+                    sendMessage(new Message(MessageType.REMOVE_CONTACT, "Contacto eliminado correctamente"));
+                } else {
+                    sendMessage(new Message(MessageType.REMOVE_CONTACT, "No se pudo eliminar el contacto"));
+                }
+                break;
+
+            case GET_RELEVANT_CHATS:
+                logger.info("Procesando solicitud de chats relevantes para el usuario: {}", currentUser.getUsername());
+                try {
+                    // Obtener usuarios con los que ha conversado + contactos
+                    List<User> relevantChats = userDAO.getRelevantChats(currentUser.getId());
+                    Message response = new Message(MessageType.LIST_CONTACTS, "Lista de chats activos");
+                    response.setContactList(relevantChats);
+                    sendMessage(response);
+                    logger.debug("Enviados {} chats relevantes a UserID: {}", relevantChats.size(), currentUser.getId());
+                } catch (Exception e) {
+                    logger.error("Error al obtener chats relevantes para el usuario {}: {}", currentUser.getUsername(), e.getMessage());
+                    sendMessage(new Message(MessageType.ERROR, "No se pudieron obtener los chats relevantes"));
+                }
+                break;
+
+            case DOWNLOAD_FILE:
+                // Cliente solicita descargar un archivo del historial
+                int fileMessageId = msg.getMessageId();
+                logger.info("Solicitud de descarga de archivo: messageId {} por UserID {}", fileMessageId, currentUser.getId());
+
+                try {
+                    // Obtener el mensaje con los bytes del archivo desde la BD
+                    Message originalFileMsg = messageDAO.getMessageById(fileMessageId);
+
+                    if (originalFileMsg == null) {
+                        logger.warn("Mensaje no encontrado en BD: messageId {}", fileMessageId);
+                        sendMessage(new Message(MessageType.ERROR, "Mensaje no encontrado"));
+                        break;
+                    }
+
+                    byte[] fileBytes = originalFileMsg.getFileData();
+
+                    if (fileBytes != null && fileBytes.length > 0) {
+                        Message downloadResponse = new Message(MessageType.FILE_DOWNLOAD_RESPONSE, "Archivo descargado");
+                        downloadResponse.setMessageId(fileMessageId);
+                        downloadResponse.setFileName(originalFileMsg.getFileName());
+                        downloadResponse.setFileData(fileBytes);
+                        sendMessage(downloadResponse);
+
+                        logger.info("Archivo enviado: {} ({} bytes) a UserID {}",
+                                   originalFileMsg.getFileName(), fileBytes.length, currentUser.getId());
+                    } else {
+                        logger.warn("Archivo sin datos en BD: messageId {}", fileMessageId);
+                        sendMessage(new Message(MessageType.ERROR, "Archivo no disponible"));
+                    }
+                } catch (Exception e) {
+                    logger.error("Error descargando archivo: {}", e.getMessage(), e);
+                    sendMessage(new Message(MessageType.ERROR, "Error al descargar archivo"));
                 }
                 break;
 
@@ -361,6 +434,8 @@ public class ClientHandler implements Runnable {
     }
 
     private void closeConnection() {
+        running = false;
+
         if (currentUser != null) {
             logger.info("Cerrando conexión para UserID: {} ({})", currentUser.getId(), currentUser.getUsername());
             serverCore.removeClient(currentUser.getId());
@@ -387,7 +462,15 @@ public class ClientHandler implements Runnable {
         logger.debug("Conexión cerrada completamente para: {}", clientAddress);
     }
 
+    /**
+     * Verifica si el cliente sigue conectado
+     */
+    public boolean isAlive() {
+        return running && socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
     public User getCurrentUser() {
         return currentUser;
     }
 }
+

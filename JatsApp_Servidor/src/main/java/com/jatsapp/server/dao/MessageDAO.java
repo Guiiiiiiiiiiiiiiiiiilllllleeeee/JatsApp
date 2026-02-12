@@ -9,8 +9,8 @@ import java.util.List;
 public class MessageDAO {
 
     public boolean saveMessage(Message msg) {
-        String sql = "INSERT INTO mensajes (id_emisor, id_destinatario, tipo_destinatario, tipo_contenido, contenido, ruta_fichero, nombre_fichero, fecha_envio, entregado, leido) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), FALSE, FALSE)";
+        String sql = "INSERT INTO mensajes (id_emisor, id_destinatario, tipo_destinatario, tipo_contenido, contenido, ruta_fichero, nombre_fichero, datos_fichero, fecha_envio, entregado, leido) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), FALSE, FALSE)";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -22,16 +22,18 @@ public class MessageDAO {
             pstmt.setString(3, msg.isGroupChat() ? "GRUPO" : "USUARIO");
 
             // Lógica para Archivos vs Texto
-            if (msg.getType() == MessageType.ARCHIVO || msg.getType() == MessageType.IMAGEN) {
+            if (msg.getType() == MessageType.FILE_MESSAGE || msg.getType() == MessageType.ARCHIVO || msg.getType() == MessageType.IMAGEN) {
                 pstmt.setString(4, "ARCHIVO");
                 pstmt.setString(5, null); // Contenido texto null
-                pstmt.setString(6, msg.getServerFilePath()); // Ruta guardada en disco
+                pstmt.setString(6, msg.getServerFilePath()); // Ruta (opcional, backup)
                 pstmt.setString(7, msg.getFileName());
+                pstmt.setBytes(8, msg.getFileData()); // Guardar bytes del archivo
             } else {
                 pstmt.setString(4, "TEXTO");
                 pstmt.setString(5, msg.getContent());
                 pstmt.setString(6, null);
                 pstmt.setString(7, null);
+                pstmt.setBytes(8, null);
             }
 
             int affected = pstmt.executeUpdate();
@@ -95,10 +97,10 @@ public class MessageDAO {
 
                 String tipoContenido = rs.getString("tipo_contenido");
                 if ("ARCHIVO".equals(tipoContenido)) {
-                    m.setType(MessageType.ARCHIVO);
+                    m.setType(MessageType.FILE_MESSAGE);
                     m.setFileName(rs.getString("nombre_fichero"));
-                    // Nota: No cargamos los bytes del archivo aquí para no saturar la memoria,
-                    // solo la metadata. El cliente pedirá descargar el archivo si quiere.
+                    m.setServerFilePath(rs.getString("ruta_fichero"));
+                    // Los bytes del archivo se cargarán bajo demanda cuando el cliente lo solicite
                 } else {
                     m.setType(MessageType.TEXT_MESSAGE);
                     m.setContent(rs.getString("contenido"));
@@ -170,7 +172,9 @@ public class MessageDAO {
      * Obtiene el estado actual de un mensaje por su ID
      */
     public Message getMessageById(int messageId) {
-        String sql = "SELECT * FROM mensajes WHERE id_mensaje = ?";
+        String sql = "SELECT m.*, u.nombre_usuario AS sender_name FROM mensajes m " +
+                "JOIN usuarios u ON m.id_emisor = u.id_usuario " +
+                "WHERE m.id_mensaje = ?";
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, messageId);
@@ -180,9 +184,24 @@ public class MessageDAO {
                 m.setMessageId(rs.getInt("id_mensaje"));
                 m.setSenderId(rs.getInt("id_emisor"));
                 m.setReceiverId(rs.getInt("id_destinatario"));
+                m.setSenderName(rs.getString("sender_name"));
+                m.setContent(rs.getString("contenido"));
                 m.setDelivered(rs.getBoolean("entregado"));
                 m.setRead(rs.getBoolean("leido"));
-                // Cargar otros campos según necesidad
+
+                // Determinar el tipo de mensaje
+                String tipoContenido = rs.getString("tipo_contenido");
+                if ("ARCHIVO".equals(tipoContenido)) {
+                    m.setType(MessageType.FILE_MESSAGE);
+                    m.setFileName(rs.getString("nombre_fichero"));
+                    m.setServerFilePath(rs.getString("ruta_fichero"));
+                    m.setFileData(rs.getBytes("datos_fichero")); // Cargar bytes del archivo
+                } else {
+                    m.setType(MessageType.TEXT_MESSAGE);
+                }
+
+                m.setGroupChat("GRUPO".equals(rs.getString("tipo_destinatario")));
+
                 return m;
             }
         } catch (SQLException e) {
@@ -190,4 +209,104 @@ public class MessageDAO {
         }
         return null;
     }
+
+    /**
+     * Obtiene los chats relevantes de un usuario (últimos mensajes de cada contacto o grupo)
+     */
+    public List<Message> getRelevantChats(int userId) {
+        String sql = "SELECT m.*, u.nombre_usuario AS sender_name FROM mensajes m " +
+                "JOIN usuarios u ON m.id_emisor = u.id_usuario " +
+                "WHERE m.id_emisor = ? OR m.id_destinatario = ? ORDER BY m.fecha_envio DESC";
+        List<Message> messages = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Message msg = new Message();
+                    msg.setMessageId(rs.getInt("id_mensaje"));
+                    msg.setSenderId(rs.getInt("id_emisor"));
+                    msg.setReceiverId(rs.getInt("id_destinatario"));
+                    msg.setSenderName(rs.getString("sender_name"));
+                    msg.setContent(rs.getString("contenido"));
+
+                    // Determinar el tipo de mensaje según el contenido
+                    String tipoContenido = rs.getString("tipo_contenido");
+                    if ("ARCHIVO".equals(tipoContenido)) {
+                        msg.setType(MessageType.ARCHIVO);
+                        msg.setFileName(rs.getString("nombre_fichero"));
+                    } else {
+                        msg.setType(MessageType.TEXT_MESSAGE);
+                    }
+
+                    // Estado del mensaje
+                    msg.setDelivered(rs.getBoolean("entregado"));
+                    msg.setRead(rs.getBoolean("leido"));
+                    msg.setGroupChat("GRUPO".equals(rs.getString("tipo_destinatario")));
+
+                    messages.add(msg);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return messages;
+    }
+
+    /**
+     * Busca mensajes en todos los chats del usuario que contengan el término de búsqueda
+     * @param userId ID del usuario que busca
+     * @param searchTerm Término de búsqueda
+     * @return Lista de mensajes que coinciden con la búsqueda
+     */
+    public List<Message> searchMessages(int userId, String searchTerm) {
+        String sql = "SELECT m.*, u.nombre_usuario AS sender_name, " +
+                "CASE WHEN m.id_emisor = ? THEN u2.nombre_usuario ELSE u.nombre_usuario END AS contact_name " +
+                "FROM mensajes m " +
+                "JOIN usuarios u ON m.id_emisor = u.id_usuario " +
+                "LEFT JOIN usuarios u2 ON m.id_destinatario = u2.id_usuario " +
+                "WHERE (m.id_emisor = ? OR m.id_destinatario = ?) " +
+                "AND m.tipo_contenido = 'TEXTO' " +
+                "AND m.contenido LIKE ? " +
+                "ORDER BY m.fecha_envio DESC " +
+                "LIMIT 50";
+
+        List<Message> messages = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, userId);
+            pstmt.setInt(3, userId);
+            pstmt.setString(4, "%" + searchTerm + "%");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Message msg = new Message();
+                    msg.setMessageId(rs.getInt("id_mensaje"));
+                    msg.setSenderId(rs.getInt("id_emisor"));
+                    msg.setReceiverId(rs.getInt("id_destinatario"));
+                    msg.setSenderName(rs.getString("sender_name"));
+                    msg.setContent(rs.getString("contenido"));
+                    msg.setType(MessageType.TEXT_MESSAGE);
+                    msg.setDelivered(rs.getBoolean("entregado"));
+                    msg.setRead(rs.getBoolean("leido"));
+                    msg.setGroupChat("GRUPO".equals(rs.getString("tipo_destinatario")));
+
+                    messages.add(msg);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return messages;
+    }
 }
+

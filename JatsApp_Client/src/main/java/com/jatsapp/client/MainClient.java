@@ -3,6 +3,9 @@ package com.jatsapp.client;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.jatsapp.client.network.ClientSocket; // Asumo que esta clase existe, pásamela luego
 import com.jatsapp.client.view.LoginFrame;
+import com.jatsapp.common.Message;
+import com.jatsapp.common.MessageType;
+import com.jatsapp.client.view.ChatFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +35,7 @@ public class MainClient {
 
             try {
                 // CORRECCIÓN: Puerto cambiado a 5555 (el mismo que ServerCore)
-                ClientSocket.getInstance().connect("172.19.16.12", 5555);
+                ClientSocket.getInstance().connect("192.168.1.18", 5555);
 
                 // Abrir pantalla de Login
                 new LoginFrame();
