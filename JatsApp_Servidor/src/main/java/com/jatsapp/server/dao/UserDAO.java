@@ -12,7 +12,7 @@ public class UserDAO {
     public boolean registerUser(User user) {
         // Hashear la contraseña antes de guardarla
         String hashedPassword = SecurityService.hashPassword(user.getPassword());
-        String sql = "INSERT INTO usuarios (nombre_usuario, email, password_hash, actividad, fecha_registro) VALUES (?, ?, ?, 'desconectado', NOW())";
+        String sql = "INSERT INTO usuarios (nombre_usuario, email, password_hash, actividad, email_verificado, fecha_registro) VALUES (?, ?, ?, 'desconectado', FALSE, NOW())";
 
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -325,5 +325,45 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // =================================================================
+    // VERIFICACIÓN DE EMAIL
+    // =================================================================
+
+    /**
+     * Verifica si el usuario ha confirmado su email
+     */
+    public boolean isEmailVerified(int userId) {
+        String sql = "SELECT email_verificado FROM usuarios WHERE id_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("email_verificado");
+            }
+        } catch (SQLException e) {
+            // Si la columna no existe, asumimos que está verificado (compatibilidad)
+            System.err.println("Nota: columna email_verificado no existe, asumiendo true");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Marca el email del usuario como verificado
+     */
+    public boolean setEmailVerified(int userId, boolean verified) {
+        String sql = "UPDATE usuarios SET email_verificado = ? WHERE id_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, verified);
+            pstmt.setInt(2, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error actualizando verificación de email: " + e.getMessage());
+            return false;
+        }
     }
 }

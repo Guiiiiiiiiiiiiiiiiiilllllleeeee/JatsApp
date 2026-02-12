@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/MessageType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/UserDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

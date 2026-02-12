@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
     codigo_2fa TEXT DEFAULT NULL,
     fecha_expiracion_codigo INTEGER DEFAULT NULL, -- Guardamos milisegundos (LONG)
 
+    -- Verificación de email
+    email_verificado BOOLEAN DEFAULT FALSE,  -- TRUE cuando el usuario verifica su email
+
     -- Campos de estado e información
     actividad TEXT CHECK(actividad IN ('activo', 'desconectado')) DEFAULT 'desconectado',
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -97,50 +97,21 @@ public class ClientHandler implements Runnable {
 
                 User loginUser = userDAO.login(usuarioLogin, passwordLogin);
                 if (loginUser != null) {
-                    this.tempUser = loginUser;
-                    logger.info("Credenciales válidas para usuario: {}", loginUser.getUsername());
+                    // Verificar si el usuario ha verificado su email
+                    if (!userDAO.isEmailVerified(loginUser.getId())) {
+                        logger.warn("Usuario {} no ha verificado su email", loginUser.getUsername());
+                        sendMessage(new Message(MessageType.LOGIN_FAIL, "Debes verificar tu email primero"));
+                        break;
+                    }
 
-                    // Generar código 2FA
-                    String code = SecurityService.generate2FACode();
-                    long expiration = System.currentTimeMillis() + 5 * 60 * 1000; // 5 minutos
-                    userDAO.set2FACode(loginUser.getId(), code, expiration);
-                    emailService.sendEmail(loginUser.getEmail(), "Tu código de acceso JatsApp", "Tu código es: " + code);
-
-                    // Guardar usuario temporalmente hasta que verifique el código
+                    // Login directo sin 2FA (ya verificado en registro)
+                    this.currentUser = loginUser;
                     this.userId = loginUser.getId();
-
-                    logger.info("Código 2FA generado y enviado a: {}", loginUser.getEmail());
-                    activityLogger.info("2FA ENVIADO | UserID: {} | Email: {}", loginUser.getId(), loginUser.getEmail());
-
-                    // Pedir al cliente el código
-                    sendMessage(new Message(MessageType.require_2FA, "Revisa tu email"));
-                } else {
-                    logger.warn("Credenciales inválidas para usuario: {} desde {}", msg.getSenderName(), clientAddress);
-                    activityLogger.info("LOGIN FALLIDO | IP: {} | Usuario: {}", clientAddress, msg.getSenderName());
-                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Datos incorrectos"));
-                }
-                break;
-
-            case VERIFY_2FA:
-                if (tempUser == null) {
-                    logger.warn("Intento de verificación 2FA sin usuario temporal desde {}", clientAddress);
-                    return;
-                }
-
-                String inputCode = msg.getContent();
-                logger.info("Verificando código 2FA para usuario: {}", tempUser.getUsername());
-
-                boolean isCodeValid = userDAO.check2FA(tempUser.getId(), inputCode);
-
-                if (isCodeValid) {
-                    this.currentUser = this.tempUser;
-                    this.tempUser = null;
-
                     serverCore.addClient(currentUser.getId(), this);
 
                     logger.info("✓ Login completado exitosamente: UserID={}, Username={}",
                               currentUser.getId(), currentUser.getUsername());
-                    activityLogger.info("2FA VERIFICADO | UserID: {} | Username: {} | IP: {}",
+                    activityLogger.info("LOGIN EXITOSO | UserID: {} | Username: {} | IP: {}",
                                       currentUser.getId(), currentUser.getUsername(), clientAddress);
 
                     // Confirmar Login
@@ -149,28 +120,77 @@ public class ClientHandler implements Runnable {
                     okMsg.setSenderName(currentUser.getUsername());
                     sendMessage(okMsg);
                 } else {
+                    logger.warn("Credenciales inválidas para usuario: {} desde {}", msg.getSenderName(), clientAddress);
+                    activityLogger.info("LOGIN FALLIDO | IP: {} | Usuario: {}", clientAddress, msg.getSenderName());
+                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Datos incorrectos"));
+                }
+                break;
+
+            case VERIFY_2FA:
+                // Verificación del código 2FA durante el REGISTRO
+                if (tempUser == null) {
+                    logger.warn("Intento de verificación 2FA sin usuario temporal desde {}", clientAddress);
+                    return;
+                }
+
+                String inputCode = msg.getContent();
+                logger.info("Verificando código 2FA para nuevo usuario: {}", tempUser.getUsername());
+
+                boolean isCodeValid = userDAO.check2FA(tempUser.getId(), inputCode);
+
+                if (isCodeValid) {
+                    // Marcar email como verificado
+                    userDAO.setEmailVerified(tempUser.getId(), true);
+
+                    logger.info("✓ Email verificado para usuario: {}", tempUser.getUsername());
+                    activityLogger.info("EMAIL VERIFICADO | UserID: {} | Username: {}",
+                                      tempUser.getId(), tempUser.getUsername());
+
+                    // Enviar confirmación - el usuario debe hacer login ahora
+                    sendMessage(new Message(MessageType.REGISTER_OK, "Email verificado. Ya puedes iniciar sesión."));
+                    this.tempUser = null;
+                } else {
                     logger.warn("Código 2FA incorrecto para usuario: {}", tempUser.getUsername());
-                    activityLogger.info("2FA FALLIDO | IP: {} | Usuario: {}", clientAddress, tempUser.getUsername());
-                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Código 2FA incorrecto"));
+                    activityLogger.info("VERIFICACIÓN FALLIDA | Usuario: {}", tempUser.getUsername());
+                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Código incorrecto. Intenta de nuevo."));
                 }
                 break;
 
             case REGISTER:
                 String[] parts = msg.getContent().split(":");
                 if (parts.length >= 3) {
-                    User newUser = new User(parts[0], parts[1], parts[2]);
-                    logger.info("Registrando nuevo usuario: {} con email: {}", parts[0], parts[1]);
+                    String username = parts[0];
+                    String email = parts[1];
+                    String password = parts[2];
+
+                    User newUser = new User(username, email, password);
+                    logger.info("Registrando nuevo usuario: {} con email: {}", username, email);
                     activityLogger.info("REGISTRO NUEVO | Usuario: {} | Email: {} | IP: {}",
-                                      parts[0], parts[1], clientAddress);
+                                      username, email, clientAddress);
 
                     boolean registered = userDAO.registerUser(newUser);
                     if (registered) {
                         this.userId = newUser.getId();
-                        logger.info("✓ Usuario registrado exitosamente: {}", parts[0]);
-                        sendMessage(new Message(MessageType.REGISTER_OK, "Registro completado"));
+                        this.tempUser = newUser; // Guardar para verificación
+
+                        // Generar código 2FA y enviar por email
+                        String code = SecurityService.generate2FACode();
+                        long expiration = System.currentTimeMillis() + 10 * 60 * 1000; // 10 minutos
+                        userDAO.set2FACode(newUser.getId(), code, expiration);
+
+                        emailService.sendEmail(email,
+                            "Verificación de cuenta JatsApp",
+                            "¡Bienvenido a JatsApp!\n\nTu código de verificación es: " + code +
+                            "\n\nEste código expira en 10 minutos.");
+
+                        logger.info("✓ Usuario registrado, código de verificación enviado a: {}", email);
+                        activityLogger.info("CÓDIGO VERIFICACIÓN ENVIADO | Usuario: {} | Email: {}", username, email);
+
+                        // Pedir al cliente que ingrese el código
+                        sendMessage(new Message(MessageType.require_2FA, "Revisa tu email para verificar tu cuenta"));
                     } else {
-                        logger.error("Error registrando usuario: {}", parts[0]);
-                        sendMessage(new Message(MessageType.REGISTER_FAIL, "Error en el registro"));
+                        logger.error("Error registrando usuario: {}", username);
+                        sendMessage(new Message(MessageType.REGISTER_FAIL, "Error en el registro. El usuario o email ya existe."));
                     }
                 } else {
                     sendMessage(new Message(MessageType.REGISTER_FAIL, "Datos de registro incompletos"));
