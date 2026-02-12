@@ -1,6 +1,7 @@
 package com.jatsapp.server;
 
 import com.jatsapp.common.Message;
+import com.jatsapp.common.MessageType;
 import com.jatsapp.server.dao.GroupDAO;
 import com.jatsapp.server.dao.MessageDAO;
 import com.jatsapp.server.dao.UserDAO;
