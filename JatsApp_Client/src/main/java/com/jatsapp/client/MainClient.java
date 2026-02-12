@@ -32,7 +32,7 @@ public class MainClient {
 
             try {
                 // CORRECCIÓN: Puerto cambiado a 5555 (el mismo que ServerCore)
-                ClientSocket.getInstance().connect("localhost", 5555);
+                ClientSocket.getInstance().connect("172.19.16.12", 5555);
 
                 // Abrir pantalla de Login
                 new LoginFrame();
@@ -40,7 +40,7 @@ public class MainClient {
             } catch (IOException e) {
                 // Si el servidor está apagado, mostramos aviso y cerramos
                 JOptionPane.showMessageDialog(null,
-                        "No se pudo conectar al servidor en localhost:5555.\n¿Está encendido?",
+                        "No se pudo conectar al servidor en 172.19.16.12:5555.\n¿Está encendido?",
                         "Error de Conexión",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
