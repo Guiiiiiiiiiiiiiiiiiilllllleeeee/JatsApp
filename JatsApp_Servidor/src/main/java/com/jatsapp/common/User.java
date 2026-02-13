@@ -12,6 +12,7 @@ public class User implements Serializable {
     private String password; // Necesario para transportar la pass en el Registro/Login
     private String activityStatus; // 'activo' o 'desconectado'
     private LocalDateTime lastAccess;
+    private boolean groupAdmin; // Indica si es admin del grupo (usado en contexto de grupos)
 
     public User() {}
 
@@ -47,6 +48,9 @@ public class User implements Serializable {
 
     public LocalDateTime getLastAccess() { return lastAccess; }
     public void setLastAccess(LocalDateTime lastAccess) { this.lastAccess = lastAccess; }
+
+    public boolean isGroupAdmin() { return groupAdmin; }
+    public void setGroupAdmin(boolean groupAdmin) { this.groupAdmin = groupAdmin; }
 
     @Override
     public String toString() {

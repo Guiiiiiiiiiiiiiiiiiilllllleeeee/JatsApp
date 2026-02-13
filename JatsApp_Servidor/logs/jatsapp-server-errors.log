@@ -1,1 +1,32 @@
 2026-02-12 11:32:34.568 [ClientHandler-172.19.16.12] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: au
+2026-02-13 09:21:29.901 [ServerCore-Thread] ERROR com.jatsapp.server.ServerCore - Error fatal iniciando el servidor en puerto 5555
+java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:511)
+	at java.base/sun.nio.ch.Net.bind(Net.java:500)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:630)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:326)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:222)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:138)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2026-02-13 09:22:33.476 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo grupos del usuario 2: Operation not allowed after ResultSet closed
+2026-02-13 09:30:52.851 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo grupos del usuario 1: Operation not allowed after ResultSet closed
+2026-02-13 10:38:54.094 [ServerCore-Thread] ERROR com.jatsapp.server.ServerCore - Error fatal iniciando el servidor en puerto 5555
+java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:511)
+	at java.base/sun.nio.ch.Net.bind(Net.java:500)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:630)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:326)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:222)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:138)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2026-02-13 10:39:15.727 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 2: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:21.257 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 1: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:24.149 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 2: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:27.940 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 2: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:30.232 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 1: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:36.920 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error obteniendo miembros del grupo 2: Unknown column 'mg.es_admin' in 'field list'
+2026-02-13 10:39:42.542 [ClientHandler-192.168.1.18] ERROR com.jatsapp.server.dao.GroupDAO - Error creando grupo 'lololo': Unknown column 'es_admin' in 'field list'

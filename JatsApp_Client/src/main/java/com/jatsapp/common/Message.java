@@ -32,6 +32,8 @@ public class Message implements Serializable {
     // --- Listas (Para respuestas del servidor) ---
     private List<User> contactList;      // Para responder a GET_CONTACTS
     private List<Message> historyList;   // Para responder a GET_HISTORY
+    private List<Group> groupList;       // Para responder a GET_GROUPS
+    private Group group;                 // Para responder a GET_GROUP_INFO o crear grupo
 
     // --- Estado del mensaje (confirmaciones de lectura) ---
     private int messageId;               // ID del mensaje en la base de datos
@@ -107,6 +109,12 @@ public class Message implements Serializable {
 
     public List<Message> getHistoryList() { return historyList; }
     public void setHistoryList(List<Message> historyList) { this.historyList = historyList; }
+
+    public List<Group> getGroupList() { return groupList; }
+    public void setGroupList(List<Group> groupList) { this.groupList = groupList; }
+
+    public Group getGroup() { return group; }
+    public void setGroup(Group group) { this.group = group; }
 
     public int getMessageId() { return messageId; }
     public void setMessageId(int messageId) { this.messageId = messageId; }

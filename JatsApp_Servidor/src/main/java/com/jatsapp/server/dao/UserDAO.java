@@ -288,6 +288,27 @@ public class UserDAO {
         return null;
     }
 
+    // Obtener usuario por nombre de usuario
+    public User getUserByUsername(String username) {
+        String sql = "SELECT id_usuario, nombre_usuario, email, actividad FROM usuarios WHERE nombre_usuario = ?";
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id_usuario"));
+                user.setUsername(rs.getString("nombre_usuario"));
+                user.setEmail(rs.getString("email"));
+                user.setActivityStatus(rs.getString("actividad"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // Buscar usuarios por nombre (para que el usuario pueda enviar mensajes a cualquiera)
     public List<User> searchUsers(String searchTerm, int excludeUserId) {
         List<User> users = new ArrayList<>();

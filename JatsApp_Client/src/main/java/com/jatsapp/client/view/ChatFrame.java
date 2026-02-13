@@ -2,6 +2,7 @@ package com.jatsapp.client.view;
 
 import com.jatsapp.client.network.ClientSocket;
 import com.jatsapp.client.util.EncryptionUtil;
+import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
 import com.jatsapp.common.User;
@@ -36,6 +37,11 @@ public class ChatFrame extends JFrame {
 
     // Contacto con el que estamos hablando actualmente
     private User contactoActual = null;
+
+    // Variables para chat de grupo
+    private boolean chatActualEsGrupo = false;
+    private Group grupoActual = null;
+    private JButton btnConfigGrupo; // Botón de configuración del grupo
 
     // Mapa para trackear estado de mensajes: messageId -> estado visual en HTML
     private Map<Integer, String> messageSentMap = new ConcurrentHashMap<>();
@@ -150,7 +156,7 @@ public class ChatFrame extends JFrame {
 
         panelIzquierdo.add(panelCabeceraIzq, BorderLayout.NORTH);
 
-        // -- Lista de Contactos --
+        // -- Lista de Contactos (incluye usuarios y grupos) --
         modeloContactos = new DefaultListModel<>();
         listaContactos = new JList<>(modeloContactos);
         listaContactos.setCellRenderer(new ContactRenderer()); // Tu renderizador personalizado
@@ -158,13 +164,38 @@ public class ChatFrame extends JFrame {
         listaContactos.setBorder(null);
         listaContactos.setFixedCellHeight(70); // Altura para que quepa el avatar
 
-        // Evento: Clic en un contacto
+        // Evento: Clic en un contacto o grupo
         listaContactos.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                User seleccion = listaContactos.getSelectedValue();
-                if (seleccion != null) {
-                    cambiarChat(seleccion);
+                // Solo procesar clic simple (evitar doble clic duplicado)
+                if (e.getClickCount() != 1) return;
+
+                int index = listaContactos.locationToIndex(e.getPoint());
+                if (index < 0) return;
+
+                User seleccion = modeloContactos.getElementAt(index);
+                listaContactos.setSelectedIndex(index);
+
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    // Clic derecho: mostrar menú contextual
+                    mostrarMenuContextual(seleccion, e.getComponent(), e.getX(), e.getY());
+                } else if (e.getButton() == MouseEvent.BUTTON1 && seleccion != null) {
+                    System.out.println("👆 Clic en lista: ID=" + seleccion.getId() + ", nombre=" + seleccion.getUsername() + ", status=" + seleccion.getActivityStatus());
+
+                    // Clic izquierdo: abrir chat
+                    if ("grupo".equals(seleccion.getActivityStatus())) {
+                        // Es un grupo - el ID está negativo, convertir a positivo
+                        int realGroupId = -seleccion.getId(); // Convertir de negativo a positivo
+                        String nombreGrupo = seleccion.getUsername().replace("👥 ", "");
+                        System.out.println("👆 Es GRUPO: ID real=" + realGroupId + ", nombre=" + nombreGrupo);
+                        Group grupo = new Group(realGroupId, nombreGrupo, 0);
+                        abrirChatGrupo(grupo);
+                    } else {
+                        // Es un usuario normal
+                        System.out.println("👆 Es USUARIO: ID=" + seleccion.getId() + ", nombre=" + seleccion.getUsername());
+                        cambiarChat(seleccion);
+                    }
                 }
             }
         });
@@ -179,15 +210,15 @@ public class ChatFrame extends JFrame {
         btnConfig.setToolTipText("Cerrar Sesión");
         btnConfig.addActionListener(e -> cerrarSesion());
 
-        // Botón Añadir Contacto (+)
+        // Botón Añadir Contacto (+) - Ahora muestra menú con opciones
         JButton btnAdd = new JButton("+");
         btnAdd.setFont(new Font("Segoe UI", Font.BOLD, 24));
         btnAdd.setForeground(new Color(0, 200, 150)); // Verde JatsApp
         btnAdd.setBackground(null);
         btnAdd.setBorder(null);
         btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAdd.setToolTipText("Nuevo chat o añadir a favoritos");
-        btnAdd.addActionListener(e -> accionAnadirContacto());
+        btnAdd.setToolTipText("Nuevo chat o grupo");
+        btnAdd.addActionListener(e -> mostrarMenuNuevo(btnAdd));
 
         btnContactos = new JButton("Contactos");
         btnContactos.addActionListener(new ActionListener() {
@@ -202,9 +233,20 @@ public class ChatFrame extends JFrame {
                 }
             }
         });
+
+        // Botón Grupos
+        JButton btnGrupos = new JButton("Grupos");
+        btnGrupos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnGrupos.setBackground(new Color(60, 60, 60));
+        btnGrupos.setForeground(Color.WHITE);
+        btnGrupos.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnGrupos.setToolTipText("Gestionar grupos");
+        btnGrupos.addActionListener(e -> abrirVentanaGrupos());
+
         panelBotones.add(btnConfig);
         panelBotones.add(btnAdd);
         panelBotones.add(btnContactos);
+        panelBotones.add(btnGrupos);
 
         panelIzquierdo.add(panelBotones, BorderLayout.SOUTH);
 
@@ -230,6 +272,17 @@ public class ChatFrame extends JFrame {
         lblTituloChat.setBorder(new EmptyBorder(10, 20, 0, 0));
         headerChat.add(lblTituloChat, BorderLayout.CENTER);
 
+        // Panel para botones del header (búsqueda + configuración de grupo)
+        JPanel panelBotonesHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        panelBotonesHeader.setBackground(new Color(25, 25, 25));
+
+        // Botón de configuración de grupo (solo visible en chats de grupo)
+        btnConfigGrupo = crearBotonImagen("/images/setting.png", "⚙");
+        btnConfigGrupo.setToolTipText("Configuración del grupo");
+        btnConfigGrupo.setVisible(false); // Oculto por defecto
+        btnConfigGrupo.addActionListener(e -> mostrarConfiguracionGrupo());
+        panelBotonesHeader.add(btnConfigGrupo);
+
         // Botón de búsqueda
         JButton btnBuscar = new JButton("🔍");
         btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -239,7 +292,9 @@ public class ChatFrame extends JFrame {
         btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBuscar.setToolTipText("Buscar mensajes (Ctrl+F)");
         btnBuscar.addActionListener(e -> togglePanelBusqueda());
-        headerChat.add(btnBuscar, BorderLayout.EAST);
+        panelBotonesHeader.add(btnBuscar);
+
+        headerChat.add(panelBotonesHeader, BorderLayout.EAST);
 
         panelSuperior.add(headerChat, BorderLayout.NORTH);
 
@@ -413,20 +468,39 @@ public class ChatFrame extends JFrame {
         Message msg = new Message();
         msg.setType(MessageType.GET_RELEVANT_CHATS);
         ClientSocket.getInstance().send(msg);
+
+        // También solicitar los grupos del usuario
+        Message msgGrupos = new Message();
+        msgGrupos.setType(MessageType.GET_GROUPS);
+        ClientSocket.getInstance().send(msgGrupos);
     }
 
     private void cambiarChat(User usuario) {
+        System.out.println("🔄 cambiarChat: Cambiando a usuario ID=" + usuario.getId() + " (" + usuario.getUsername() + ")");
+
+        // IMPORTANTE: Resetear estado de grupo al cambiar a chat privado
+        this.chatActualEsGrupo = false;
+        this.grupoActual = null;
+
+        // Ocultar botón de configuración de grupo
+        if (btnConfigGrupo != null) {
+            btnConfigGrupo.setVisible(false);
+        }
+
         this.contactoActual = usuario;
         lblTituloChat.setText("Chat con: " + usuario.getUsername());
         areaChat.setText(""); // Limpiar chat visualmente
+        mensajesActuales.clear();
         txtMensaje.requestFocus();
 
         // Pedir historial al servidor
         Message msg = new Message();
         msg.setType(MessageType.GET_HISTORY);
         msg.setReceiverId(usuario.getId());
-        msg.setGroupChat(false); // Por ahora individual
+        msg.setGroupChat(false); // Chat privado
         ClientSocket.getInstance().send(msg);
+
+        System.out.println("🔄 cambiarChat: Solicitado historial para usuario ID=" + usuario.getId() + ", isGroupChat=false");
     }
 
     // --- NUEVA FUNCIÓN: AÑADIR CONTACTO ---
@@ -442,6 +516,67 @@ public class ChatFrame extends JFrame {
             msg.setContent(nombre.trim());
             msg.setSenderName(ClientSocket.getInstance().getMyUsername());
 
+            ClientSocket.getInstance().send(msg);
+        }
+    }
+
+    /**
+     * Muestra un menú popup con opciones para crear nuevo chat o grupo
+     */
+    private void mostrarMenuNuevo(Component invoker) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setBackground(new Color(40, 40, 40));
+
+        // Opción: Añadir contacto
+        JMenuItem itemContacto = new JMenuItem("👤 Añadir Contacto");
+        itemContacto.setBackground(new Color(40, 40, 40));
+        itemContacto.setForeground(Color.WHITE);
+        itemContacto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        itemContacto.addActionListener(e -> accionAnadirContacto());
+
+        // Opción: Crear grupo
+        JMenuItem itemGrupo = new JMenuItem("👥 Crear Grupo");
+        itemGrupo.setBackground(new Color(40, 40, 40));
+        itemGrupo.setForeground(Color.WHITE);
+        itemGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        itemGrupo.addActionListener(e -> crearGrupoRapido());
+
+        // Opción: Buscar usuario
+        JMenuItem itemBuscar = new JMenuItem("🔍 Buscar Usuario");
+        itemBuscar.setBackground(new Color(40, 40, 40));
+        itemBuscar.setForeground(Color.WHITE);
+        itemBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        itemBuscar.addActionListener(e -> {
+            String termino = JOptionPane.showInputDialog(this,
+                "Buscar usuario por nombre:",
+                "Buscar Usuario",
+                JOptionPane.PLAIN_MESSAGE);
+            if (termino != null && !termino.trim().isEmpty()) {
+                buscarUsuarios(termino.trim());
+            }
+        });
+
+        popupMenu.add(itemContacto);
+        popupMenu.add(itemGrupo);
+        popupMenu.addSeparator();
+        popupMenu.add(itemBuscar);
+
+        popupMenu.show(invoker, 0, invoker.getHeight());
+    }
+
+    /**
+     * Crea un grupo rápidamente desde el menú principal
+     */
+    private void crearGrupoRapido() {
+        String nombre = JOptionPane.showInputDialog(this,
+                "Introduce el nombre del nuevo grupo:",
+                "Crear Grupo",
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            Message msg = new Message();
+            msg.setType(MessageType.CREATE_GROUP);
+            msg.setContent(nombre.trim());
             ClientSocket.getInstance().send(msg);
         }
     }
@@ -467,9 +602,11 @@ public class ChatFrame extends JFrame {
         Message msg = new Message();
         msg.setType(MessageType.TEXT_MESSAGE);
         msg.setSenderName(ClientSocket.getInstance().getMyUsername());
-        msg.setReceiverId(contactoActual.getId()); // Usamos ID
-        msg.setGroupChat(false);
+        msg.setReceiverId(contactoActual.getId()); // ID del usuario o grupo
+        msg.setGroupChat(chatActualEsGrupo); // IMPORTANTE: usar la variable para saber si es grupo
         msg.setContent(textoEncriptado); // Enviar mensaje encriptado
+
+        System.out.println("📤 Enviando mensaje: receiverId=" + msg.getReceiverId() + ", isGroupChat=" + msg.isGroupChat());
 
         ClientSocket.getInstance().send(msg);
 
@@ -498,7 +635,7 @@ public class ChatFrame extends JFrame {
                 msg.setReceiverId(contactoActual.getId());
                 msg.setFileName(file.getName());
                 msg.setFileData(bytes);
-                msg.setGroupChat(false);
+                msg.setGroupChat(chatActualEsGrupo); // IMPORTANTE: usar la variable para saber si es grupo
 
                 ClientSocket.getInstance().send(msg);
                 agregarBurbuja(ClientSocket.getInstance().getMyUsername(), "📎 Archivo enviado: " + file.getName(), true);
@@ -515,11 +652,27 @@ public class ChatFrame extends JFrame {
 
     public void actualizarContactos(List<User> contactos) {
         SwingUtilities.invokeLater(() -> {
+            // Guardar los grupos existentes (no borrarlos)
+            java.util.List<User> gruposExistentes = new java.util.ArrayList<>();
+            for (int i = 0; i < modeloContactos.size(); i++) {
+                User u = modeloContactos.get(i);
+                if ("grupo".equals(u.getActivityStatus())) {
+                    gruposExistentes.add(u);
+                }
+            }
+
             modeloContactos.clear();
+
+            // Primero añadir los grupos preservados
+            for (User grupo : gruposExistentes) {
+                modeloContactos.addElement(grupo);
+            }
+
+            // Luego añadir los contactos nuevos
             String myName = ClientSocket.getInstance().getMyUsername();
             for (User u : contactos) {
-                // No mostrarme a mí mismo
-                if (myName != null && !myName.equals(u.getUsername())) {
+                // No mostrarme a mí mismo y no añadir si es un grupo (ya están añadidos)
+                if (myName != null && !myName.equals(u.getUsername()) && !"grupo".equals(u.getActivityStatus())) {
                     modeloContactos.addElement(u);
                 }
             }
@@ -549,11 +702,76 @@ public class ChatFrame extends JFrame {
         });
     }
 
-    public void cargarHistorial(List<Message> historial) {
+    public void cargarHistorial(List<Message> historial, int chatId, boolean esGrupo) {
         SwingUtilities.invokeLater(() -> {
+            // DEBUG: Mostrar información recibida
+            System.out.println("📋 Historial recibido: chatId=" + chatId + ", esGrupo=" + esGrupo + ", mensajes=" + (historial != null ? historial.size() : 0));
+            System.out.println("📋 Chat actual: contactoActual=" + (contactoActual != null ? contactoActual.getId() + " (" + contactoActual.getUsername() + ")" : "null") +
+                             ", chatActualEsGrupo=" + chatActualEsGrupo);
+
+            // Verificar que el historial corresponde al chat actualmente abierto
+            if (contactoActual == null) {
+                System.out.println("⚠️ Historial recibido pero no hay chat abierto - IGNORANDO");
+                return;
+            }
+
+            // Verificar que el tipo de chat coincide
+            if (esGrupo != chatActualEsGrupo) {
+                System.out.println("⚠️ Tipo de chat no coincide: recibido " + (esGrupo ? "GRUPO" : "USUARIO") +
+                                 " pero actual es " + (chatActualEsGrupo ? "GRUPO" : "USUARIO") + " - IGNORANDO");
+                return;
+            }
+
+            // Verificar que el ID coincide
+            if (chatId != contactoActual.getId()) {
+                System.out.println("⚠️ ID de chat no coincide: recibido " + chatId + " pero actual es " + contactoActual.getId() + " - IGNORANDO");
+                return;
+            }
+
+            System.out.println("✅ Historial válido, cargando " + (historial != null ? historial.size() : 0) + " mensajes");
+
             areaChat.setText(""); // Limpiar
+            mensajesActuales.clear();
+
+            String myUsername = ClientSocket.getInstance().getMyUsername();
+
             for (Message m : historial) {
-                recibirMensaje(m);
+                // Guardar para búsqueda
+                mensajesActuales.add(m);
+
+                // Mostrar el mensaje directamente (el servidor ya filtró los mensajes relevantes)
+                boolean esMio = m.getSenderName() != null && m.getSenderName().equals(myUsername);
+                String contenido = m.getContent();
+
+                // Manejar archivos
+                if (m.getType() == MessageType.FILE_MESSAGE || m.getType() == MessageType.ARCHIVO) {
+                    int fileId = m.getMessageId();
+                    if (fileId <= 0) {
+                        fileId = -System.identityHashCode(m);
+                    }
+                    fileMessagesMap.put(fileId, m);
+
+                    String fileName = m.getFileName() != null ? m.getFileName() : "archivo";
+                    long fileSize = m.getFileData() != null ? m.getFileData().length : 0;
+                    String fileSizeStr = formatFileSize(fileSize);
+
+                    contenido = "<div style='background: rgba(79, 195, 247, 0.1); padding: 10px; border-radius: 8px; border-left: 3px solid #4FC3F7;'>" +
+                              "<span style='font-size: 24px;'>📎</span> " +
+                              "<a href='#download-" + fileId + "' style='color: #4FC3F7; text-decoration: none; font-weight: bold;'>" +
+                              fileName + "</a><br/>" +
+                              "<span style='color: #999; font-size: 11px;'>Tamaño: " + fileSizeStr + " • Clic para descargar</span>" +
+                              "</div>";
+                } else if (m.getType() == MessageType.TEXT_MESSAGE) {
+                    contenido = EncryptionUtil.decrypt(contenido);
+                }
+
+                String senderName = m.getSenderName() != null ? m.getSenderName() : "Usuario";
+
+                if (esMio) {
+                    agregarBurbuja(senderName, contenido, true, m.getMessageId(), m.isDelivered(), m.isRead());
+                } else {
+                    agregarBurbuja(senderName, contenido, false);
+                }
             }
         });
     }
@@ -562,10 +780,44 @@ public class ChatFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             // Verificar si el mensaje es mío (protegido contra null)
             String myUsername = ClientSocket.getInstance().getMyUsername();
+            int myUserId = ClientSocket.getInstance().getMyUserId();
             boolean esMio = msg.getSenderName() != null && msg.getSenderName().equals(myUsername);
 
-            // Si el contacto actual está seleccionado y es de él o mío, mostrar
-            if (contactoActual != null && (msg.getSenderId() == contactoActual.getId() || esMio)) {
+            // DEBUG
+            System.out.println("📨 recibirMensaje: tipo=" + msg.getType() +
+                             ", senderId=" + msg.getSenderId() +
+                             ", senderName=" + msg.getSenderName() +
+                             ", receiverId=" + msg.getReceiverId() +
+                             ", isGroupChat=" + msg.isGroupChat() +
+                             ", esMio=" + esMio);
+
+            // Determinar si el mensaje corresponde al chat actual
+            boolean mensajeDelChatActual = false;
+
+            if (contactoActual != null) {
+                System.out.println("📨 Estado actual: contactoActual.getId()=" + contactoActual.getId() +
+                                 ", chatActualEsGrupo=" + chatActualEsGrupo);
+
+                if (msg.isGroupChat() && chatActualEsGrupo) {
+                    // Mensaje de grupo: comparar receiverId del mensaje con el ID del grupo actual
+                    mensajeDelChatActual = (msg.getReceiverId() == contactoActual.getId());
+                    System.out.println("📨 Comparación GRUPO: msg.receiverId=" + msg.getReceiverId() +
+                                     " vs contactoActual.getId()=" + contactoActual.getId() +
+                                     " -> match=" + mensajeDelChatActual);
+                } else if (!msg.isGroupChat() && !chatActualEsGrupo) {
+                    // Mensaje privado: verificar que es entre yo y el contacto actual
+                    boolean delContactoHaciaMi = (msg.getSenderId() == contactoActual.getId() && msg.getReceiverId() == myUserId);
+                    boolean mioHaciaContacto = (esMio && msg.getReceiverId() == contactoActual.getId());
+                    mensajeDelChatActual = delContactoHaciaMi || mioHaciaContacto;
+                    System.out.println("📨 Comparación PRIVADO: delContactoHaciaMi=" + delContactoHaciaMi +
+                                     ", mioHaciaContacto=" + mioHaciaContacto +
+                                     " -> match=" + mensajeDelChatActual);
+                }
+            }
+
+            // Si el mensaje corresponde al chat actual, mostrarlo
+            if (mensajeDelChatActual) {
+                System.out.println("✅ Mostrando mensaje en chat actual");
                 String contenido = msg.getContent();
 
                 // Manejar archivos
@@ -605,32 +857,37 @@ public class ChatFrame extends JFrame {
                 } else {
                     agregarBurbuja(senderName, contenido, false);
 
-                    // Enviar confirmación de lectura al servidor si el chat está abierto
-                    if (msg.getMessageId() > 0 && !msg.isRead()) {
+                    // Enviar confirmación de lectura al servidor si el chat está abierto (solo para mensajes privados)
+                    if (!msg.isGroupChat() && msg.getMessageId() > 0 && !msg.isRead()) {
                         enviarConfirmacionLectura(msg.getMessageId());
                     }
                 }
             }
-            // Si NO es mío y NO es del contacto actual, es un mensaje nuevo de otra persona
-            else if (!esMio && (contactoActual == null || msg.getSenderId() != contactoActual.getId())) {
-                // Verificar si el emisor ya está en la lista de contactos
-                boolean existeEnLista = false;
-                for (int i = 0; i < modeloContactos.size(); i++) {
-                    if (modeloContactos.get(i).getId() == msg.getSenderId()) {
-                        existeEnLista = true;
-                        break;
+            // Si NO es del chat actual, es un mensaje nuevo de otro chat
+            else if (!esMio && !mensajeDelChatActual) {
+                if (msg.isGroupChat()) {
+                    // Mensaje de grupo - mostrar notificación
+                    mostrarNotificacionMensaje("Grupo: " + msg.getReceiverId());
+                } else {
+                    // Mensaje privado - verificar si el emisor ya está en la lista
+                    boolean existeEnLista = false;
+                    for (int i = 0; i < modeloContactos.size(); i++) {
+                        if (modeloContactos.get(i).getId() == msg.getSenderId()) {
+                            existeEnLista = true;
+                            break;
+                        }
                     }
-                }
 
-                // Si no existe en la lista, añadirlo temporalmente
-                if (!existeEnLista && msg.getSenderName() != null) {
-                    User nuevoUsuario = new User(msg.getSenderId(), msg.getSenderName(), "activo");
-                    modeloContactos.addElement(nuevoUsuario);
-                }
+                    // Si no existe en la lista, añadirlo temporalmente
+                    if (!existeEnLista && msg.getSenderName() != null) {
+                        User nuevoUsuario = new User(msg.getSenderId(), msg.getSenderName(), "activo");
+                        modeloContactos.addElement(nuevoUsuario);
+                    }
 
-                // Mostrar notificación de mensaje nuevo
-                if (msg.getSenderName() != null) {
-                    mostrarNotificacionMensaje(msg.getSenderName());
+                    // Mostrar notificación de mensaje nuevo
+                    if (msg.getSenderName() != null) {
+                        mostrarNotificacionMensaje(msg.getSenderName());
+                    }
                 }
             }
         });
@@ -1409,5 +1666,511 @@ public class ChatFrame extends JFrame {
             }
         }
         return null;
+    }
+
+    // =================================================================
+    // GESTIÓN DE GRUPOS
+    // =================================================================
+
+    // Referencia a la ventana de grupos
+    private GroupsFrame groupsFrame;
+
+    /**
+     * Abre la ventana de gestión de grupos
+     */
+    private void abrirVentanaGrupos() {
+        if (groupsFrame != null && groupsFrame.isVisible()) {
+            groupsFrame.toFront();
+        } else {
+            groupsFrame = new GroupsFrame();
+            groupsFrame.setVisible(true);
+        }
+    }
+
+    /**
+     * Abre un chat de grupo (llamado desde GroupsFrame o desde la lista de contactos)
+     * NOTA: El grupo.getId() debe ser el ID real (positivo) del grupo
+     */
+    public void abrirChatGrupo(Group grupo) {
+        System.out.println("🔄 abrirChatGrupo: Abriendo grupo ID=" + grupo.getId() + " (" + grupo.getNombre() + ")");
+
+        this.grupoActual = grupo;
+        this.chatActualEsGrupo = true;
+
+        // Mostrar botón de configuración de grupo
+        if (btnConfigGrupo != null) {
+            btnConfigGrupo.setVisible(true);
+        }
+
+        // Crear un User virtual para representar al grupo
+        // IMPORTANTE: Usar el ID real del grupo (positivo) para que coincida con el historial
+        User grupoComoUsuario = new User();
+        grupoComoUsuario.setId(grupo.getId()); // ID real (positivo)
+        grupoComoUsuario.setUsername("👥 " + grupo.getNombre());
+        grupoComoUsuario.setActivityStatus("grupo");
+
+        this.contactoActual = grupoComoUsuario;
+
+        System.out.println("🔄 abrirChatGrupo: contactoActual.getId()=" + contactoActual.getId() + ", chatActualEsGrupo=" + chatActualEsGrupo);
+
+        // Actualizar título (mostrará "?" si no tenemos los miembros cargados)
+        int memberCount = grupo.getMiembros() != null ? grupo.getMiembros().size() : 0;
+        String memberText = memberCount > 0 ? String.valueOf(memberCount) : "?";
+        lblTituloChat.setText("👥 " + grupo.getNombre() + " (" + memberText + " miembros)");
+
+        // Limpiar chat
+        areaChat.setText("");
+        mensajesActuales.clear();
+
+        // Pedir historial del grupo
+        Message msgHistory = new Message();
+        msgHistory.setType(MessageType.GET_HISTORY);
+        msgHistory.setReceiverId(grupo.getId()); // ID real del grupo
+        msgHistory.setGroupChat(true);
+        ClientSocket.getInstance().send(msgHistory);
+
+        System.out.println("🔄 abrirChatGrupo: Solicitado historial para grupo ID=" + grupo.getId() + ", isGroupChat=true");
+
+        // Si no tenemos los miembros, solicitar info del grupo
+        if (grupo.getMiembros() == null || grupo.getMiembros().isEmpty()) {
+            Message msgInfo = new Message();
+            msgInfo.setType(MessageType.GET_GROUP_INFO);
+            msgInfo.setReceiverId(grupo.getId());
+            ClientSocket.getInstance().send(msgInfo);
+        }
+
+        txtMensaje.requestFocus();
+    }
+
+    /**
+     * Muestra el diálogo de configuración del grupo actual
+     */
+    private void mostrarConfiguracionGrupo() {
+        if (!chatActualEsGrupo || grupoActual == null) {
+            return;
+        }
+
+        // Crear diálogo
+        JDialog dialogo = new JDialog(this, "Configuración del Grupo", true);
+        dialogo.setSize(450, 580);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
+        panelPrincipal.setBackground(new Color(30, 30, 30));
+        panelPrincipal.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        int myId = ClientSocket.getInstance().getMyUserId();
+
+        // Verificar si soy admin usando el nuevo campo isGroupAdmin de User
+        boolean soyAdmin = false;
+        if (grupoActual.getMiembros() != null) {
+            for (User u : grupoActual.getMiembros()) {
+                if (u.getId() == myId && u.isGroupAdmin()) {
+                    soyAdmin = true;
+                    break;
+                }
+            }
+        }
+
+        // Header con nombre del grupo
+        JPanel headerPanel = new JPanel(new BorderLayout(5, 5));
+        headerPanel.setBackground(new Color(30, 30, 30));
+
+        JLabel lblNombre = new JLabel("👥 " + grupoActual.getNombre());
+        lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblNombre.setForeground(Color.WHITE);
+        headerPanel.add(lblNombre, BorderLayout.NORTH);
+
+        int memberCount = grupoActual.getMiembros() != null ? grupoActual.getMiembros().size() : 0;
+
+        // Contar admins
+        int adminCount = 0;
+        StringBuilder adminNames = new StringBuilder();
+        if (grupoActual.getMiembros() != null) {
+            for (User u : grupoActual.getMiembros()) {
+                if (u.isGroupAdmin()) {
+                    adminCount++;
+                    if (adminNames.length() > 0) adminNames.append(", ");
+                    adminNames.append(u.getUsername());
+                    if (u.getId() == myId) adminNames.append(" (Tú)");
+                }
+            }
+        }
+
+        JLabel lblInfo = new JLabel("<html>" + memberCount + " miembros<br/>" +
+                                   "<span style='color: #FFD700;'>👑 Admins (" + adminCount + "): " + adminNames + "</span>" +
+                                   "</html>");
+        lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblInfo.setForeground(new Color(180, 180, 180));
+        headerPanel.add(lblInfo, BorderLayout.CENTER);
+
+        panelPrincipal.add(headerPanel, BorderLayout.NORTH);
+
+        // Lista de miembros
+        JPanel membersPanel = new JPanel(new BorderLayout(5, 5));
+        membersPanel.setBackground(new Color(30, 30, 30));
+
+        JLabel lblMiembros = new JLabel("Miembros:");
+        lblMiembros.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblMiembros.setForeground(Color.WHITE);
+        membersPanel.add(lblMiembros, BorderLayout.NORTH);
+
+        // Usar un modelo que guarde tanto el nombre mostrado como el User original
+        DefaultListModel<String> memberModel = new DefaultListModel<>();
+        java.util.Map<String, User> userMap = new java.util.HashMap<>();
+
+        if (grupoActual.getMiembros() != null) {
+            for (User u : grupoActual.getMiembros()) {
+                String displayName;
+                if (u.isGroupAdmin()) {
+                    displayName = "👑 " + u.getUsername() + " (Admin)";
+                } else {
+                    displayName = "     " + u.getUsername();
+                }
+                String status = "activo".equals(u.getActivityStatus()) ? " 🟢" : " ⚫";
+                String fullDisplay = displayName + status;
+                memberModel.addElement(fullDisplay);
+                userMap.put(fullDisplay, u);
+            }
+        }
+
+        JList<String> listaMiembros = new JList<>(memberModel);
+        listaMiembros.setBackground(new Color(40, 40, 40));
+        listaMiembros.setForeground(Color.WHITE);
+        listaMiembros.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        listaMiembros.setFixedCellHeight(35);
+        listaMiembros.setSelectionBackground(new Color(0, 120, 200));
+
+        JScrollPane scrollMiembros = new JScrollPane(listaMiembros);
+        scrollMiembros.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60)));
+        membersPanel.add(scrollMiembros, BorderLayout.CENTER);
+
+        panelPrincipal.add(membersPanel, BorderLayout.CENTER);
+
+        // Panel de botones
+        JPanel botonesPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        botonesPanel.setBackground(new Color(30, 30, 30));
+        botonesPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+
+        final boolean esSoyAdmin = soyAdmin;
+        final int finalAdminCount = adminCount;
+
+        if (soyAdmin) {
+            // Botón añadir miembro
+            JButton btnAddMember = new JButton("➕ Añadir Miembro");
+            btnAddMember.setBackground(new Color(0, 120, 200));
+            btnAddMember.setForeground(Color.WHITE);
+            btnAddMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnAddMember.addActionListener(e -> {
+                String username = JOptionPane.showInputDialog(dialogo,
+                    "Nombre del usuario a añadir:",
+                    "Añadir Miembro",
+                    JOptionPane.PLAIN_MESSAGE);
+                if (username != null && !username.trim().isEmpty()) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.ADD_GROUP_MEMBER);
+                    msg.setReceiverId(grupoActual.getId());
+                    msg.setContent(username.trim());
+                    ClientSocket.getInstance().send(msg);
+                    dialogo.dispose();
+                }
+            });
+            botonesPanel.add(btnAddMember);
+
+            // Botón eliminar miembro
+            JButton btnRemoveMember = new JButton("➖ Eliminar Miembro");
+            btnRemoveMember.setBackground(new Color(200, 80, 80));
+            btnRemoveMember.setForeground(Color.WHITE);
+            btnRemoveMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnRemoveMember.addActionListener(e -> {
+                String selected = listaMiembros.getSelectedValue();
+                if (selected == null) {
+                    JOptionPane.showMessageDialog(dialogo, "Selecciona un miembro primero");
+                    return;
+                }
+                User selectedUser = userMap.get(selected);
+                if (selectedUser == null) return;
+
+                // No permitir eliminar si es admin único
+                if (selectedUser.isGroupAdmin() && finalAdminCount <= 1) {
+                    JOptionPane.showMessageDialog(dialogo,
+                        "No puedes eliminar al único administrador.\nPromueve a otro admin primero.",
+                        "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(dialogo,
+                    "¿Eliminar a " + selectedUser.getUsername() + " del grupo?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.REMOVE_GROUP_MEMBER);
+                    msg.setReceiverId(grupoActual.getId());
+                    msg.setContent(selectedUser.getUsername());
+                    ClientSocket.getInstance().send(msg);
+                    dialogo.dispose();
+                }
+            });
+            botonesPanel.add(btnRemoveMember);
+
+            // Botón promover a admin
+            JButton btnPromoteAdmin = new JButton("👑 Hacer Admin");
+            btnPromoteAdmin.setBackground(new Color(255, 193, 7));
+            btnPromoteAdmin.setForeground(Color.BLACK);
+            btnPromoteAdmin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnPromoteAdmin.addActionListener(e -> {
+                String selected = listaMiembros.getSelectedValue();
+                if (selected == null) {
+                    JOptionPane.showMessageDialog(dialogo, "Selecciona un miembro primero");
+                    return;
+                }
+                User selectedUser = userMap.get(selected);
+                if (selectedUser == null) return;
+
+                if (selectedUser.isGroupAdmin()) {
+                    JOptionPane.showMessageDialog(dialogo, "Este usuario ya es administrador");
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(dialogo,
+                    "¿Hacer administrador a " + selectedUser.getUsername() + "?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.PROMOTE_TO_ADMIN);
+                    msg.setReceiverId(grupoActual.getId());
+                    msg.setContent(selectedUser.getUsername());
+                    ClientSocket.getInstance().send(msg);
+                    dialogo.dispose();
+                }
+            });
+            botonesPanel.add(btnPromoteAdmin);
+
+            // Botón quitar admin
+            JButton btnDemoteAdmin = new JButton("⬇️ Quitar Admin");
+            btnDemoteAdmin.setBackground(new Color(255, 152, 0));
+            btnDemoteAdmin.setForeground(Color.BLACK);
+            btnDemoteAdmin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnDemoteAdmin.addActionListener(e -> {
+                String selected = listaMiembros.getSelectedValue();
+                if (selected == null) {
+                    JOptionPane.showMessageDialog(dialogo, "Selecciona un miembro primero");
+                    return;
+                }
+                User selectedUser = userMap.get(selected);
+                if (selectedUser == null) return;
+
+                if (!selectedUser.isGroupAdmin()) {
+                    JOptionPane.showMessageDialog(dialogo, "Este usuario no es administrador");
+                    return;
+                }
+
+                if (finalAdminCount <= 1) {
+                    JOptionPane.showMessageDialog(dialogo,
+                        "No puedes quitar el rol de admin.\nDebe haber al menos un administrador.",
+                        "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(dialogo,
+                    "¿Quitar rol de administrador a " + selectedUser.getUsername() + "?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.DEMOTE_FROM_ADMIN);
+                    msg.setReceiverId(grupoActual.getId());
+                    msg.setContent(selectedUser.getUsername());
+                    ClientSocket.getInstance().send(msg);
+                    dialogo.dispose();
+                }
+            });
+            botonesPanel.add(btnDemoteAdmin);
+        }
+
+        // Botón abandonar grupo
+        JButton btnLeave = new JButton("🚪 Abandonar Grupo");
+        btnLeave.setBackground(new Color(100, 100, 100));
+        btnLeave.setForeground(Color.WHITE);
+        btnLeave.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnLeave.addActionListener(e -> {
+            String mensaje;
+            if (esSoyAdmin && finalAdminCount <= 1) {
+                mensaje = "⚠️ Eres el único administrador.\n\n" +
+                          "Debes promover a otro admin antes de salir, o el grupo será eliminado.\n\n¿Continuar de todas formas?";
+            } else {
+                mensaje = "¿Estás seguro de que quieres abandonar este grupo?";
+            }
+            int confirm = JOptionPane.showConfirmDialog(dialogo,
+                mensaje,
+                "Abandonar Grupo",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Message msg = new Message();
+                msg.setType(MessageType.LEAVE_GROUP);
+                msg.setReceiverId(grupoActual.getId());
+                ClientSocket.getInstance().send(msg);
+                dialogo.dispose();
+            }
+        });
+        botonesPanel.add(btnLeave);
+
+        // Botón cerrar
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.setBackground(new Color(60, 60, 60));
+        btnCerrar.setForeground(Color.WHITE);
+        btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnCerrar.addActionListener(e -> dialogo.dispose());
+        botonesPanel.add(btnCerrar);
+
+        panelPrincipal.add(botonesPanel, BorderLayout.SOUTH);
+
+        dialogo.setContentPane(panelPrincipal);
+        dialogo.setVisible(true);
+    }
+
+    /**
+     * Actualiza la información del grupo actual (llamado cuando llega GROUP_INFO_RESPONSE o cambios de miembros)
+     */
+    public void actualizarInfoGrupoActual(Group grupo) {
+        SwingUtilities.invokeLater(() -> {
+            if (chatActualEsGrupo && grupoActual != null && grupoActual.getId() == grupo.getId()) {
+                this.grupoActual = grupo;
+                int memberCount = grupo.getMiembros() != null ? grupo.getMiembros().size() : 0;
+                lblTituloChat.setText("👥 " + grupo.getNombre() + " (" + memberCount + " miembros)");
+                System.out.println("✅ Actualizado título del grupo: " + memberCount + " miembros");
+            }
+        });
+    }
+
+    /**
+     * Actualiza la lista de grupos (llamado desde ClientSocket)
+     * También añade los grupos a la lista de contactos para acceso rápido
+     * NOTA: Los grupos se almacenan con ID negativo (-groupId) para evitar colisiones con IDs de usuarios
+     */
+    public void actualizarGrupos(List<Group> grupos) {
+        // Notificamos a GroupsFrame si está abierto
+        if (groupsFrame != null && groupsFrame.isVisible()) {
+            groupsFrame.actualizarGrupos(grupos);
+        }
+
+        // Añadir grupos a la lista de contactos (al principio)
+        SwingUtilities.invokeLater(() -> {
+            // Guardar usuarios actuales (no grupos)
+            java.util.List<User> usuariosActuales = new java.util.ArrayList<>();
+            for (int i = 0; i < modeloContactos.size(); i++) {
+                User u = modeloContactos.get(i);
+                if (!"grupo".equals(u.getActivityStatus())) {
+                    usuariosActuales.add(u);
+                }
+            }
+
+            // Limpiar y reconstruir la lista
+            modeloContactos.clear();
+
+            // Primero añadir los grupos (con ID negativo para evitar colisiones)
+            if (grupos != null) {
+                for (Group g : grupos) {
+                    User grupoComoUsuario = new User();
+                    // Usar ID negativo para grupos: -groupId
+                    grupoComoUsuario.setId(-g.getId());
+                    grupoComoUsuario.setUsername("👥 " + g.getNombre());
+                    grupoComoUsuario.setActivityStatus("grupo");
+                    modeloContactos.addElement(grupoComoUsuario);
+                }
+            }
+
+            // Luego añadir los usuarios
+            for (User u : usuariosActuales) {
+                modeloContactos.addElement(u);
+            }
+        });
+    }
+
+    /**
+     * Muestra un menú contextual según el tipo de elemento (usuario o grupo)
+     */
+    private void mostrarMenuContextual(User elemento, Component invoker, int x, int y) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setBackground(new Color(40, 40, 40));
+
+        boolean esGrupo = "grupo".equals(elemento.getActivityStatus());
+
+        if (esGrupo) {
+            // Para grupos, el ID está negativo, convertir a positivo
+            int realGroupId = -elemento.getId();
+            String nombreGrupo = elemento.getUsername().replace("👥 ", "");
+
+            // Menú para grupos
+            JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
+            itemAbrir.setBackground(new Color(40, 40, 40));
+            itemAbrir.setForeground(Color.WHITE);
+            itemAbrir.addActionListener(e -> {
+                Group grupo = new Group(realGroupId, nombreGrupo, 0);
+                abrirChatGrupo(grupo);
+            });
+
+            JMenuItem itemAdmin = new JMenuItem("⚙️ Administrar Grupo");
+            itemAdmin.setBackground(new Color(40, 40, 40));
+            itemAdmin.setForeground(Color.WHITE);
+            itemAdmin.addActionListener(e -> {
+                // Abrir ventana de grupos y seleccionar este grupo
+                abrirVentanaGrupos();
+            });
+
+            JMenuItem itemAbandonar = new JMenuItem("🚪 Abandonar Grupo");
+            itemAbandonar.setBackground(new Color(40, 40, 40));
+            itemAbandonar.setForeground(new Color(255, 100, 100));
+            itemAbandonar.addActionListener(e -> {
+                int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Seguro que quieres abandonar este grupo?",
+                    "Abandonar Grupo",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.LEAVE_GROUP);
+                    msg.setReceiverId(realGroupId); // Usar el ID real del grupo
+                    ClientSocket.getInstance().send(msg);
+                }
+            });
+
+            popupMenu.add(itemAbrir);
+            popupMenu.add(itemAdmin);
+            popupMenu.addSeparator();
+            popupMenu.add(itemAbandonar);
+
+        } else {
+            // Menú para usuarios
+            JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
+            itemAbrir.setBackground(new Color(40, 40, 40));
+            itemAbrir.setForeground(Color.WHITE);
+            itemAbrir.addActionListener(e -> cambiarChat(elemento));
+
+            JMenuItem itemEliminar = new JMenuItem("❌ Eliminar Contacto");
+            itemEliminar.setBackground(new Color(40, 40, 40));
+            itemEliminar.setForeground(new Color(255, 100, 100));
+            itemEliminar.addActionListener(e -> {
+                int confirm = JOptionPane.showConfirmDialog(this,
+                    "¿Eliminar a " + elemento.getUsername() + " de tus contactos?",
+                    "Eliminar Contacto",
+                    JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Message msg = new Message();
+                    msg.setType(MessageType.REMOVE_CONTACT);
+                    msg.setContent(elemento.getUsername());
+                    ClientSocket.getInstance().send(msg);
+                }
+            });
+
+            popupMenu.add(itemAbrir);
+            popupMenu.addSeparator();
+            popupMenu.add(itemEliminar);
+        }
+
+        popupMenu.show(invoker, x, y);
     }
 }

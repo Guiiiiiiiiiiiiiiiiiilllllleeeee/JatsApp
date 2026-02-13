@@ -61,5 +61,41 @@ public enum MessageType {
     DOWNLOAD_FILE,      // Cliente solicita descargar un archivo por messageId
     FILE_DOWNLOAD_RESPONSE, // Servidor envía los bytes del archivo
 
+    // --- GRUPOS ---
+    CREATE_GROUP,       // Cliente solicita crear un grupo
+    CREATE_GROUP_OK,    // Grupo creado exitosamente
+    CREATE_GROUP_FAIL,  // Error al crear grupo
+
+    GET_GROUPS,         // Solicitar lista de grupos del usuario
+    LIST_GROUPS,        // Respuesta con lista de grupos
+
+    ADD_GROUP_MEMBER,   // Añadir miembro a un grupo (solo admin)
+    ADD_GROUP_MEMBER_OK,
+    ADD_GROUP_MEMBER_FAIL,
+
+    REMOVE_GROUP_MEMBER, // Eliminar miembro de un grupo (solo admin)
+    REMOVE_GROUP_MEMBER_OK,
+    REMOVE_GROUP_MEMBER_FAIL,
+
+    PROMOTE_TO_ADMIN,        // Promover miembro a admin
+    PROMOTE_TO_ADMIN_OK,
+    PROMOTE_TO_ADMIN_FAIL,
+
+    DEMOTE_FROM_ADMIN,       // Quitar rol de admin a un miembro
+    DEMOTE_FROM_ADMIN_OK,
+    DEMOTE_FROM_ADMIN_FAIL,
+
+    LEAVE_GROUP,        // Usuario abandona un grupo
+    LEAVE_GROUP_OK,
+    LEAVE_GROUP_FAIL,
+
+    GET_GROUP_MEMBERS,  // Solicitar lista de miembros de un grupo
+    LIST_GROUP_MEMBERS, // Respuesta con lista de miembros
+
+    GET_GROUP_INFO,     // Solicitar información de un grupo
+    GROUP_INFO_RESPONSE, // Respuesta con información del grupo
+
+    GROUP_NOTIFICATION, // Notificación de cambios en el grupo (nuevo miembro, etc.)
+
     ERROR               // Error genérico
 }

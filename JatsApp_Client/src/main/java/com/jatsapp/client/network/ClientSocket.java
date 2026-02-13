@@ -1,8 +1,10 @@
 package com.jatsapp.client.network;
 
-import com.jatsapp.client.view.ChatFrame; // (Aún no me lo pasas, pero lo preparo)
+import com.jatsapp.client.view.ChatFrame;
 import com.jatsapp.client.view.LoginFrame;
 import com.jatsapp.client.view.ContactsFrame;
+import com.jatsapp.client.view.GroupsFrame;
+import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
 import com.jatsapp.common.User;
@@ -26,6 +28,7 @@ public class ClientSocket {
     private LoginFrame loginFrame;
     private ChatFrame chatFrame;
     private ContactsFrame contactsFrame;
+    private GroupsFrame groupsFrame;
 
     private String myUsername;
     private int myUserId = -1;  // ID del usuario logueado
@@ -89,7 +92,9 @@ public class ClientSocket {
 
     public void setLoginFrame(LoginFrame frame) { this.loginFrame = frame; }
     public void setChatFrame(ChatFrame frame) { this.chatFrame = frame; }
+    public ChatFrame getChatFrame() { return this.chatFrame; }
     public void setContactsFrame(ContactsFrame frame) { this.contactsFrame = frame; }
+    public void setGroupsFrame(GroupsFrame frame) { this.groupsFrame = frame; }
 
     public void setMyUsername(String user) { this.myUsername = user; }
     public String getMyUsername() { return myUsername; }
@@ -167,6 +172,10 @@ public class ClientSocket {
             case TEXT_MESSAGE:
             case FILE_MESSAGE:
             case ARCHIVO:
+                System.out.println("📥 ClientSocket recibió mensaje: tipo=" + msg.getType() +
+                                 ", senderId=" + msg.getSenderId() +
+                                 ", receiverId=" + msg.getReceiverId() +
+                                 ", isGroupChat=" + msg.isGroupChat());
                 if (chatFrame != null) {
                     chatFrame.recibirMensaje(msg);
                 }
@@ -207,7 +216,8 @@ public class ClientSocket {
 
             case HISTORY_RESPONSE:
                 if (chatFrame != null) {
-                    chatFrame.cargarHistorial(msg.getHistoryList());
+                    // El mensaje incluye receiverId y isGroupChat para verificar
+                    chatFrame.cargarHistorial(msg.getHistoryList(), msg.getReceiverId(), msg.isGroupChat());
                 }
                 break;
 
@@ -251,6 +261,159 @@ public class ClientSocket {
                 // El servidor envía los bytes de un archivo solicitado
                 if (chatFrame != null) {
                     chatFrame.recibirArchivoDescargado(msg);
+                }
+                break;
+
+            // ========================================
+            // --- GRUPOS ---
+            // ========================================
+
+            case LIST_GROUPS:
+                // Lista de grupos del usuario
+                if (groupsFrame != null) {
+                    groupsFrame.actualizarGrupos(msg.getGroupList());
+                }
+                if (chatFrame != null) {
+                    chatFrame.actualizarGrupos(msg.getGroupList());
+                }
+                break;
+
+            case CREATE_GROUP_OK:
+                System.out.println("✅ Grupo creado: " + msg.getGroup().getNombre());
+                JOptionPane.showMessageDialog(groupsFrame,
+                    "Grupo '" + msg.getGroup().getNombre() + "' creado exitosamente",
+                    "Grupo Creado", JOptionPane.INFORMATION_MESSAGE);
+                // Recargar lista de grupos
+                send(new Message(MessageType.GET_GROUPS, ""));
+                break;
+
+            case CREATE_GROUP_FAIL:
+                JOptionPane.showMessageDialog(groupsFrame,
+                    "Error al crear grupo: " + msg.getContent(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+
+            case ADD_GROUP_MEMBER_OK:
+                System.out.println("✅ Miembro añadido al grupo");
+                if (groupsFrame != null && msg.getGroup() != null) {
+                    groupsFrame.actualizarInfoGrupo(msg.getGroup());
+                }
+                // También actualizar el ChatFrame si tiene el grupo abierto
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
+                break;
+
+            case ADD_GROUP_MEMBER_FAIL:
+                JOptionPane.showMessageDialog(groupsFrame,
+                    "Error al añadir miembro: " + msg.getContent(),
+                    "Error", JOptionPane.WARNING_MESSAGE);
+                break;
+
+            case REMOVE_GROUP_MEMBER_OK:
+                System.out.println("✅ Miembro eliminado del grupo");
+                if (groupsFrame != null && msg.getGroup() != null) {
+                    groupsFrame.actualizarInfoGrupo(msg.getGroup());
+                }
+                // También actualizar el ChatFrame si tiene el grupo abierto
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
+                break;
+
+            case REMOVE_GROUP_MEMBER_FAIL:
+                JOptionPane.showMessageDialog(chatFrame,
+                    "Error al eliminar miembro: " + msg.getContent(),
+                    "Error", JOptionPane.WARNING_MESSAGE);
+                break;
+
+            case PROMOTE_TO_ADMIN_OK:
+                System.out.println("✅ Usuario promovido a admin");
+                JOptionPane.showMessageDialog(chatFrame,
+                    msg.getContent(),
+                    "Admin Promovido", JOptionPane.INFORMATION_MESSAGE);
+                if (groupsFrame != null && msg.getGroup() != null) {
+                    groupsFrame.actualizarInfoGrupo(msg.getGroup());
+                }
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
+                break;
+
+            case PROMOTE_TO_ADMIN_FAIL:
+                JOptionPane.showMessageDialog(chatFrame,
+                    "Error al promover a admin: " + msg.getContent(),
+                    "Error", JOptionPane.WARNING_MESSAGE);
+                break;
+
+            case DEMOTE_FROM_ADMIN_OK:
+                System.out.println("✅ Usuario degradado de admin");
+                JOptionPane.showMessageDialog(chatFrame,
+                    msg.getContent(),
+                    "Admin Removido", JOptionPane.INFORMATION_MESSAGE);
+                if (groupsFrame != null && msg.getGroup() != null) {
+                    groupsFrame.actualizarInfoGrupo(msg.getGroup());
+                }
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
+                break;
+
+            case DEMOTE_FROM_ADMIN_FAIL:
+                JOptionPane.showMessageDialog(chatFrame,
+                    "Error al quitar admin: " + msg.getContent(),
+                    "Error", JOptionPane.WARNING_MESSAGE);
+                break;
+
+            case LEAVE_GROUP_OK:
+                System.out.println("✅ Has abandonado el grupo");
+                JOptionPane.showMessageDialog(groupsFrame,
+                    "Has abandonado el grupo",
+                    "Grupo Abandonado", JOptionPane.INFORMATION_MESSAGE);
+                // Recargar lista de grupos
+                send(new Message(MessageType.GET_GROUPS, ""));
+                break;
+
+            case LEAVE_GROUP_FAIL:
+                JOptionPane.showMessageDialog(groupsFrame,
+                    "Error al abandonar grupo: " + msg.getContent(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+
+            case GROUP_INFO_RESPONSE:
+                // Información detallada de un grupo
+                if (groupsFrame != null && msg.getGroup() != null) {
+                    groupsFrame.actualizarInfoGrupo(msg.getGroup());
+                }
+                // También actualizar el ChatFrame si tiene el grupo abierto
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
+                break;
+
+            case LIST_GROUP_MEMBERS:
+                // Lista de miembros de un grupo (usado si necesitamos actualizar solo miembros)
+                if (groupsFrame != null) {
+                    // Se maneja a través de GROUP_INFO_RESPONSE normalmente
+                }
+                break;
+
+            case GROUP_NOTIFICATION:
+                // Notificación de cambios en un grupo (añadido, eliminado, etc.)
+                System.out.println("📢 Notificación de grupo: " + msg.getContent());
+
+                // Siempre recargar la lista de grupos para que aparezcan nuevos grupos
+                send(new Message(MessageType.GET_GROUPS, ""));
+
+                if (groupsFrame != null && groupsFrame.isVisible()) {
+                    groupsFrame.mostrarNotificacion(msg.getContent(), msg.getGroup());
+                } else {
+                    // Si GroupsFrame no está abierto, mostrar notificación simple
+                    SwingUtilities.invokeLater(() -> {
+                        JOptionPane.showMessageDialog(chatFrame,
+                            msg.getContent(),
+                            "Notificación de Grupo", JOptionPane.INFORMATION_MESSAGE);
+                    });
                 }
                 break;
 

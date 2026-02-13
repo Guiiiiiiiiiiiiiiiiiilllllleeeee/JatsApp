@@ -37,48 +37,74 @@ public class ContactRenderer extends JPanel implements ListCellRenderer<User> {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
+        // Detectar si es un grupo
+        boolean esGrupo = "grupo".equals(usuarioActual.getActivityStatus());
+
         // 1. FONDO
         if (seleccionado) {
-            g2.setColor(new Color(45, 55, 65)); // Seleccionado
+            g2.setColor(esGrupo ? new Color(0, 80, 60) : new Color(45, 55, 65)); // Verde oscuro para grupos
         } else {
             g2.setColor(new Color(30, 30, 30)); // Normal
         }
         g2.fillRoundRect(2, 2, getWidth()-4, getHeight()-4, 10, 10); // Bordes redondeados
 
-        // 2. AVATAR (Círculo con inicial)
+        // 2. AVATAR (Círculo con inicial o icono de grupo)
         int size = 45;
         int xAvatar = 15;
         int yPos = (getHeight() - size) / 2;
 
-        g2.setColor(getColorPorNombre(usuarioActual.getUsername()));
-        g2.fillOval(xAvatar, yPos, size, size);
+        if (esGrupo) {
+            // Avatar especial para grupos (verde)
+            g2.setColor(new Color(0, 150, 100));
+            g2.fillOval(xAvatar, yPos, size, size);
 
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        String inicial = usuarioActual.getUsername().substring(0, 1).toUpperCase();
+            // Icono de grupo (dos personas)
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 22));
+            g2.drawString("👥", xAvatar + 10, yPos + 32);
+        } else {
+            // Avatar normal para usuarios
+            g2.setColor(getColorPorNombre(usuarioActual.getUsername()));
+            g2.fillOval(xAvatar, yPos, size, size);
 
-        FontMetrics fm = g2.getFontMetrics();
-        int textX = xAvatar + (size - fm.stringWidth(inicial)) / 2;
-        int textY = yPos + ((size - fm.getHeight()) / 2) + fm.getAscent();
-        g2.drawString(inicial, textX, textY - 4);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Segoe UI", Font.BOLD, 20));
+            String inicial = usuarioActual.getUsername().substring(0, 1).toUpperCase();
+
+            FontMetrics fm = g2.getFontMetrics();
+            int textX = xAvatar + (size - fm.stringWidth(inicial)) / 2;
+            int textY = yPos + ((size - fm.getHeight()) / 2) + fm.getAscent();
+            g2.drawString(inicial, textX, textY - 4);
+        }
 
         // 3. NOMBRE
         int xTexto = 75;
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        g2.drawString(usuarioActual.getUsername(), xTexto, getHeight() / 2 - 2);
 
-        // 4. ESTADO (Conectado / Desconectado)
-        // Usamos el campo activityStatus del objeto User
+        String nombreMostrar = usuarioActual.getUsername();
+        // Eliminar el emoji de grupo si ya está en el nombre para evitar duplicados
+        if (esGrupo && nombreMostrar.startsWith("👥 ")) {
+            nombreMostrar = nombreMostrar.substring(3);
+        }
+        g2.drawString(nombreMostrar, xTexto, getHeight() / 2 - 2);
+
+        // 4. ESTADO (Conectado / Desconectado / Grupo)
         String estado = (usuarioActual.getActivityStatus() != null) ? usuarioActual.getActivityStatus() : "desconocido";
 
-        if ("activo".equalsIgnoreCase(estado)) {
+        if (esGrupo) {
+            g2.setColor(new Color(0, 200, 150)); // Verde para grupos
+            g2.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+            g2.drawString("Grupo", xTexto, getHeight() / 2 + 15);
+        } else if ("activo".equalsIgnoreCase(estado)) {
             g2.setColor(new Color(0, 200, 100)); // Verde
+            g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            g2.drawString("En línea", xTexto, getHeight() / 2 + 15);
         } else {
             g2.setColor(Color.GRAY);
+            g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            g2.drawString("Desconectado", xTexto, getHeight() / 2 + 15);
         }
-        g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        g2.drawString(estado, xTexto, getHeight() / 2 + 15);
 
         g2.dispose();
     }

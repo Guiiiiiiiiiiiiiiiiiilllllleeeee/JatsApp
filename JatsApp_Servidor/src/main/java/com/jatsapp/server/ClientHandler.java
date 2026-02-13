@@ -1,8 +1,10 @@
 package com.jatsapp.server;
 
+import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
 import com.jatsapp.common.User;
+import com.jatsapp.server.dao.GroupDAO;
 import com.jatsapp.server.dao.MessageDAO;
 import com.jatsapp.server.dao.UserDAO;
 import com.jatsapp.server.service.EmailService;
@@ -37,6 +39,7 @@ public class ClientHandler implements Runnable {
     // Servicios y DAOs
     private UserDAO userDAO = new UserDAO();
     private MessageDAO messageDAO = new MessageDAO();
+    private GroupDAO groupDAO = new GroupDAO();
     private FileService fileService = new FileService();
     private EmailService emailService = new EmailService();
 
@@ -259,6 +262,9 @@ public class ClientHandler implements Runnable {
 
                 Message historyResponse = new Message(MessageType.HISTORY_RESPONSE, "Historial recuperado");
                 historyResponse.setHistoryList(history);
+                // Incluir info del chat para que el cliente verifique que corresponde al chat actual
+                historyResponse.setReceiverId(targetId);
+                historyResponse.setGroupChat(isGroup);
                 sendMessage(historyResponse);
 
                 logger.debug("Enviados {} mensajes de historial a UserID: {}", history.size(), currentUser.getId());
@@ -404,6 +410,348 @@ public class ClientHandler implements Runnable {
                 }
                 break;
 
+            // ========================================
+            // --- GESTIÓN DE GRUPOS ---
+            // ========================================
+
+            case CREATE_GROUP:
+                // Crear un nuevo grupo (el usuario actual será el admin)
+                String groupName = msg.getContent();
+                logger.info("Creando grupo '{}' por UserID {}", groupName, currentUser.getId());
+
+                if (groupName == null || groupName.trim().isEmpty()) {
+                    sendMessage(new Message(MessageType.CREATE_GROUP_FAIL, "El nombre del grupo no puede estar vacío"));
+                    break;
+                }
+
+                int newGroupId = groupDAO.createGroup(groupName.trim(), currentUser.getId());
+                if (newGroupId > 0) {
+                    logger.info("✓ Grupo '{}' creado con ID {}", groupName, newGroupId);
+                    activityLogger.info("GRUPO CREADO | ID: {} | Nombre: {} | Admin: {}",
+                                      newGroupId, groupName, currentUser.getUsername());
+
+                    // Obtener el grupo completo para enviarlo al cliente
+                    Group createdGroup = groupDAO.getGroupById(newGroupId);
+                    Message response = new Message(MessageType.CREATE_GROUP_OK, "Grupo creado exitosamente");
+                    response.setGroup(createdGroup);
+                    sendMessage(response);
+                } else {
+                    sendMessage(new Message(MessageType.CREATE_GROUP_FAIL, "Error al crear el grupo"));
+                }
+                break;
+
+            case GET_GROUPS:
+                // Obtener todos los grupos del usuario
+                logger.debug("Solicitando grupos para UserID: {}", currentUser.getId());
+                List<Group> userGroups = groupDAO.getGroupsByUser(currentUser.getId());
+                Message groupsResponse = new Message(MessageType.LIST_GROUPS, "Lista de grupos");
+                groupsResponse.setGroupList(userGroups);
+                sendMessage(groupsResponse);
+                logger.debug("Enviados {} grupos a UserID: {}", userGroups.size(), currentUser.getId());
+                break;
+
+            case ADD_GROUP_MEMBER:
+                // Añadir miembro a un grupo (solo admin puede hacerlo)
+                int groupIdToAdd = msg.getReceiverId(); // ID del grupo
+                String usernameToAdd = msg.getContent(); // Nombre del usuario a añadir
+
+                logger.info("Añadiendo '{}' al grupo {} por UserID {}", usernameToAdd, groupIdToAdd, currentUser.getId());
+
+                // Verificar que es admin
+                if (!groupDAO.isGroupAdmin(groupIdToAdd, currentUser.getId())) {
+                    logger.warn("Usuario {} no es admin del grupo {}", currentUser.getId(), groupIdToAdd);
+                    sendMessage(new Message(MessageType.ADD_GROUP_MEMBER_FAIL, "Solo el administrador puede añadir miembros"));
+                    break;
+                }
+
+                // Verificar límite de miembros
+                if (groupDAO.getMemberCount(groupIdToAdd) >= Group.MAX_MEMBERS) {
+                    sendMessage(new Message(MessageType.ADD_GROUP_MEMBER_FAIL,
+                              "El grupo ha alcanzado el límite de " + Group.MAX_MEMBERS + " miembros"));
+                    break;
+                }
+
+                // Buscar el usuario por nombre
+                User userToAdd = userDAO.getUserByUsername(usernameToAdd);
+                if (userToAdd == null) {
+                    sendMessage(new Message(MessageType.ADD_GROUP_MEMBER_FAIL, "Usuario no encontrado"));
+                    break;
+                }
+
+                // Verificar que no esté ya en el grupo
+                if (groupDAO.isMember(groupIdToAdd, userToAdd.getId())) {
+                    sendMessage(new Message(MessageType.ADD_GROUP_MEMBER_FAIL, "El usuario ya es miembro del grupo"));
+                    break;
+                }
+
+                // Añadir al grupo
+                if (groupDAO.addMemberToGroup(groupIdToAdd, userToAdd.getId())) {
+                    activityLogger.info("MIEMBRO AÑADIDO | Grupo: {} | Usuario: {} | Por: {}",
+                                      groupIdToAdd, userToAdd.getUsername(), currentUser.getUsername());
+
+                    // Enviar confirmación con el grupo actualizado
+                    Group updatedGroup = groupDAO.getGroupById(groupIdToAdd);
+                    Message addOkResponse = new Message(MessageType.ADD_GROUP_MEMBER_OK, "Miembro añadido correctamente");
+                    addOkResponse.setGroup(updatedGroup);
+                    sendMessage(addOkResponse);
+
+                    // Notificar al nuevo miembro si está online
+                    ClientHandler newMemberHandler = serverCore.getClientHandler(userToAdd.getId());
+                    if (newMemberHandler != null) {
+                        Message notification = new Message(MessageType.GROUP_NOTIFICATION,
+                                                          "Has sido añadido al grupo: " + updatedGroup.getNombre());
+                        notification.setGroup(updatedGroup);
+                        newMemberHandler.sendMessage(notification);
+                    }
+
+                    // Notificar a los demás miembros del grupo
+                    notifyGroupMembers(groupIdToAdd, currentUser.getId(),
+                                      userToAdd.getUsername() + " se ha unido al grupo", updatedGroup);
+                } else {
+                    sendMessage(new Message(MessageType.ADD_GROUP_MEMBER_FAIL, "Error al añadir miembro"));
+                }
+                break;
+
+            case REMOVE_GROUP_MEMBER:
+                // Eliminar miembro de un grupo (solo admin puede hacerlo)
+                int groupIdToRemove = msg.getReceiverId();
+                String usernameToRemove = msg.getContent();
+
+                logger.info("Eliminando '{}' del grupo {} por UserID {}", usernameToRemove, groupIdToRemove, currentUser.getId());
+
+                // Verificar que es admin
+                if (!groupDAO.isGroupAdmin(groupIdToRemove, currentUser.getId())) {
+                    sendMessage(new Message(MessageType.REMOVE_GROUP_MEMBER_FAIL, "Solo el administrador puede eliminar miembros"));
+                    break;
+                }
+
+                // Buscar el usuario
+                User userToRemove = userDAO.getUserByUsername(usernameToRemove);
+                if (userToRemove == null) {
+                    sendMessage(new Message(MessageType.REMOVE_GROUP_MEMBER_FAIL, "Usuario no encontrado"));
+                    break;
+                }
+
+                // No permitir eliminar al admin
+                if (groupDAO.isGroupAdmin(groupIdToRemove, userToRemove.getId())) {
+                    sendMessage(new Message(MessageType.REMOVE_GROUP_MEMBER_FAIL, "No se puede eliminar al administrador"));
+                    break;
+                }
+
+                if (groupDAO.removeMemberFromGroup(groupIdToRemove, userToRemove.getId())) {
+                    activityLogger.info("MIEMBRO ELIMINADO | Grupo: {} | Usuario: {} | Por: {}",
+                                      groupIdToRemove, userToRemove.getUsername(), currentUser.getUsername());
+
+                    Group groupAfterRemove = groupDAO.getGroupById(groupIdToRemove);
+                    Message removeOkResponse = new Message(MessageType.REMOVE_GROUP_MEMBER_OK, "Miembro eliminado");
+                    removeOkResponse.setGroup(groupAfterRemove);
+                    sendMessage(removeOkResponse);
+
+                    // Notificar al usuario eliminado si está online
+                    ClientHandler removedHandler = serverCore.getClientHandler(userToRemove.getId());
+                    if (removedHandler != null) {
+                        Message notification = new Message(MessageType.GROUP_NOTIFICATION,
+                                                          "Has sido eliminado del grupo: " + groupAfterRemove.getNombre());
+                        notification.setReceiverId(groupIdToRemove);
+                        removedHandler.sendMessage(notification);
+                    }
+
+                    // Notificar a los demás miembros
+                    notifyGroupMembers(groupIdToRemove, currentUser.getId(),
+                                      userToRemove.getUsername() + " ha sido eliminado del grupo", groupAfterRemove);
+                } else {
+                    sendMessage(new Message(MessageType.REMOVE_GROUP_MEMBER_FAIL, "Error al eliminar miembro"));
+                }
+                break;
+
+            case PROMOTE_TO_ADMIN:
+                // Promover a un miembro a administrador
+                int groupIdPromote = msg.getReceiverId();
+                String promoteUsername = msg.getContent();
+
+                logger.info("Promoviendo '{}' a admin del grupo {} por UserID {}",
+                           promoteUsername, groupIdPromote, currentUser.getId());
+
+                // Verificar que el usuario actual es admin
+                if (!groupDAO.isGroupAdmin(groupIdPromote, currentUser.getId())) {
+                    sendMessage(new Message(MessageType.PROMOTE_TO_ADMIN_FAIL,
+                                          "Solo un administrador puede promover a otros"));
+                    break;
+                }
+
+                // Buscar el usuario a promover
+                User userToPromote = userDAO.getUserByUsername(promoteUsername);
+                if (userToPromote == null) {
+                    sendMessage(new Message(MessageType.PROMOTE_TO_ADMIN_FAIL, "Usuario no encontrado"));
+                    break;
+                }
+
+                // Verificar que es miembro del grupo
+                if (!groupDAO.isMember(groupIdPromote, userToPromote.getId())) {
+                    sendMessage(new Message(MessageType.PROMOTE_TO_ADMIN_FAIL,
+                                          "El usuario no es miembro del grupo"));
+                    break;
+                }
+
+                // Verificar que no es ya admin
+                if (groupDAO.isGroupAdmin(groupIdPromote, userToPromote.getId())) {
+                    sendMessage(new Message(MessageType.PROMOTE_TO_ADMIN_FAIL,
+                                          "El usuario ya es administrador"));
+                    break;
+                }
+
+                // Promover
+                if (groupDAO.promoteToAdmin(groupIdPromote, userToPromote.getId())) {
+                    activityLogger.info("ADMIN PROMOVIDO | Grupo: {} | Usuario: {} | Por: {}",
+                                      groupIdPromote, userToPromote.getUsername(), currentUser.getUsername());
+
+                    Group groupAfterPromote = groupDAO.getGroupById(groupIdPromote);
+                    Message promoteOkResponse = new Message(MessageType.PROMOTE_TO_ADMIN_OK,
+                                                           userToPromote.getUsername() + " ahora es administrador");
+                    promoteOkResponse.setGroup(groupAfterPromote);
+                    sendMessage(promoteOkResponse);
+
+                    // Notificar al nuevo admin si está online
+                    ClientHandler promotedHandler = serverCore.getClientHandler(userToPromote.getId());
+                    if (promotedHandler != null) {
+                        Message notification = new Message(MessageType.GROUP_NOTIFICATION,
+                                                          "Ahora eres administrador del grupo: " + groupAfterPromote.getNombre());
+                        notification.setGroup(groupAfterPromote);
+                        promotedHandler.sendMessage(notification);
+                    }
+
+                    // Notificar a los demás miembros
+                    notifyGroupMembers(groupIdPromote, currentUser.getId(),
+                                      userToPromote.getUsername() + " ahora es administrador", groupAfterPromote);
+                } else {
+                    sendMessage(new Message(MessageType.PROMOTE_TO_ADMIN_FAIL,
+                                          "Error al promover a administrador"));
+                }
+                break;
+
+            case DEMOTE_FROM_ADMIN:
+                // Quitar rol de admin a un miembro
+                int groupIdDemote = msg.getReceiverId();
+                String demoteUsername = msg.getContent();
+
+                logger.info("Quitando admin a '{}' del grupo {} por UserID {}",
+                           demoteUsername, groupIdDemote, currentUser.getId());
+
+                // Verificar que el usuario actual es admin
+                if (!groupDAO.isGroupAdmin(groupIdDemote, currentUser.getId())) {
+                    sendMessage(new Message(MessageType.DEMOTE_FROM_ADMIN_FAIL,
+                                          "Solo un administrador puede quitar el rol de admin"));
+                    break;
+                }
+
+                // Buscar el usuario a degradar
+                User userToDemote = userDAO.getUserByUsername(demoteUsername);
+                if (userToDemote == null) {
+                    sendMessage(new Message(MessageType.DEMOTE_FROM_ADMIN_FAIL, "Usuario no encontrado"));
+                    break;
+                }
+
+                // Verificar que es admin
+                if (!groupDAO.isGroupAdmin(groupIdDemote, userToDemote.getId())) {
+                    sendMessage(new Message(MessageType.DEMOTE_FROM_ADMIN_FAIL,
+                                          "El usuario no es administrador"));
+                    break;
+                }
+
+                // Degradar
+                if (groupDAO.demoteFromAdmin(groupIdDemote, userToDemote.getId())) {
+                    activityLogger.info("ADMIN DEGRADADO | Grupo: {} | Usuario: {} | Por: {}",
+                                      groupIdDemote, userToDemote.getUsername(), currentUser.getUsername());
+
+                    Group groupAfterDemote = groupDAO.getGroupById(groupIdDemote);
+                    Message demoteOkResponse = new Message(MessageType.DEMOTE_FROM_ADMIN_OK,
+                                                          userToDemote.getUsername() + " ya no es administrador");
+                    demoteOkResponse.setGroup(groupAfterDemote);
+                    sendMessage(demoteOkResponse);
+
+                    // Notificar al usuario degradado si está online
+                    ClientHandler demotedHandler = serverCore.getClientHandler(userToDemote.getId());
+                    if (demotedHandler != null) {
+                        Message notification = new Message(MessageType.GROUP_NOTIFICATION,
+                                                          "Ya no eres administrador del grupo: " + groupAfterDemote.getNombre());
+                        notification.setGroup(groupAfterDemote);
+                        demotedHandler.sendMessage(notification);
+                    }
+
+                    // Notificar a los demás miembros
+                    notifyGroupMembers(groupIdDemote, currentUser.getId(),
+                                      userToDemote.getUsername() + " ya no es administrador", groupAfterDemote);
+                } else {
+                    sendMessage(new Message(MessageType.DEMOTE_FROM_ADMIN_FAIL,
+                                          "Error al quitar rol de administrador. Debe haber al menos un admin."));
+                }
+                break;
+
+            case LEAVE_GROUP:
+                // Usuario abandona voluntariamente un grupo
+                int groupIdToLeave = msg.getReceiverId();
+                String groupNameToLeave = groupDAO.getGroupName(groupIdToLeave);
+
+                logger.info("UserID {} abandonando grupo {}", currentUser.getId(), groupIdToLeave);
+
+                boolean isAdmin = groupDAO.isGroupAdmin(groupIdToLeave, currentUser.getId());
+
+                if (groupDAO.leaveGroup(groupIdToLeave, currentUser.getId())) {
+                    activityLogger.info("ABANDONO GRUPO | Grupo: {} | Usuario: {} | EraAdmin: {}",
+                                      groupIdToLeave, currentUser.getUsername(), isAdmin);
+
+                    sendMessage(new Message(MessageType.LEAVE_GROUP_OK, "Has abandonado el grupo"));
+
+                    if (isAdmin) {
+                        // Si era admin, el grupo fue eliminado - notificar a todos los ex-miembros
+                        // (En este caso el grupo ya no existe, así que los demás miembros recibirán error si intentan acceder)
+                        logger.info("Grupo {} eliminado porque el admin abandonó", groupIdToLeave);
+                    } else {
+                        // Notificar a los demás miembros
+                        Group groupAfterLeave = groupDAO.getGroupById(groupIdToLeave);
+                        if (groupAfterLeave != null) {
+                            notifyGroupMembers(groupIdToLeave, currentUser.getId(),
+                                              currentUser.getUsername() + " ha abandonado el grupo", groupAfterLeave);
+                        }
+                    }
+                } else {
+                    sendMessage(new Message(MessageType.LEAVE_GROUP_FAIL, "Error al abandonar el grupo"));
+                }
+                break;
+
+            case GET_GROUP_MEMBERS:
+                // Obtener lista de miembros de un grupo
+                int groupIdForMembers = msg.getReceiverId();
+                logger.debug("Solicitando miembros del grupo {} por UserID {}", groupIdForMembers, currentUser.getId());
+
+                // Verificar que el usuario es miembro del grupo
+                if (!groupDAO.isMember(groupIdForMembers, currentUser.getId())) {
+                    sendMessage(new Message(MessageType.ERROR, "No eres miembro de este grupo"));
+                    break;
+                }
+
+                List<User> members = groupDAO.getGroupMembers(groupIdForMembers);
+                Message membersResponse = new Message(MessageType.LIST_GROUP_MEMBERS, "Lista de miembros");
+                membersResponse.setContactList(members);
+                membersResponse.setReceiverId(groupIdForMembers);
+                sendMessage(membersResponse);
+                break;
+
+            case GET_GROUP_INFO:
+                // Obtener información completa de un grupo
+                int groupIdForInfo = msg.getReceiverId();
+                logger.debug("Solicitando info del grupo {} por UserID {}", groupIdForInfo, currentUser.getId());
+
+                Group groupInfo = groupDAO.getGroupById(groupIdForInfo);
+                if (groupInfo != null) {
+                    Message infoResponse = new Message(MessageType.GROUP_INFO_RESPONSE, "Información del grupo");
+                    infoResponse.setGroup(groupInfo);
+                    sendMessage(infoResponse);
+                } else {
+                    sendMessage(new Message(MessageType.ERROR, "Grupo no encontrado"));
+                }
+                break;
+
             default:
                 logger.warn("Comando no reconocido: {} desde UserID: {}", msg.getType(),
                           currentUser != null ? currentUser.getId() : "NO_AUTENTICADO");
@@ -420,6 +768,29 @@ public class ClientHandler implements Runnable {
             serverCore.sendGroupMessage(msg);
         } else {
             serverCore.sendPrivateMessage(msg);
+        }
+    }
+
+    /**
+     * Notifica a todos los miembros de un grupo sobre un evento
+     * @param groupId ID del grupo
+     * @param excludeUserId Usuario a excluir de la notificación (normalmente quien generó el evento)
+     * @param notificationText Texto de la notificación
+     * @param group Objeto Group actualizado para incluir en la notificación
+     */
+    private void notifyGroupMembers(int groupId, int excludeUserId, String notificationText, Group group) {
+        List<Integer> memberIds = groupDAO.getGroupMemberIds(groupId);
+
+        for (Integer memberId : memberIds) {
+            if (memberId != excludeUserId) {
+                ClientHandler memberHandler = serverCore.getClientHandler(memberId);
+                if (memberHandler != null) {
+                    Message notification = new Message(MessageType.GROUP_NOTIFICATION, notificationText);
+                    notification.setGroup(group);
+                    notification.setReceiverId(groupId);
+                    memberHandler.sendMessage(notification);
+                }
+            }
         }
     }
 

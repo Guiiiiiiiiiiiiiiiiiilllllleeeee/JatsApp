@@ -254,34 +254,40 @@ public class ServerCore {
 
     // Enviar mensaje a un grupo (Broadcast selectivo)
     public void sendGroupMessage(Message msg) {
-        logger.debug("Enviando mensaje a grupo: UserID {} -> Grupo {}", msg.getSenderId(), msg.getReceiverId());
+        logger.debug("Enviando mensaje a grupo: UserID {} -> Grupo {}, isGroupChat={}",
+                    msg.getSenderId(), msg.getReceiverId(), msg.isGroupChat());
 
         // 1. Guardar en Base de Datos
         boolean saved = messageDAO.saveMessage(msg);
         if (saved) {
-            activityLogger.info("MENSAJE GRUPO | De: {} | Grupo: {} | Tipo: {}",
-                              msg.getSenderId(), msg.getReceiverId(), msg.getType());
+            activityLogger.info("MENSAJE GRUPO | De: {} | Grupo: {} | Tipo: {} | MsgID: {}",
+                              msg.getSenderId(), msg.getReceiverId(), msg.getType(), msg.getMessageId());
         }
 
         // 2. Recuperar miembros del grupo y enviar solo a ellos
         List<Integer> memberIds = groupDAO.getGroupMemberIds(msg.getReceiverId());
-        logger.debug("Grupo {} tiene {} miembros", msg.getReceiverId(), memberIds.size());
+        logger.info("Grupo {} tiene {} miembros, enviando mensaje...", msg.getReceiverId(), memberIds.size());
 
         int deliveredCount = 0;
         for (Integer memberId : memberIds) {
             // No enviar al emisor
             if (memberId.equals(msg.getSenderId())) {
+                logger.debug("Saltando emisor {}", memberId);
                 continue;
             }
 
             ClientHandler handler = connectedClients.get(memberId);
             if (handler != null) {
+                logger.debug("Enviando a miembro {} (online)", memberId);
                 handler.sendMessage(msg);
                 deliveredCount++;
+            } else {
+                logger.debug("Miembro {} está offline", memberId);
             }
         }
 
-        logger.debug("Mensaje de grupo entregado a {}/{} miembros online", deliveredCount, memberIds.size() - 1);
+        logger.info("Mensaje de grupo {} entregado a {}/{} miembros online",
+                   msg.getReceiverId(), deliveredCount, memberIds.size() - 1);
     }
 
     // Método para obtener número de clientes conectados (usado por MainServer)
