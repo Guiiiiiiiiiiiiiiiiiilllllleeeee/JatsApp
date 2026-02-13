@@ -2,6 +2,7 @@ package com.jatsapp.client.view;
 
 import com.jatsapp.client.network.ClientSocket;
 import com.jatsapp.client.util.EncryptionUtil;
+import com.jatsapp.client.util.StyleUtil;
 import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
@@ -72,37 +73,44 @@ public class ChatFrame extends JFrame {
         // 1. Vincular esta ventana al Socket para recibir mensajes
         ClientSocket.getInstance().setChatFrame(this);
 
+        // Aplicar tema oscuro
+        StyleUtil.applyDarkTheme();
+
         // 2. Configuración de la Ventana
         String miUsuario = ClientSocket.getInstance().getMyUsername();
         setTitle("JatsApp - " + (miUsuario != null ? miUsuario : "Desconectado"));
-        setSize(1000, 700);
+        setSize(1100, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(900, 600));
 
         // Layout Principal: Un panel dividido (Izquierda: Lista, Derecha: Chat)
         JSplitPane splitPane = new JSplitPane();
-        splitPane.setDividerLocation(280); // Ancho del panel de contactos
-        splitPane.setDividerSize(2); // Borde fino
+        splitPane.setDividerLocation(320);
+        splitPane.setDividerSize(1);
         splitPane.setBorder(null);
+        splitPane.setBackground(StyleUtil.BORDER_DARK);
 
         // ==========================================
         // PANEL IZQUIERDO (Contactos y Botones)
         // ==========================================
         JPanel panelIzquierdo = new JPanel(new BorderLayout());
-        panelIzquierdo.setBackground(new Color(30, 30, 30));
+        panelIzquierdo.setBackground(StyleUtil.BG_MEDIUM);
+        panelIzquierdo.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, StyleUtil.BORDER_DARK));
 
         // -- Cabecera Izquierda (Logo + Búsqueda Global) --
         JPanel panelCabeceraIzq = new JPanel(new BorderLayout());
-        panelCabeceraIzq.setBackground(new Color(30, 30, 30));
+        panelCabeceraIzq.setBackground(StyleUtil.BG_DARK);
+        panelCabeceraIzq.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleUtil.BORDER_DARK));
 
         // Panel superior con Logo y botón de búsqueda
         JPanel panelLogoYBusqueda = new JPanel(new BorderLayout());
-        panelLogoYBusqueda.setBackground(new Color(30, 30, 30));
+        panelLogoYBusqueda.setBackground(StyleUtil.BG_DARK);
 
-        JLabel lblLogo = new JLabel("JatsApp");
+        JLabel lblLogo = new JLabel("💬 JatsApp");
         lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblLogo.setForeground(Color.WHITE);
-        lblLogo.setBorder(new EmptyBorder(20, 20, 10, 10));
+        lblLogo.setForeground(StyleUtil.PRIMARY);
+        lblLogo.setBorder(new EmptyBorder(18, 20, 12, 10));
         panelLogoYBusqueda.add(lblLogo, BorderLayout.CENTER);
 
         // Botón de búsqueda global
@@ -116,20 +124,11 @@ public class ChatFrame extends JFrame {
 
         // Panel de búsqueda global (oculto por defecto)
         panelBusquedaGlobal = new JPanel(new BorderLayout(5, 0));
-        panelBusquedaGlobal.setBackground(new Color(35, 35, 35));
-        panelBusquedaGlobal.setBorder(BorderFactory.createEmptyBorder(5, 15, 10, 15));
+        panelBusquedaGlobal.setBackground(StyleUtil.BG_DARK);
+        panelBusquedaGlobal.setBorder(BorderFactory.createEmptyBorder(5, 15, 12, 15));
         panelBusquedaGlobal.setVisible(false);
 
-        txtBusquedaGlobal = new JTextField();
-        txtBusquedaGlobal.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtBusquedaGlobal.setBackground(new Color(50, 50, 50));
-        txtBusquedaGlobal.setForeground(Color.WHITE);
-        txtBusquedaGlobal.setCaretColor(Color.WHITE);
-        txtBusquedaGlobal.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(70, 70, 70)),
-            BorderFactory.createEmptyBorder(5, 10, 5, 10)
-        ));
-        txtBusquedaGlobal.putClientProperty("JTextField.placeholderText", "Buscar mensajes...");
+        txtBusquedaGlobal = StyleUtil.createStyledTextField("Buscar mensajes...");
         txtBusquedaGlobal.addActionListener(e -> ejecutarBusquedaGlobal());
         txtBusquedaGlobal.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -141,10 +140,10 @@ public class ChatFrame extends JFrame {
         });
 
         JButton btnCerrarBusquedaGlobal = new JButton("✕");
-        btnCerrarBusquedaGlobal.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnCerrarBusquedaGlobal.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnCerrarBusquedaGlobal.setBackground(null);
-        btnCerrarBusquedaGlobal.setForeground(Color.WHITE);
-        btnCerrarBusquedaGlobal.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        btnCerrarBusquedaGlobal.setForeground(StyleUtil.TEXT_SECONDARY);
+        btnCerrarBusquedaGlobal.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 5));
         btnCerrarBusquedaGlobal.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCerrarBusquedaGlobal.setToolTipText("Cerrar búsqueda");
         btnCerrarBusquedaGlobal.addActionListener(e -> cerrarBusquedaGlobal());
@@ -199,34 +198,37 @@ public class ChatFrame extends JFrame {
                 }
             }
         });
-        panelIzquierdo.add(new JScrollPane(listaContactos), BorderLayout.CENTER);
 
-        // -- Panel de Botones Inferior (Configuración y Añadir) --
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        panelBotones.setBackground(new Color(25, 25, 25));
+        JScrollPane scrollContactos = new JScrollPane(listaContactos);
+        scrollContactos.setBorder(null);
+        StyleUtil.styleScrollPane(scrollContactos);
+        panelIzquierdo.add(scrollContactos, BorderLayout.CENTER);
 
-        // Botón Configuración (⚙)
+        // -- Panel de Botones Inferior --
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 12));
+        panelBotones.setBackground(StyleUtil.BG_DARK);
+        panelBotones.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, StyleUtil.BORDER_DARK));
+
+        // Botón Configuración (⚙) - Muestra menú con opciones
         JButton btnConfig = crearBotonImagen("/images/setting.png", "⚙");
-        btnConfig.setToolTipText("Cerrar Sesión");
-        btnConfig.addActionListener(e -> cerrarSesion());
+        btnConfig.setToolTipText("Opciones");
+        btnConfig.addActionListener(e -> mostrarMenuConfiguracion(btnConfig));
 
-        // Botón Añadir Contacto (+) - Ahora muestra menú con opciones
-        JButton btnAdd = new JButton("+");
-        btnAdd.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        btnAdd.setForeground(new Color(0, 200, 150)); // Verde JatsApp
-        btnAdd.setBackground(null);
-        btnAdd.setBorder(null);
-        btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAdd.setToolTipText("Nuevo chat o grupo");
-        btnAdd.addActionListener(e -> mostrarMenuNuevo(btnAdd));
-
+        // Botón Contactos
         btnContactos = new JButton("Contactos");
+        btnContactos.setFont(StyleUtil.FONT_SMALL);
+        btnContactos.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnContactos.setBackground(StyleUtil.BG_LIGHT);
+        btnContactos.setOpaque(true);
+        btnContactos.setBorderPainted(false);
+        btnContactos.setFocusPainted(false);
+        btnContactos.setBorder(new EmptyBorder(10, 18, 10, 18));
+        btnContactos.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnContactos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Siempre crear una instancia nueva para evitar problemas
                 if (contactsFrame != null && contactsFrame.isVisible()) {
-                    contactsFrame.toFront(); // Si ya está abierta, traerla al frente
+                    contactsFrame.toFront();
                 } else {
                     contactsFrame = new ContactsFrame();
                     contactsFrame.setVisible(true);
@@ -236,15 +238,18 @@ public class ChatFrame extends JFrame {
 
         // Botón Grupos
         JButton btnGrupos = new JButton("Grupos");
-        btnGrupos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btnGrupos.setBackground(new Color(60, 60, 60));
-        btnGrupos.setForeground(Color.WHITE);
+        btnGrupos.setFont(StyleUtil.FONT_SMALL);
+        btnGrupos.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnGrupos.setBackground(StyleUtil.BG_LIGHT);
+        btnGrupos.setOpaque(true);
+        btnGrupos.setBorderPainted(false);
+        btnGrupos.setFocusPainted(false);
+        btnGrupos.setBorder(new EmptyBorder(10, 18, 10, 18));
         btnGrupos.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnGrupos.setToolTipText("Gestionar grupos");
         btnGrupos.addActionListener(e -> abrirVentanaGrupos());
 
         panelBotones.add(btnConfig);
-        panelBotones.add(btnAdd);
         panelBotones.add(btnContactos);
         panelBotones.add(btnGrupos);
 
@@ -254,27 +259,27 @@ public class ChatFrame extends JFrame {
         // PANEL DERECHO (Chat)
         // ==========================================
         JPanel panelDerecho = new JPanel(new BorderLayout());
-        panelDerecho.setBackground(new Color(20, 20, 20));
+        panelDerecho.setBackground(StyleUtil.BG_DARK);
 
         // -- Panel superior (cabecera + búsqueda) --
         JPanel panelSuperior = new JPanel(new BorderLayout());
-        panelSuperior.setBackground(new Color(25, 25, 25));
+        panelSuperior.setBackground(StyleUtil.BG_DARK);
 
         // -- Cabecera del Chat --
         JPanel headerChat = new JPanel(new BorderLayout());
-        headerChat.setBackground(new Color(25, 25, 25));
-        headerChat.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(40, 40, 40)));
-        headerChat.setPreferredSize(new Dimension(0, 60));
+        headerChat.setBackground(StyleUtil.BG_DARK);
+        headerChat.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, StyleUtil.BORDER_DARK));
+        headerChat.setPreferredSize(new Dimension(0, 65));
 
-        lblTituloChat = new JLabel("Selecciona un contacto");
-        lblTituloChat.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblTituloChat.setForeground(Color.WHITE);
-        lblTituloChat.setBorder(new EmptyBorder(10, 20, 0, 0));
+        lblTituloChat = new JLabel("Selecciona un chat");
+        lblTituloChat.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        lblTituloChat.setForeground(StyleUtil.TEXT_PRIMARY);
+        lblTituloChat.setBorder(new EmptyBorder(12, 24, 0, 0));
         headerChat.add(lblTituloChat, BorderLayout.CENTER);
 
         // Panel para botones del header (búsqueda + configuración de grupo)
-        JPanel panelBotonesHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-        panelBotonesHeader.setBackground(new Color(25, 25, 25));
+        JPanel panelBotonesHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        panelBotonesHeader.setBackground(StyleUtil.BG_DARK);
 
         // Botón de configuración de grupo (solo visible en chats de grupo)
         btnConfigGrupo = crearBotonImagen("/images/setting.png", "⚙");
@@ -285,10 +290,13 @@ public class ChatFrame extends JFrame {
 
         // Botón de búsqueda
         JButton btnBuscar = new JButton("🔍");
-        btnBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        btnBuscar.setBackground(null);
-        btnBuscar.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        btnBuscar.setForeground(Color.WHITE);
+        btnBuscar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
+        btnBuscar.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnBuscar.setBackground(StyleUtil.BG_LIGHT);
+        btnBuscar.setOpaque(true);
+        btnBuscar.setBorderPainted(false);
+        btnBuscar.setFocusPainted(false);
+        btnBuscar.setBorder(BorderFactory.createEmptyBorder(8, 14, 8, 14));
         btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBuscar.setToolTipText("Buscar mensajes (Ctrl+F)");
         btnBuscar.addActionListener(e -> togglePanelBusqueda());
@@ -310,8 +318,8 @@ public class ChatFrame extends JFrame {
         txtBusqueda = new JTextField();
         txtBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         txtBusqueda.setBackground(new Color(50, 50, 50));
-        txtBusqueda.setForeground(Color.WHITE);
-        txtBusqueda.setCaretColor(Color.WHITE);
+        txtBusqueda.setForeground(StyleUtil.TEXT_PRIMARY);
+        txtBusqueda.setCaretColor(StyleUtil.TEXT_PRIMARY);
         txtBusqueda.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(70, 70, 70)),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
@@ -332,13 +340,16 @@ public class ChatFrame extends JFrame {
         panelBotonesBusqueda.setBackground(new Color(35, 35, 35));
 
         lblResultadoBusqueda = new JLabel("0/0");
-        lblResultadoBusqueda.setForeground(new Color(150, 150, 150));
+        lblResultadoBusqueda.setForeground(StyleUtil.TEXT_SECONDARY);
         lblResultadoBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
         JButton btnAnterior = new JButton("▲");
         btnAnterior.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        btnAnterior.setBackground(new Color(60, 60, 60));
-        btnAnterior.setForeground(Color.WHITE);
+        btnAnterior.setBackground(StyleUtil.BG_LIGHT);
+        btnAnterior.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnAnterior.setOpaque(true);
+        btnAnterior.setBorderPainted(false);
+        btnAnterior.setFocusPainted(false);
         btnAnterior.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         btnAnterior.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnAnterior.setToolTipText("Resultado anterior");
@@ -346,8 +357,11 @@ public class ChatFrame extends JFrame {
 
         JButton btnSiguiente = new JButton("▼");
         btnSiguiente.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        btnSiguiente.setBackground(new Color(60, 60, 60));
-        btnSiguiente.setForeground(Color.WHITE);
+        btnSiguiente.setBackground(StyleUtil.BG_LIGHT);
+        btnSiguiente.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnSiguiente.setOpaque(true);
+        btnSiguiente.setBorderPainted(false);
+        btnSiguiente.setFocusPainted(false);
         btnSiguiente.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         btnSiguiente.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSiguiente.setToolTipText("Resultado siguiente");
@@ -355,8 +369,11 @@ public class ChatFrame extends JFrame {
 
         JButton btnCerrarBusqueda = new JButton("✕");
         btnCerrarBusqueda.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnCerrarBusqueda.setBackground(null);
-        btnCerrarBusqueda.setForeground(Color.WHITE);
+        btnCerrarBusqueda.setBackground(StyleUtil.DANGER);
+        btnCerrarBusqueda.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnCerrarBusqueda.setOpaque(true);
+        btnCerrarBusqueda.setBorderPainted(false);
+        btnCerrarBusqueda.setFocusPainted(false);
         btnCerrarBusqueda.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         btnCerrarBusqueda.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCerrarBusqueda.setToolTipText("Cerrar búsqueda");
@@ -378,21 +395,21 @@ public class ChatFrame extends JFrame {
         areaChat = new JTextPane();
         areaChat.setEditable(false);
         areaChat.setContentType("text/html");
-        areaChat.setBackground(new Color(20, 20, 20));
+        areaChat.setBackground(StyleUtil.BG_DARK);
 
         kit = new HTMLEditorKit();
         doc = new HTMLDocument();
         areaChat.setEditorKit(kit);
         areaChat.setDocument(doc);
 
-        // CSS para las burbujas
-        String css = "body { font-family: 'Segoe UI', sans-serif; background-color: #141414; color: #ddd; padding: 10px; }"
-                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 5px; clear: both; }"
-                + ".bubble-me { background-color: #008f6d; padding: 8px 12px; border-radius: 12px; float: right; color: white; max-width: 60%; position: relative; }"
-                + ".bubble-other { background-color: #333333; padding: 8px 12px; border-radius: 12px; float: left; color: white; max-width: 60%; position: relative; }"
-                + ".sender { font-size: 10px; color: #4fc3f7; font-weight: bold; display: block; margin-bottom: 3px; }"
-                + ".timestamp { font-size: 9px; color: rgba(255,255,255,0.6); display: block; text-align: right; margin-top: 4px; }"
-                + ".status { font-size: 10px; margin-left: 5px; }";
+        // CSS moderno para las burbujas
+        String css = "body { font-family: 'Segoe UI', sans-serif; background-color: #111b21; color: #e9edef; padding: 15px; margin: 0; }"
+                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 8px; clear: both; }"
+                + ".bubble-me { background: linear-gradient(135deg, #005c4b 0%, #00856a 100%); padding: 10px 14px; border-radius: 16px 16px 4px 16px; float: right; color: white; max-width: 65%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }"
+                + ".bubble-other { background-color: #202c33; padding: 10px 14px; border-radius: 16px 16px 16px 4px; float: left; color: #e9edef; max-width: 65%; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }"
+                + ".sender { font-size: 11px; color: #00a884; font-weight: bold; display: block; margin-bottom: 4px; }"
+                + ".timestamp { font-size: 10px; color: rgba(255,255,255,0.5); display: block; text-align: right; margin-top: 5px; }"
+                + ".status { font-size: 11px; margin-left: 6px; }";
 
         try {
             ((HTMLDocument) areaChat.getDocument()).getStyleSheet().addRule(css);
@@ -413,30 +430,49 @@ public class ChatFrame extends JFrame {
             }
         });
 
-        panelDerecho.add(new JScrollPane(areaChat), BorderLayout.CENTER);
+        JScrollPane scrollChat = new JScrollPane(areaChat);
+        StyleUtil.styleScrollPane(scrollChat);
+        panelDerecho.add(scrollChat, BorderLayout.CENTER);
 
         // -- Área de Input (Escribir) --
-        JPanel panelInput = new JPanel(new BorderLayout(10, 0));
-        panelInput.setBackground(new Color(25, 25, 25));
-        panelInput.setBorder(new EmptyBorder(10, 15, 10, 15));
+        JPanel panelInput = new JPanel(new BorderLayout(12, 0));
+        panelInput.setBackground(StyleUtil.BG_DARK);
+        panelInput.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, StyleUtil.BORDER_DARK),
+            new EmptyBorder(12, 20, 12, 20)
+        ));
 
         // Botón Archivo
+        // Botón Archivo
         JButton btnArchivo = new JButton("📎");
-        btnArchivo.setBackground(new Color(40,40,40));
-        btnArchivo.setForeground(Color.WHITE);
-        btnArchivo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        btnArchivo.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));
+        btnArchivo.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnArchivo.setBackground(StyleUtil.BG_LIGHT);
+        btnArchivo.setOpaque(true);
+        btnArchivo.setBorderPainted(false);
+        btnArchivo.setFocusPainted(false);
+        btnArchivo.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+        btnArchivo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnArchivo.setToolTipText("Adjuntar archivo");
         btnArchivo.addActionListener(e -> enviarArchivo());
 
-        txtMensaje = new JTextField();
-        txtMensaje.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtMensaje.putClientProperty("JTextField.placeholderText", "Escribe un mensaje...");
-        txtMensaje.putClientProperty("JComponent.roundRect", true);
+        txtMensaje = StyleUtil.createStyledTextField("Escribe un mensaje...");
+        txtMensaje.setFont(StyleUtil.FONT_BODY);
 
         // Al pulsar Enter, enviar
         txtMensaje.addActionListener(e -> enviarMensajeTexto());
 
         // Botón Enviar
-        JButton btnEnviar = crearBotonImagen("/images/send.png", "➤");
+        JButton btnEnviar = new JButton("➤");
+        btnEnviar.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        btnEnviar.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnEnviar.setBackground(StyleUtil.PRIMARY);
+        btnEnviar.setOpaque(true);
+        btnEnviar.setBorderPainted(false);
+        btnEnviar.setFocusPainted(false);
+        btnEnviar.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        btnEnviar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnEnviar.setToolTipText("Enviar mensaje");
         btnEnviar.addActionListener(e -> enviarMensajeTexto());
 
         panelInput.add(btnArchivo, BorderLayout.WEST);
@@ -530,21 +566,21 @@ public class ChatFrame extends JFrame {
         // Opción: Añadir contacto
         JMenuItem itemContacto = new JMenuItem("👤 Añadir Contacto");
         itemContacto.setBackground(new Color(40, 40, 40));
-        itemContacto.setForeground(Color.WHITE);
+        itemContacto.setForeground(StyleUtil.TEXT_PRIMARY);
         itemContacto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         itemContacto.addActionListener(e -> accionAnadirContacto());
 
         // Opción: Crear grupo
         JMenuItem itemGrupo = new JMenuItem("👥 Crear Grupo");
         itemGrupo.setBackground(new Color(40, 40, 40));
-        itemGrupo.setForeground(Color.WHITE);
+        itemGrupo.setForeground(StyleUtil.TEXT_PRIMARY);
         itemGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         itemGrupo.addActionListener(e -> crearGrupoRapido());
 
         // Opción: Buscar usuario
         JMenuItem itemBuscar = new JMenuItem("🔍 Buscar Usuario");
         itemBuscar.setBackground(new Color(40, 40, 40));
-        itemBuscar.setForeground(Color.WHITE);
+        itemBuscar.setForeground(StyleUtil.TEXT_PRIMARY);
         itemBuscar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         itemBuscar.addActionListener(e -> {
             String termino = JOptionPane.showInputDialog(this,
@@ -581,8 +617,65 @@ public class ChatFrame extends JFrame {
         }
     }
 
+    /**
+     * Muestra el menú de configuración con opciones
+     */
+    private void mostrarMenuConfiguracion(JButton source) {
+        JPopupMenu menu = new JPopupMenu();
+        menu.setBackground(StyleUtil.BG_MEDIUM);
+        menu.setBorder(BorderFactory.createLineBorder(StyleUtil.BORDER_LIGHT));
+
+        // Opción: Cerrar sesión
+        JMenuItem itemCerrarSesion = new JMenuItem("🔓 Cerrar sesión");
+        itemCerrarSesion.setFont(StyleUtil.FONT_BODY);
+        itemCerrarSesion.setBackground(StyleUtil.BG_MEDIUM);
+        itemCerrarSesion.setForeground(StyleUtil.TEXT_PRIMARY);
+        itemCerrarSesion.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        itemCerrarSesion.addActionListener(e -> cerrarSesion());
+        menu.add(itemCerrarSesion);
+
+        menu.addSeparator();
+
+        // Opción: Salir de la aplicación
+        JMenuItem itemSalir = new JMenuItem("❌ Salir de la aplicación");
+        itemSalir.setFont(StyleUtil.FONT_BODY);
+        itemSalir.setBackground(StyleUtil.BG_MEDIUM);
+        itemSalir.setForeground(StyleUtil.DANGER);
+        itemSalir.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        itemSalir.addActionListener(e -> salirAplicacion());
+        menu.add(itemSalir);
+
+        // Mostrar menú encima del botón
+        menu.show(source, 0, -menu.getPreferredSize().height);
+    }
+
+    /**
+     * Cierra la sesión actual y vuelve al login
+     */
     private void cerrarSesion() {
-        int opt = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres salir?", "Salir", JOptionPane.YES_NO_OPTION);
+        int opt = JOptionPane.showConfirmDialog(this,
+            "¿Deseas cerrar la sesión actual?\n\nVolverás a la pantalla de inicio de sesión.",
+            "Cerrar Sesión",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+        if (opt == JOptionPane.YES_OPTION) {
+            // Cerrar la conexión actual
+            ClientSocket.getInstance().disconnect();
+            // Cerrar esta ventana y abrir login
+            this.dispose();
+            new LoginFrame();
+        }
+    }
+
+    /**
+     * Cierra completamente la aplicación
+     */
+    private void salirAplicacion() {
+        int opt = JOptionPane.showConfirmDialog(this,
+            "¿Deseas salir de JatsApp?",
+            "Salir",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
         if (opt == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
@@ -996,20 +1089,30 @@ public class ChatFrame extends JFrame {
         });
     }
 
-    // Helper para cargar imágenes sin que explote si faltan
+    // Helper para crear botones con emoji (más confiable que imágenes)
     private JButton crearBotonImagen(String path, String textoAlt) {
-        JButton btn = new JButton();
-        URL url = getClass().getResource(path);
-        if (url != null) {
-            ImageIcon icon = new ImageIcon(new ImageIcon(url).getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH));
-            btn.setIcon(icon);
-        } else {
-            btn.setText(textoAlt);
-            btn.setForeground(Color.WHITE);
-        }
-        btn.setBackground(null);
-        btn.setBorder(null);
+        JButton btn = new JButton(textoAlt);
+        btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
+        btn.setForeground(StyleUtil.TEXT_PRIMARY);
+        btn.setBackground(StyleUtil.BG_LIGHT);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Efecto hover
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setBackground(StyleUtil.BG_HOVER);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setBackground(StyleUtil.BG_LIGHT);
+            }
+        });
+
         return btn;
     }
 
@@ -1560,7 +1663,7 @@ public class ChatFrame extends JFrame {
             // Título
             JLabel lblTitulo = new JLabel("Se encontraron " + mensajes.size() + " mensaje(s)");
             lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            lblTitulo.setForeground(Color.WHITE);
+            lblTitulo.setForeground(StyleUtil.TEXT_PRIMARY);
             lblTitulo.setBorder(new EmptyBorder(15, 15, 10, 15));
             panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
 
@@ -1568,10 +1671,10 @@ public class ChatFrame extends JFrame {
             DefaultListModel<String> modeloResultados = new DefaultListModel<>();
             JList<String> listaResultados = new JList<>(modeloResultados);
             listaResultados.setBackground(new Color(40, 40, 40));
-            listaResultados.setForeground(Color.WHITE);
+            listaResultados.setForeground(StyleUtil.TEXT_PRIMARY);
             listaResultados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             listaResultados.setSelectionBackground(new Color(0, 150, 136));
-            listaResultados.setSelectionForeground(Color.WHITE);
+            listaResultados.setSelectionForeground(StyleUtil.TEXT_PRIMARY);
             listaResultados.setFixedCellHeight(50);
 
             // Mapear índices a mensajes para poder abrir el chat
@@ -1641,7 +1744,7 @@ public class ChatFrame extends JFrame {
             // Botón cerrar
             JButton btnCerrar = new JButton("Cerrar");
             btnCerrar.setBackground(new Color(60, 60, 60));
-            btnCerrar.setForeground(Color.WHITE);
+            btnCerrar.setForeground(StyleUtil.TEXT_PRIMARY);
             btnCerrar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
             btnCerrar.addActionListener(ev -> dialogo.dispose());
 
@@ -1778,7 +1881,7 @@ public class ChatFrame extends JFrame {
 
         JLabel lblNombre = new JLabel("👥 " + grupoActual.getNombre());
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblNombre.setForeground(Color.WHITE);
+        lblNombre.setForeground(StyleUtil.TEXT_PRIMARY);
         headerPanel.add(lblNombre, BorderLayout.NORTH);
 
         int memberCount = grupoActual.getMiembros() != null ? grupoActual.getMiembros().size() : 0;
@@ -1812,7 +1915,7 @@ public class ChatFrame extends JFrame {
 
         JLabel lblMiembros = new JLabel("Miembros:");
         lblMiembros.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblMiembros.setForeground(Color.WHITE);
+        lblMiembros.setForeground(StyleUtil.TEXT_PRIMARY);
         membersPanel.add(lblMiembros, BorderLayout.NORTH);
 
         // Usar un modelo que guarde tanto el nombre mostrado como el User original
@@ -1836,7 +1939,7 @@ public class ChatFrame extends JFrame {
 
         JList<String> listaMiembros = new JList<>(memberModel);
         listaMiembros.setBackground(new Color(40, 40, 40));
-        listaMiembros.setForeground(Color.WHITE);
+        listaMiembros.setForeground(StyleUtil.TEXT_PRIMARY);
         listaMiembros.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         listaMiembros.setFixedCellHeight(35);
         listaMiembros.setSelectionBackground(new Color(0, 120, 200));
@@ -1859,7 +1962,7 @@ public class ChatFrame extends JFrame {
             // Botón añadir miembro
             JButton btnAddMember = new JButton("➕ Añadir Miembro");
             btnAddMember.setBackground(new Color(0, 120, 200));
-            btnAddMember.setForeground(Color.WHITE);
+            btnAddMember.setForeground(StyleUtil.TEXT_PRIMARY);
             btnAddMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
             btnAddMember.addActionListener(e -> {
                 String username = JOptionPane.showInputDialog(dialogo,
@@ -1880,7 +1983,7 @@ public class ChatFrame extends JFrame {
             // Botón eliminar miembro
             JButton btnRemoveMember = new JButton("➖ Eliminar Miembro");
             btnRemoveMember.setBackground(new Color(200, 80, 80));
-            btnRemoveMember.setForeground(Color.WHITE);
+            btnRemoveMember.setForeground(StyleUtil.TEXT_PRIMARY);
             btnRemoveMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
             btnRemoveMember.addActionListener(e -> {
                 String selected = listaMiembros.getSelectedValue();
@@ -1993,7 +2096,7 @@ public class ChatFrame extends JFrame {
         // Botón abandonar grupo
         JButton btnLeave = new JButton("🚪 Abandonar Grupo");
         btnLeave.setBackground(new Color(100, 100, 100));
-        btnLeave.setForeground(Color.WHITE);
+        btnLeave.setForeground(StyleUtil.TEXT_PRIMARY);
         btnLeave.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLeave.addActionListener(e -> {
             String mensaje;
@@ -2021,7 +2124,7 @@ public class ChatFrame extends JFrame {
         // Botón cerrar
         JButton btnCerrar = new JButton("Cerrar");
         btnCerrar.setBackground(new Color(60, 60, 60));
-        btnCerrar.setForeground(Color.WHITE);
+        btnCerrar.setForeground(StyleUtil.TEXT_PRIMARY);
         btnCerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCerrar.addActionListener(e -> dialogo.dispose());
         botonesPanel.add(btnCerrar);
@@ -2107,7 +2210,7 @@ public class ChatFrame extends JFrame {
             // Menú para grupos
             JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
             itemAbrir.setBackground(new Color(40, 40, 40));
-            itemAbrir.setForeground(Color.WHITE);
+            itemAbrir.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAbrir.addActionListener(e -> {
                 Group grupo = new Group(realGroupId, nombreGrupo, 0);
                 abrirChatGrupo(grupo);
@@ -2115,7 +2218,7 @@ public class ChatFrame extends JFrame {
 
             JMenuItem itemAdmin = new JMenuItem("⚙️ Administrar Grupo");
             itemAdmin.setBackground(new Color(40, 40, 40));
-            itemAdmin.setForeground(Color.WHITE);
+            itemAdmin.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAdmin.addActionListener(e -> {
                 // Abrir ventana de grupos y seleccionar este grupo
                 abrirVentanaGrupos();
@@ -2147,7 +2250,7 @@ public class ChatFrame extends JFrame {
             // Menú para usuarios
             JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
             itemAbrir.setBackground(new Color(40, 40, 40));
-            itemAbrir.setForeground(Color.WHITE);
+            itemAbrir.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAbrir.addActionListener(e -> cambiarChat(elemento));
 
             JMenuItem itemEliminar = new JMenuItem("❌ Eliminar Contacto");

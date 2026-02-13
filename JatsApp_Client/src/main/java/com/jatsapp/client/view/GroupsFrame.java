@@ -1,6 +1,7 @@
 package com.jatsapp.client.view;
 
 import com.jatsapp.client.network.ClientSocket;
+import com.jatsapp.client.util.StyleUtil;
 import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
@@ -35,37 +36,38 @@ public class GroupsFrame extends JFrame {
     private Group selectedGroup = null;
 
     public GroupsFrame() {
-        setTitle("Mis Grupos");
-        setSize(700, 500);
+        setTitle("Mis Grupos - JatsApp");
+        setSize(800, 550);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(650, 450));
 
         // Registrarse en ClientSocket
         ClientSocket.getInstance().setGroupsFrame(this);
 
         // Panel principal con BorderLayout
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
-        mainPanel.setBackground(new Color(30, 30, 30));
+        JPanel mainPanel = new JPanel(new BorderLayout(0, 0));
+        mainPanel.setBackground(StyleUtil.BG_DARK);
 
         // ===== PANEL IZQUIERDO: Lista de grupos =====
-        JPanel leftPanel = new JPanel(new BorderLayout(5, 5));
-        leftPanel.setBackground(new Color(35, 35, 35));
-        leftPanel.setPreferredSize(new Dimension(250, 0));
+        JPanel leftPanel = new JPanel(new BorderLayout(0, 0));
+        leftPanel.setBackground(StyleUtil.BG_MEDIUM);
+        leftPanel.setPreferredSize(new Dimension(280, 0));
+        leftPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, StyleUtil.BORDER_DARK));
 
         JLabel lblTitulo = new JLabel("Mis Grupos");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblTitulo.setForeground(Color.WHITE);
-        lblTitulo.setBorder(new EmptyBorder(10, 10, 10, 10));
+        lblTitulo.setFont(StyleUtil.FONT_SUBTITLE);
+        lblTitulo.setForeground(StyleUtil.TEXT_PRIMARY);
+        lblTitulo.setBorder(new EmptyBorder(20, 20, 15, 20));
         leftPanel.add(lblTitulo, BorderLayout.NORTH);
 
         // Lista de grupos
         groupListModel = new DefaultListModel<>();
         groupList = new JList<>(groupListModel);
         groupList.setCellRenderer(new GroupListRenderer());
-        groupList.setBackground(new Color(40, 40, 40));
-        groupList.setForeground(Color.WHITE);
-        groupList.setSelectionBackground(new Color(0, 150, 100));
+        groupList.setBackground(StyleUtil.BG_MEDIUM);
+        groupList.setForeground(StyleUtil.TEXT_PRIMARY);
+        groupList.setSelectionBackground(StyleUtil.BG_SELECTED);
         groupList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -78,44 +80,41 @@ public class GroupsFrame extends JFrame {
 
         JScrollPane scrollGroups = new JScrollPane(groupList);
         scrollGroups.setBorder(null);
+        StyleUtil.styleScrollPane(scrollGroups);
         leftPanel.add(scrollGroups, BorderLayout.CENTER);
 
         // Botón crear grupo
-        JButton btnCrearGrupo = new JButton("+ Crear Grupo");
-        btnCrearGrupo.setBackground(new Color(0, 150, 100));
-        btnCrearGrupo.setForeground(Color.WHITE);
-        btnCrearGrupo.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnCrearGrupo.setBorder(new EmptyBorder(12, 20, 12, 20));
-        btnCrearGrupo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton btnCrearGrupo = StyleUtil.createPrimaryButton("+ Crear Grupo");
         btnCrearGrupo.addActionListener(e -> crearNuevoGrupo());
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnPanel.setBackground(new Color(35, 35, 35));
-        btnPanel.add(btnCrearGrupo);
+        JPanel btnPanel = new JPanel(new BorderLayout());
+        btnPanel.setBackground(StyleUtil.BG_MEDIUM);
+        btnPanel.setBorder(new EmptyBorder(15, 20, 15, 20));
+        btnPanel.add(btnCrearGrupo, BorderLayout.CENTER);
         leftPanel.add(btnPanel, BorderLayout.SOUTH);
 
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
         // ===== PANEL DERECHO: Detalles del grupo =====
         detailPanel = new JPanel(new BorderLayout(10, 10));
-        detailPanel.setBackground(new Color(25, 25, 25));
-        detailPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        detailPanel.setBackground(StyleUtil.BG_DARK);
+        detailPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
 
         // Header con información del grupo
         JPanel headerPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        headerPanel.setBackground(new Color(25, 25, 25));
+        headerPanel.setBackground(StyleUtil.BG_DARK);
 
         lblGroupName = new JLabel("Selecciona un grupo");
-        lblGroupName.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblGroupName.setForeground(Color.WHITE);
+        lblGroupName.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblGroupName.setForeground(StyleUtil.TEXT_PRIMARY);
 
         lblGroupAdmin = new JLabel("");
-        lblGroupAdmin.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblGroupAdmin.setForeground(new Color(150, 150, 150));
+        lblGroupAdmin.setFont(StyleUtil.FONT_BODY);
+        lblGroupAdmin.setForeground(StyleUtil.PRIMARY);
 
         lblMemberCount = new JLabel("");
-        lblMemberCount.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblMemberCount.setForeground(new Color(150, 150, 150));
+        lblMemberCount.setFont(StyleUtil.FONT_SMALL);
+        lblMemberCount.setForeground(StyleUtil.TEXT_SECONDARY);
 
         headerPanel.add(lblGroupName);
         headerPanel.add(lblGroupAdmin);
@@ -123,52 +122,41 @@ public class GroupsFrame extends JFrame {
         detailPanel.add(headerPanel, BorderLayout.NORTH);
 
         // Lista de miembros
-        JPanel membersPanel = new JPanel(new BorderLayout(5, 5));
-        membersPanel.setBackground(new Color(25, 25, 25));
+        JPanel membersPanel = new JPanel(new BorderLayout(5, 10));
+        membersPanel.setBackground(StyleUtil.BG_DARK);
 
-        JLabel lblMiembros = new JLabel("Miembros:");
-        lblMiembros.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblMiembros.setForeground(Color.WHITE);
+        JLabel lblMiembros = new JLabel("Miembros del grupo:");
+        lblMiembros.setFont(StyleUtil.FONT_HEADING);
+        lblMiembros.setForeground(StyleUtil.TEXT_PRIMARY);
         membersPanel.add(lblMiembros, BorderLayout.NORTH);
 
         memberListModel = new DefaultListModel<>();
         memberList = new JList<>(memberListModel);
         memberList.setCellRenderer(new MemberListRenderer());
-        memberList.setBackground(new Color(40, 40, 40));
-        memberList.setForeground(Color.WHITE);
+        memberList.setBackground(StyleUtil.BG_LIGHT);
+        memberList.setForeground(StyleUtil.TEXT_PRIMARY);
 
         JScrollPane scrollMembers = new JScrollPane(memberList);
-        scrollMembers.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60)));
+        scrollMembers.setBorder(BorderFactory.createLineBorder(StyleUtil.BORDER_LIGHT, 1, true));
+        StyleUtil.styleScrollPane(scrollMembers);
         membersPanel.add(scrollMembers, BorderLayout.CENTER);
 
         detailPanel.add(membersPanel, BorderLayout.CENTER);
 
         // Botones de acción
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        actionPanel.setBackground(new Color(25, 25, 25));
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 12));
+        actionPanel.setBackground(StyleUtil.BG_DARK);
 
-        JButton btnAddMember = new JButton("Añadir Miembro");
-        btnAddMember.setBackground(new Color(0, 120, 200));
-        btnAddMember.setForeground(Color.WHITE);
-        btnAddMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton btnAddMember = StyleUtil.createAccentButton("Añadir");
         btnAddMember.addActionListener(e -> añadirMiembro());
 
-        JButton btnRemoveMember = new JButton("Eliminar Miembro");
-        btnRemoveMember.setBackground(new Color(200, 50, 50));
-        btnRemoveMember.setForeground(Color.WHITE);
-        btnRemoveMember.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton btnRemoveMember = StyleUtil.createDangerButton("Eliminar");
         btnRemoveMember.addActionListener(e -> eliminarMiembro());
 
-        JButton btnLeaveGroup = new JButton("Abandonar Grupo");
-        btnLeaveGroup.setBackground(new Color(100, 100, 100));
-        btnLeaveGroup.setForeground(Color.WHITE);
-        btnLeaveGroup.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton btnLeaveGroup = StyleUtil.createSecondaryButton("Abandonar");
         btnLeaveGroup.addActionListener(e -> abandonarGrupo());
 
-        JButton btnOpenChat = new JButton("Abrir Chat");
-        btnOpenChat.setBackground(new Color(0, 150, 100));
-        btnOpenChat.setForeground(Color.WHITE);
-        btnOpenChat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JButton btnOpenChat = StyleUtil.createPrimaryButton("Abrir Chat");
         btnOpenChat.addActionListener(e -> abrirChatGrupo());
 
         actionPanel.add(btnAddMember);
@@ -555,14 +543,14 @@ public class GroupsFrame extends JFrame {
                 Group g = (Group) value;
                 label.setText("👥 " + g.getNombre());
                 label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                label.setBorder(new EmptyBorder(8, 10, 8, 10));
+                label.setBorder(new EmptyBorder(12, 15, 12, 15));
 
                 if (isSelected) {
-                    label.setBackground(new Color(0, 150, 100));
-                    label.setForeground(Color.WHITE);
+                    label.setBackground(StyleUtil.BG_SELECTED);
+                    label.setForeground(StyleUtil.TEXT_PRIMARY);
                 } else {
-                    label.setBackground(new Color(40, 40, 40));
-                    label.setForeground(Color.WHITE);
+                    label.setBackground(StyleUtil.BG_MEDIUM);
+                    label.setForeground(StyleUtil.TEXT_PRIMARY);
                 }
             }
             return label;
@@ -577,17 +565,14 @@ public class GroupsFrame extends JFrame {
         public Component getListCellRendererComponent(JList<?> list, Object value,
                 int index, boolean isSelected, boolean cellHasFocus) {
 
-            // Llamar al padre primero
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-            // Hacer opaco para que se vea el fondo
             label.setOpaque(true);
 
             if (value instanceof User) {
                 User u = (User) value;
                 String prefix = "";
 
-                // Marcar a los admins con corona (usando el nuevo campo isGroupAdmin)
+                // Marcar a los admins con corona
                 if (u.isGroupAdmin()) {
                     prefix = "👑 ";
                 }
@@ -596,15 +581,15 @@ public class GroupsFrame extends JFrame {
                 String statusIcon = "activo".equals(u.getActivityStatus()) ? "🟢 " : "⚫ ";
 
                 label.setText(prefix + statusIcon + u.getUsername() + (u.isGroupAdmin() ? " (Admin)" : ""));
-                label.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-                label.setBorder(new EmptyBorder(6, 10, 6, 10));
+                label.setFont(StyleUtil.FONT_BODY);
+                label.setBorder(new EmptyBorder(10, 15, 10, 15));
 
                 if (isSelected) {
-                    label.setBackground(new Color(0, 120, 200)); // Azul más visible para selección
-                    label.setForeground(Color.WHITE);
+                    label.setBackground(StyleUtil.BG_SELECTED);
+                    label.setForeground(StyleUtil.TEXT_PRIMARY);
                 } else {
-                    label.setBackground(new Color(40, 40, 40));
-                    label.setForeground(Color.WHITE);
+                    label.setBackground(StyleUtil.BG_LIGHT);
+                    label.setForeground(StyleUtil.TEXT_PRIMARY);
                 }
             }
             return label;

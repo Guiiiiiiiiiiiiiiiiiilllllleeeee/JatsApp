@@ -1,10 +1,12 @@
 package com.jatsapp.client.view;
 
 import com.jatsapp.client.network.ClientSocket;
+import com.jatsapp.client.util.StyleUtil;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class RegisterFrame extends JFrame {
@@ -15,54 +17,162 @@ public class RegisterFrame extends JFrame {
     private JPasswordField txtConfirmPass;
     private JButton btnRegister;
     private JButton btnBack;
+    private JLabel lblStatus;
 
     public RegisterFrame() {
         super("JatsApp - Crear Cuenta");
-        setSize(400, 350);
+        StyleUtil.applyDarkTheme();
+
+        setSize(450, 620);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
-        // Usamos un panel con padding para que no se pegue a los bordes
-        JPanel mainPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Panel principal con gradiente
+        JPanel mainPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                GradientPaint gp = new GradientPaint(0, 0, StyleUtil.BG_DARK, 0, getHeight(), StyleUtil.BG_MEDIUM);
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        mainPanel.setBorder(new EmptyBorder(40, 50, 40, 50));
 
-        // --- Campos ---
-        mainPanel.add(new JLabel("Usuario:"));
-        txtUser = new JTextField();
-        mainPanel.add(txtUser);
+        // Panel de contenido
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
 
-        mainPanel.add(new JLabel("Email:"));
-        txtEmail = new JTextField();
-        mainPanel.add(txtEmail);
+        // Título
+        JLabel lblTitle = new JLabel("Crear Cuenta");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        lblTitle.setForeground(StyleUtil.PRIMARY);
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(lblTitle);
 
-        mainPanel.add(new JLabel("Contraseña:"));
-        txtPass = new JPasswordField();
-        mainPanel.add(txtPass);
+        contentPanel.add(Box.createVerticalStrut(8));
 
-        mainPanel.add(new JLabel("Repetir Contraseña:"));
-        txtConfirmPass = new JPasswordField();
-        mainPanel.add(txtConfirmPass);
+        JLabel lblSubtitle = new JLabel("Únete a JatsApp hoy");
+        lblSubtitle.setFont(StyleUtil.FONT_BODY);
+        lblSubtitle.setForeground(StyleUtil.TEXT_SECONDARY);
+        lblSubtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(lblSubtitle);
 
-        // --- Botones ---
-        btnBack = new JButton("<< Volver");
-        btnRegister = new JButton("Registrarse");
+        contentPanel.add(Box.createVerticalStrut(35));
 
-        // Estilo botón principal
-        btnRegister.setBackground(new Color(0, 200, 150));
-        btnRegister.setForeground(Color.WHITE);
-        btnRegister.setFont(new Font("SansSerif", Font.BOLD, 12));
+        // Campo usuario
+        JPanel userPanel = new JPanel();
+        userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
+        userPanel.setOpaque(false);
+        userPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        userPanel.setMaximumSize(new Dimension(320, 70));
 
-        mainPanel.add(btnBack);
-        mainPanel.add(btnRegister);
+        JLabel lblUser = StyleUtil.createLabel("Nombre de usuario", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
+        userPanel.add(lblUser);
+        userPanel.add(Box.createVerticalStrut(6));
 
+        txtUser = StyleUtil.createStyledTextField("Elige un nombre de usuario");
+        txtUser.setMaximumSize(new Dimension(320, 45));
+        userPanel.add(txtUser);
+
+        contentPanel.add(userPanel);
+        contentPanel.add(Box.createVerticalStrut(14));
+
+        // Campo email
+        JPanel emailPanel = new JPanel();
+        emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));
+        emailPanel.setOpaque(false);
+        emailPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        emailPanel.setMaximumSize(new Dimension(320, 70));
+
+        JLabel lblEmail = StyleUtil.createLabel("Correo electrónico", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
+        emailPanel.add(lblEmail);
+        emailPanel.add(Box.createVerticalStrut(6));
+
+        txtEmail = StyleUtil.createStyledTextField("tu@email.com");
+        txtEmail.setMaximumSize(new Dimension(320, 45));
+        emailPanel.add(txtEmail);
+
+        contentPanel.add(emailPanel);
+        contentPanel.add(Box.createVerticalStrut(14));
+
+        // Campo contraseña
+        JPanel passPanel = new JPanel();
+        passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.Y_AXIS));
+        passPanel.setOpaque(false);
+        passPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        passPanel.setMaximumSize(new Dimension(320, 70));
+
+        JLabel lblPass = StyleUtil.createLabel("Contraseña", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
+        passPanel.add(lblPass);
+        passPanel.add(Box.createVerticalStrut(6));
+
+        txtPass = StyleUtil.createStyledPasswordField("Mínimo 6 caracteres");
+        txtPass.setMaximumSize(new Dimension(320, 45));
+        passPanel.add(txtPass);
+
+        contentPanel.add(passPanel);
+        contentPanel.add(Box.createVerticalStrut(14));
+
+        // Campo confirmar contraseña
+        JPanel confirmPanel = new JPanel();
+        confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.Y_AXIS));
+        confirmPanel.setOpaque(false);
+        confirmPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        confirmPanel.setMaximumSize(new Dimension(320, 70));
+
+        JLabel lblConfirm = StyleUtil.createLabel("Confirmar contraseña", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
+        confirmPanel.add(lblConfirm);
+        confirmPanel.add(Box.createVerticalStrut(6));
+
+        txtConfirmPass = StyleUtil.createStyledPasswordField("Repite tu contraseña");
+        txtConfirmPass.setMaximumSize(new Dimension(320, 45));
+        confirmPanel.add(txtConfirmPass);
+
+        contentPanel.add(confirmPanel);
+        contentPanel.add(Box.createVerticalStrut(25));
+
+        // Botón de registro
+        btnRegister = StyleUtil.createPrimaryButton("Crear Cuenta");
+        btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnRegister.setMaximumSize(new Dimension(320, 45));
+        contentPanel.add(btnRegister);
+
+        contentPanel.add(Box.createVerticalStrut(15));
+
+        // Botón volver - con fondo visible
+        btnBack = new JButton("← Volver al inicio de sesión");
+        btnBack.setFont(StyleUtil.FONT_BODY);
+        btnBack.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnBack.setBackground(StyleUtil.BG_LIGHT);
+        btnBack.setOpaque(true);
+        btnBack.setBorderPainted(false);
+        btnBack.setFocusPainted(false);
+        btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnBack.setBorder(new EmptyBorder(12, 24, 12, 24));
+        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnBack.setMaximumSize(new Dimension(320, 45));
+        contentPanel.add(btnBack);
+
+        contentPanel.add(Box.createVerticalStrut(15));
+
+        // Label de estado
+        lblStatus = new JLabel(" ");
+        lblStatus.setFont(StyleUtil.FONT_SMALL);
+        lblStatus.setForeground(StyleUtil.TEXT_MUTED);
+        lblStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(lblStatus);
+
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
         add(mainPanel);
 
         // --- Eventos ---
         btnRegister.addActionListener(e -> attemptRegister());
-
-        btnBack.addActionListener(e -> {
-            abrirLogin();
-        });
+        btnBack.addActionListener(e -> abrirLogin());
 
         setVisible(true);
     }
@@ -73,23 +183,29 @@ public class RegisterFrame extends JFrame {
         String pass = new String(txtPass.getPassword());
         String confirm = new String(txtConfirmPass.getPassword());
 
-        // 1. Validaciones locales
+        // Validaciones
         if (user.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, rellena todos los campos.", "Error", JOptionPane.WARNING_MESSAGE);
+            showError("Por favor, rellena todos los campos.");
+            return;
+        }
+        if (pass.length() < 6) {
+            showError("La contraseña debe tener al menos 6 caracteres.");
             return;
         }
         if (!pass.equals(confirm)) {
-            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+            showError("Las contraseñas no coinciden.");
             return;
         }
-        // Validación básica para evitar romper el protocolo del servidor
+        if (!email.contains("@") || !email.contains(".")) {
+            showError("El email no parece válido.");
+            return;
+        }
         if (user.contains(":") || email.contains(":") || pass.contains(":")) {
-            JOptionPane.showMessageDialog(this, "El carácter ':' no está permitido.", "Error", JOptionPane.WARNING_MESSAGE);
+            showError("El carácter ':' no está permitido.");
             return;
         }
 
-        // 2. Preparar mensaje con el formato que espera el SERVIDOR (user:email:pass)
-        // IMPORTANTE: Esto debe coincidir con el split(":") de ClientHandler
+        // Preparar mensaje
         String payload = user + ":" + email + ":" + pass;
 
         Message msg = new Message();
@@ -97,19 +213,31 @@ public class RegisterFrame extends JFrame {
         msg.setContent(payload);
         msg.setSenderName(user);
 
-        // 3. Enviar
+        btnRegister.setEnabled(false);
+        lblStatus.setText("Creando cuenta...");
+        lblStatus.setForeground(StyleUtil.TEXT_SECONDARY);
+
         try {
             ClientSocket.getInstance().send(msg);
 
-            // Feedback inmediato al usuario
-            JOptionPane.showMessageDialog(this, "Solicitud de registro enviada.\nSi los datos son correctos, podrás iniciar sesión.");
+            // Mostrar éxito
+            lblStatus.setText("¡Cuenta creada! Redirigiendo...");
+            lblStatus.setForeground(StyleUtil.SUCCESS);
 
-            // Volvemos al login
-            abrirLogin();
+            // Volver al login después de un momento
+            Timer timer = new Timer(1500, e -> abrirLogin());
+            timer.setRepeats(false);
+            timer.start();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error de conexión con el servidor.");
+            showError("Error de conexión con el servidor.");
+            btnRegister.setEnabled(true);
         }
+    }
+
+    private void showError(String message) {
+        lblStatus.setText(message);
+        lblStatus.setForeground(StyleUtil.DANGER);
     }
 
     private void abrirLogin() {
