@@ -23,7 +23,7 @@ public class RegisterFrame extends JFrame {
         super("JatsApp - Crear Cuenta");
         StyleUtil.applyDarkTheme();
 
-        setSize(450, 620);
+        setSize(450, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -40,7 +40,7 @@ public class RegisterFrame extends JFrame {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        mainPanel.setBorder(new EmptyBorder(40, 50, 40, 50));
+        mainPanel.setBorder(new EmptyBorder(25, 50, 25, 50));
 
         // Panel de contenido
         JPanel contentPanel = new JPanel();
@@ -62,7 +62,7 @@ public class RegisterFrame extends JFrame {
         lblSubtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(lblSubtitle);
 
-        contentPanel.add(Box.createVerticalStrut(35));
+        contentPanel.add(Box.createVerticalStrut(25));
 
         // Campo usuario
         JPanel userPanel = new JPanel();
@@ -80,7 +80,7 @@ public class RegisterFrame extends JFrame {
         userPanel.add(txtUser);
 
         contentPanel.add(userPanel);
-        contentPanel.add(Box.createVerticalStrut(14));
+        contentPanel.add(Box.createVerticalStrut(10));
 
         // Campo email
         JPanel emailPanel = new JPanel();
@@ -98,7 +98,7 @@ public class RegisterFrame extends JFrame {
         emailPanel.add(txtEmail);
 
         contentPanel.add(emailPanel);
-        contentPanel.add(Box.createVerticalStrut(14));
+        contentPanel.add(Box.createVerticalStrut(10));
 
         // Campo contraseña
         JPanel passPanel = new JPanel();
@@ -116,7 +116,7 @@ public class RegisterFrame extends JFrame {
         passPanel.add(txtPass);
 
         contentPanel.add(passPanel);
-        contentPanel.add(Box.createVerticalStrut(14));
+        contentPanel.add(Box.createVerticalStrut(10));
 
         // Campo confirmar contraseña
         JPanel confirmPanel = new JPanel();
@@ -134,7 +134,7 @@ public class RegisterFrame extends JFrame {
         confirmPanel.add(txtConfirmPass);
 
         contentPanel.add(confirmPanel);
-        contentPanel.add(Box.createVerticalStrut(25));
+        contentPanel.add(Box.createVerticalStrut(18));
 
         // Botón de registro
         btnRegister = StyleUtil.createPrimaryButton("Crear Cuenta");

@@ -95,6 +95,12 @@ public class MessageDAO {
                 m.setDelivered(rs.getBoolean("entregado"));
                 m.setRead(rs.getBoolean("leido"));
 
+                // Fecha de envío del mensaje
+                Timestamp fechaEnvio = rs.getTimestamp("fecha_envio");
+                if (fechaEnvio != null) {
+                    m.setTimestamp(fechaEnvio.toLocalDateTime());
+                }
+
                 String tipoContenido = rs.getString("tipo_contenido");
                 if ("ARCHIVO".equals(tipoContenido)) {
                     m.setType(MessageType.FILE_MESSAGE);

@@ -541,7 +541,7 @@ public class GroupsFrame extends JFrame {
 
             if (value instanceof Group) {
                 Group g = (Group) value;
-                label.setText("👥 " + g.getNombre());
+                label.setText(g.getNombre());
                 label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
                 label.setBorder(new EmptyBorder(12, 15, 12, 15));
 

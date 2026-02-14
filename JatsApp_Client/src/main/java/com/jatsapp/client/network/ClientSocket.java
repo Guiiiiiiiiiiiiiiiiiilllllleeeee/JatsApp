@@ -33,6 +33,9 @@ public class ClientSocket {
     private String myUsername;
     private int myUserId = -1;  // ID del usuario logueado
     private boolean isConnected = false;
+    private boolean intentionalDisconnect = false; // Para cerrar sesión sin cerrar la app
+    private String serverHost;
+    private int serverPort;
 
     private final List<User> contacts = new ArrayList<>(); // Lista de contactos inicializada
 
@@ -48,6 +51,9 @@ public class ClientSocket {
      * Conecta al servidor. Llamado desde MainClient.
      */
     public void connect(String host, int port) throws IOException {
+        this.serverHost = host;
+        this.serverPort = port;
+        this.intentionalDisconnect = false;
         this.socket = new Socket(host, port);
 
         // IMPORTANTE: Primero crear el Output, luego el Input (regla de Java Sockets)
@@ -87,6 +93,64 @@ public class ClientSocket {
             System.out.println("✅ Desconectado correctamente");
         } catch (Exception e) {
             System.err.println("Error al desconectar: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Cierra la sesión actual y permite reconectar con otro usuario.
+     * No cierra la aplicación, solo desconecta y limpia el estado.
+     */
+    public void logout() {
+        intentionalDisconnect = true;
+
+        try {
+            // Enviar mensaje de desconexión al servidor
+            if (isConnected) {
+                Message disconnectMsg = new Message();
+                disconnectMsg.setType(MessageType.DISCONNECT);
+                send(disconnectMsg);
+            }
+        } catch (Exception e) {
+            System.err.println("Error enviando mensaje de desconexión: " + e.getMessage());
+        }
+
+        isConnected = false;
+
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (Exception e) {
+            System.err.println("Error cerrando socket: " + e.getMessage());
+        }
+
+        // Limpiar estado del usuario
+        myUsername = null;
+        myUserId = -1;
+        contacts.clear();
+        chatFrame = null;
+        contactsFrame = null;
+        groupsFrame = null;
+
+        System.out.println("✅ Sesión cerrada correctamente");
+    }
+
+    /**
+     * Reconecta al servidor después de un logout
+     */
+    public void reconnect() throws IOException {
+        if (serverHost != null && serverPort > 0) {
+            intentionalDisconnect = false;
+            this.socket = new Socket(serverHost, serverPort);
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.in = new ObjectInputStream(socket.getInputStream());
+            this.isConnected = true;
+            System.out.println("✅ Reconectado a " + serverHost + ":" + serverPort);
+
+            // Iniciar hilo de escucha
+            new Thread(this::listen).start();
+        } else {
+            throw new IOException("No hay información del servidor para reconectar");
         }
     }
 
@@ -228,12 +292,6 @@ public class ClientSocket {
                 }
                 break;
 
-            // --- BÚSQUEDA GLOBAL DE MENSAJES ---
-            case SEARCH_MESSAGES_RESULT:
-                if (chatFrame != null) {
-                    chatFrame.mostrarResultadosBusquedaGlobal(msg.getHistoryList());
-                }
-                break;
 
             case ADD_CONTACT_OK:
                 // Contacto añadido exitosamente
@@ -433,8 +491,12 @@ public class ClientSocket {
         } catch (IOException e) {
             System.err.println("Error cerrando socket: " + e.getMessage());
         }
-        JOptionPane.showMessageDialog(null, "Conexión perdida con el servidor.");
-        System.exit(0);
+
+        // Solo cerrar la aplicación si la desconexión no fue intencional (logout)
+        if (!intentionalDisconnect) {
+            JOptionPane.showMessageDialog(null, "Conexión perdida con el servidor.");
+            System.exit(0);
+        }
     }
 
     public void deleteContact(User user) {

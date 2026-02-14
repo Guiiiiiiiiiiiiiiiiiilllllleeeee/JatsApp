@@ -59,9 +59,13 @@ public class ContactRenderer extends JPanel implements ListCellRenderer<User> {
             g2.setPaint(gp);
             g2.fillOval(xAvatar, yPos, size, size);
 
+            // Letra G para grupos
             g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 24));
-            g2.drawString("👥", xAvatar + 11, yPos + 34);
+            g2.setFont(new Font("Segoe UI", Font.BOLD, 22));
+            FontMetrics fm = g2.getFontMetrics();
+            int textX = xAvatar + (size - fm.stringWidth("G")) / 2;
+            int textY = yPos + ((size - fm.getHeight()) / 2) + fm.getAscent();
+            g2.drawString("G", textX, textY);
         } else {
             // Avatar para usuarios con gradiente
             Color baseColor = getColorPorNombre(usuarioActual.getUsername());
@@ -96,9 +100,6 @@ public class ContactRenderer extends JPanel implements ListCellRenderer<User> {
         g2.setFont(new Font("Segoe UI", Font.BOLD, 15));
 
         String nombreMostrar = usuarioActual.getUsername();
-        if (esGrupo && nombreMostrar.startsWith("👥 ")) {
-            nombreMostrar = nombreMostrar.substring(3);
-        }
         g2.drawString(nombreMostrar, xTexto, getHeight() / 2 - 4);
 
         // 4. SUBTÍTULO (estado o tipo)

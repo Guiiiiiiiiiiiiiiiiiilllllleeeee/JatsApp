@@ -37,7 +37,7 @@ public class ContactsFrame extends JFrame {
         headerPanel.setBackground(StyleUtil.BG_DARK);
         headerPanel.setBorder(new EmptyBorder(20, 25, 15, 25));
 
-        JLabel lblTitle = new JLabel("📋 Mis Contactos");
+        JLabel lblTitle = new JLabel("Mis Contactos");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(StyleUtil.TEXT_PRIMARY);
         headerPanel.add(lblTitle, BorderLayout.WEST);
@@ -59,7 +59,7 @@ public class ContactsFrame extends JFrame {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 label.setBorder(new EmptyBorder(12, 20, 12, 20));
                 label.setFont(StyleUtil.FONT_BODY);
-                label.setText("👤 " + value.toString());
+                label.setText(value.toString());
 
                 if (isSelected) {
                     label.setBackground(StyleUtil.BG_SELECTED);

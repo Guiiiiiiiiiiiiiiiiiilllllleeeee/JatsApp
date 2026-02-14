@@ -5,22 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/util/StyleUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/migrate_utf8mb4.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactRenderer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactsFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-activity.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-server.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/MessageDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/MessageDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/guill/Documents/GitHub/JatsApp" value="38vao7MjaWyhd4iqlpMCKTano3N" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="Claude Opus 4.5" />
+      <entry key="agent-panel" value="Claude Opus 4.5" />
+    </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -64,9 +79,10 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/guill/Documents/GitHub/JatsApp/JatsApp_Client/src/main/resources/images&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.studio.ml.bot.mainConfigurable&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/guill/Documents/GitHub/JatsApp&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -91,6 +107,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1769682672178</updated>
+      <workItem from="1771080626915" duration="14000" />
     </task>
     <servers />
   </component>

@@ -46,7 +46,7 @@ public class LoginFrame extends JFrame {
         contentPanel.setOpaque(false);
 
         // Logo / Título
-        JLabel lblLogo = new JLabel("💬 JatsApp");
+        JLabel lblLogo = new JLabel("JatsApp");
         lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 36));
         lblLogo.setForeground(StyleUtil.PRIMARY);
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);

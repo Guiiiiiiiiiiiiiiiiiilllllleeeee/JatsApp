@@ -53,6 +53,9 @@ public class ChatFrame extends JFrame {
     // Lista de mensajes del chat actual (para búsqueda)
     private java.util.ArrayList<Message> mensajesActuales = new java.util.ArrayList<>();
 
+    // Variable para rastrear la última fecha mostrada (separadores de día)
+    private java.time.LocalDate ultimaFechaMostrada = null;
+
     // Panel de búsqueda dentro del chat
     private JPanel panelBusqueda;
     private JTextField txtBusqueda;
@@ -60,9 +63,10 @@ public class ChatFrame extends JFrame {
     private int indiceResultadoActual = -1;
     private java.util.ArrayList<Integer> indicesResultados = new java.util.ArrayList<>();
 
-    // Panel de búsqueda global (en panel izquierdo)
+    // Panel de búsqueda global (en panel izquierdo) - Filtrado de chats
     private JPanel panelBusquedaGlobal;
     private JTextField txtBusquedaGlobal;
+    private java.util.ArrayList<User> listaCompletaContactos = new java.util.ArrayList<>();
 
     private JButton btnContactos;
 
@@ -107,15 +111,15 @@ public class ChatFrame extends JFrame {
         JPanel panelLogoYBusqueda = new JPanel(new BorderLayout());
         panelLogoYBusqueda.setBackground(StyleUtil.BG_DARK);
 
-        JLabel lblLogo = new JLabel("💬 JatsApp");
+        JLabel lblLogo = new JLabel("JatsApp");
         lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblLogo.setForeground(StyleUtil.PRIMARY);
         lblLogo.setBorder(new EmptyBorder(18, 20, 12, 10));
         panelLogoYBusqueda.add(lblLogo, BorderLayout.CENTER);
 
         // Botón de búsqueda global
-        JButton btnBusquedaGlobal = crearBotonImagen("/images/research.png", "🔍");
-        btnBusquedaGlobal.setToolTipText("Buscar en todos los chats");
+        JButton btnBusquedaGlobal = crearBotonImagen("/images/research.png", "Q");
+        btnBusquedaGlobal.setToolTipText("Buscar chats");
         btnBusquedaGlobal.setBorder(new EmptyBorder(15, 5, 5, 15));
         btnBusquedaGlobal.addActionListener(e -> toggleBusquedaGlobal());
         panelLogoYBusqueda.add(btnBusquedaGlobal, BorderLayout.EAST);
@@ -128,13 +132,15 @@ public class ChatFrame extends JFrame {
         panelBusquedaGlobal.setBorder(BorderFactory.createEmptyBorder(5, 15, 12, 15));
         panelBusquedaGlobal.setVisible(false);
 
-        txtBusquedaGlobal = StyleUtil.createStyledTextField("Buscar mensajes...");
-        txtBusquedaGlobal.addActionListener(e -> ejecutarBusquedaGlobal());
+        txtBusquedaGlobal = StyleUtil.createStyledTextField("Buscar chat...");
+        // Filtrar en tiempo real mientras se escribe
         txtBusquedaGlobal.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyReleased(java.awt.event.KeyEvent e) {
                 if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
                     cerrarBusquedaGlobal();
+                } else {
+                    filtrarListaChats();
                 }
             }
         });
@@ -186,7 +192,7 @@ public class ChatFrame extends JFrame {
                     if ("grupo".equals(seleccion.getActivityStatus())) {
                         // Es un grupo - el ID está negativo, convertir a positivo
                         int realGroupId = -seleccion.getId(); // Convertir de negativo a positivo
-                        String nombreGrupo = seleccion.getUsername().replace("👥 ", "");
+                        String nombreGrupo = seleccion.getUsername();
                         System.out.println("👆 Es GRUPO: ID real=" + realGroupId + ", nombre=" + nombreGrupo);
                         Group grupo = new Group(realGroupId, nombreGrupo, 0);
                         abrirChatGrupo(grupo);
@@ -343,8 +349,8 @@ public class ChatFrame extends JFrame {
         lblResultadoBusqueda.setForeground(StyleUtil.TEXT_SECONDARY);
         lblResultadoBusqueda.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 
-        JButton btnAnterior = new JButton("▲");
-        btnAnterior.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        JButton btnAnterior = new JButton("<");
+        btnAnterior.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnAnterior.setBackground(StyleUtil.BG_LIGHT);
         btnAnterior.setForeground(StyleUtil.TEXT_PRIMARY);
         btnAnterior.setOpaque(true);
@@ -355,8 +361,8 @@ public class ChatFrame extends JFrame {
         btnAnterior.setToolTipText("Resultado anterior");
         btnAnterior.addActionListener(e -> buscarAnterior());
 
-        JButton btnSiguiente = new JButton("▼");
-        btnSiguiente.setFont(new Font("Segoe UI", Font.BOLD, 10));
+        JButton btnSiguiente = new JButton(">");
+        btnSiguiente.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnSiguiente.setBackground(StyleUtil.BG_LIGHT);
         btnSiguiente.setForeground(StyleUtil.TEXT_PRIMARY);
         btnSiguiente.setOpaque(true);
@@ -367,7 +373,7 @@ public class ChatFrame extends JFrame {
         btnSiguiente.setToolTipText("Resultado siguiente");
         btnSiguiente.addActionListener(e -> buscarSiguiente());
 
-        JButton btnCerrarBusqueda = new JButton("✕");
+        JButton btnCerrarBusqueda = new JButton("X");
         btnCerrarBusqueda.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnCerrarBusqueda.setBackground(StyleUtil.DANGER);
         btnCerrarBusqueda.setForeground(StyleUtil.TEXT_PRIMARY);
@@ -402,14 +408,29 @@ public class ChatFrame extends JFrame {
         areaChat.setEditorKit(kit);
         areaChat.setDocument(doc);
 
-        // CSS moderno para las burbujas
+        // CSS moderno para las burbujas - DISEÑO MEJORADO
         String css = "body { font-family: 'Segoe UI', sans-serif; background-color: #111b21; color: #e9edef; padding: 15px; margin: 0; }"
-                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 8px; clear: both; }"
-                + ".bubble-me { background: linear-gradient(135deg, #005c4b 0%, #00856a 100%); padding: 10px 14px; border-radius: 16px 16px 4px 16px; float: right; color: white; max-width: 65%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }"
-                + ".bubble-other { background-color: #202c33; padding: 10px 14px; border-radius: 16px 16px 16px 4px; float: left; color: #e9edef; max-width: 65%; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }"
-                + ".sender { font-size: 11px; color: #00a884; font-weight: bold; display: block; margin-bottom: 4px; }"
-                + ".timestamp { font-size: 10px; color: rgba(255,255,255,0.5); display: block; text-align: right; margin-top: 5px; }"
-                + ".status { font-size: 11px; margin-left: 6px; }";
+                + ".msg-container { width: 100%; overflow: hidden; margin-bottom: 12px; clear: both; }"
+                // Separador de día
+                + ".day-separator { width: 100%; text-align: center; margin: 20px 0; clear: both; }"
+                + ".day-separator-label { display: inline-block; background: rgba(32, 44, 51, 0.9); color: #8696a0; font-size: 12px; font-weight: 500; padding: 6px 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }"
+                // Burbuja mensaje propio (verde)
+                + ".bubble-me { background: linear-gradient(135deg, #005c4b 0%, #00756a 100%); padding: 8px 12px 6px 12px; border-radius: 12px 12px 4px 12px; float: right; color: white; max-width: 70%; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); position: relative; }"
+                // Burbuja mensaje de otros (gris oscuro)
+                + ".bubble-other { background: linear-gradient(135deg, #202c33 0%, #2a3942 100%); padding: 8px 12px 6px 12px; border-radius: 12px 12px 12px 4px; float: left; color: #e9edef; max-width: 70%; min-width: 120px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); position: relative; }"
+                // Cabecera del mensaje (nombre del emisor)
+                + ".msg-header { display: block; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1); }"
+                + ".sender { font-size: 12px; color: #00d9a6; font-weight: 600; letter-spacing: 0.3px; }"
+                + ".sender-other { font-size: 12px; color: #53bdeb; font-weight: 600; letter-spacing: 0.3px; }"
+                // Contenido del mensaje
+                + ".msg-content { font-size: 14px; line-height: 1.4; word-wrap: break-word; padding: 4px 0; color: #e9edef; }"
+                // Footer del mensaje (hora y estado)
+                + ".msg-footer { display: block; text-align: right; margin-top: 6px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.05); }"
+                + ".timestamp { font-size: 11px; color: rgba(255,255,255,0.6); }"
+                + ".status { font-size: 13px; margin-left: 6px; font-weight: bold; }"
+                + ".status-sent { color: rgba(255,255,255,0.5); }"
+                + ".status-delivered { color: rgba(255,255,255,0.7); }"
+                + ".status-read { color: #53bdeb; }";
 
         try {
             ((HTMLDocument) areaChat.getDocument()).getStyleSheet().addRule(css);
@@ -442,40 +463,65 @@ public class ChatFrame extends JFrame {
             new EmptyBorder(12, 20, 12, 20)
         ));
 
+        // Panel izquierdo con botones de archivo y emoji
+        JPanel panelBotonesIzq = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        panelBotonesIzq.setBackground(StyleUtil.BG_DARK);
+
         // Botón Archivo
-        // Botón Archivo
-        JButton btnArchivo = new JButton("📎");
-        btnArchivo.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));
+        JButton btnArchivo = new JButton("+");
+        btnArchivo.setFont(new Font("Segoe UI", Font.BOLD, 18));
         btnArchivo.setForeground(StyleUtil.TEXT_PRIMARY);
         btnArchivo.setBackground(StyleUtil.BG_LIGHT);
         btnArchivo.setOpaque(true);
         btnArchivo.setBorderPainted(false);
         btnArchivo.setFocusPainted(false);
-        btnArchivo.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+        btnArchivo.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
         btnArchivo.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnArchivo.setToolTipText("Adjuntar archivo");
         btnArchivo.addActionListener(e -> enviarArchivo());
 
+        // Botón Emoji
+        JButton btnEmoji = new JButton(":)");
+        btnEmoji.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        btnEmoji.setForeground(StyleUtil.TEXT_PRIMARY);
+        btnEmoji.setBackground(StyleUtil.BG_LIGHT);
+        btnEmoji.setOpaque(true);
+        btnEmoji.setBorderPainted(false);
+        btnEmoji.setFocusPainted(false);
+        btnEmoji.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
+        btnEmoji.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnEmoji.setToolTipText("Insertar emoji");
+        btnEmoji.addActionListener(e -> mostrarSelectorEmojis(btnEmoji));
+
+        panelBotonesIzq.add(btnArchivo);
+        panelBotonesIzq.add(btnEmoji);
+
         txtMensaje = StyleUtil.createStyledTextField("Escribe un mensaje...");
-        txtMensaje.setFont(StyleUtil.FONT_BODY);
+        txtMensaje.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
 
         // Al pulsar Enter, enviar
         txtMensaje.addActionListener(e -> enviarMensajeTexto());
 
-        // Botón Enviar
-        JButton btnEnviar = new JButton("➤");
-        btnEnviar.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        btnEnviar.setForeground(StyleUtil.TEXT_PRIMARY);
+        // Botón Enviar con icono
+        JButton btnEnviar = new JButton();
+        try {
+            ImageIcon sendIcon = new ImageIcon(getClass().getResource("/images/send.png"));
+            // Escalar el icono a un tamaño apropiado
+            Image scaledImg = sendIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+            btnEnviar.setIcon(new ImageIcon(scaledImg));
+        } catch (Exception ex) {
+            btnEnviar.setText(">"); // Fallback si no se carga el icono
+        }
         btnEnviar.setBackground(StyleUtil.PRIMARY);
         btnEnviar.setOpaque(true);
         btnEnviar.setBorderPainted(false);
         btnEnviar.setFocusPainted(false);
-        btnEnviar.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        btnEnviar.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
         btnEnviar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnEnviar.setToolTipText("Enviar mensaje");
         btnEnviar.addActionListener(e -> enviarMensajeTexto());
 
-        panelInput.add(btnArchivo, BorderLayout.WEST);
+        panelInput.add(panelBotonesIzq, BorderLayout.WEST);
         panelInput.add(txtMensaje, BorderLayout.CENTER);
         panelInput.add(btnEnviar, BorderLayout.EAST);
 
@@ -571,7 +617,7 @@ public class ChatFrame extends JFrame {
         itemContacto.addActionListener(e -> accionAnadirContacto());
 
         // Opción: Crear grupo
-        JMenuItem itemGrupo = new JMenuItem("👥 Crear Grupo");
+        JMenuItem itemGrupo = new JMenuItem("Crear Grupo");
         itemGrupo.setBackground(new Color(40, 40, 40));
         itemGrupo.setForeground(StyleUtil.TEXT_PRIMARY);
         itemGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -626,7 +672,7 @@ public class ChatFrame extends JFrame {
         menu.setBorder(BorderFactory.createLineBorder(StyleUtil.BORDER_LIGHT));
 
         // Opción: Cerrar sesión
-        JMenuItem itemCerrarSesion = new JMenuItem("🔓 Cerrar sesión");
+        JMenuItem itemCerrarSesion = new JMenuItem("Cerrar sesión");
         itemCerrarSesion.setFont(StyleUtil.FONT_BODY);
         itemCerrarSesion.setBackground(StyleUtil.BG_MEDIUM);
         itemCerrarSesion.setForeground(StyleUtil.TEXT_PRIMARY);
@@ -637,7 +683,7 @@ public class ChatFrame extends JFrame {
         menu.addSeparator();
 
         // Opción: Salir de la aplicación
-        JMenuItem itemSalir = new JMenuItem("❌ Salir de la aplicación");
+        JMenuItem itemSalir = new JMenuItem("Salir de la aplicación");
         itemSalir.setFont(StyleUtil.FONT_BODY);
         itemSalir.setBackground(StyleUtil.BG_MEDIUM);
         itemSalir.setForeground(StyleUtil.DANGER);
@@ -659,11 +705,22 @@ public class ChatFrame extends JFrame {
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE);
         if (opt == JOptionPane.YES_OPTION) {
-            // Cerrar la conexión actual
-            ClientSocket.getInstance().disconnect();
-            // Cerrar esta ventana y abrir login
+            // Cerrar la conexión actual (logout intencional)
+            ClientSocket.getInstance().logout();
+            // Cerrar esta ventana
             this.dispose();
-            new LoginFrame();
+
+            // Reconectar y abrir login
+            try {
+                ClientSocket.getInstance().reconnect();
+                new LoginFrame();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                    "Error al reconectar con el servidor: " + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
         }
     }
 
@@ -731,12 +788,104 @@ public class ChatFrame extends JFrame {
                 msg.setGroupChat(chatActualEsGrupo); // IMPORTANTE: usar la variable para saber si es grupo
 
                 ClientSocket.getInstance().send(msg);
-                agregarBurbuja(ClientSocket.getInstance().getMyUsername(), "📎 Archivo enviado: " + file.getName(), true);
+                agregarBurbuja(ClientSocket.getInstance().getMyUsername(), "[Archivo] " + file.getName(), true);
 
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error leyendo archivo.");
             }
         }
+    }
+
+    /**
+     * Muestra un selector de emojis en un popup
+     */
+    private void mostrarSelectorEmojis(JButton source) {
+        JPopupMenu popupEmojis = new JPopupMenu();
+        popupEmojis.setBackground(StyleUtil.BG_MEDIUM);
+        popupEmojis.setBorder(BorderFactory.createLineBorder(StyleUtil.BORDER_LIGHT));
+
+        // Panel principal del selector
+        JPanel panelEmojis = new JPanel(new BorderLayout());
+        panelEmojis.setBackground(StyleUtil.BG_MEDIUM);
+        panelEmojis.setPreferredSize(new Dimension(320, 250));
+
+        // Título
+        JLabel lblTitulo = new JLabel("  Emojis");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblTitulo.setForeground(StyleUtil.TEXT_PRIMARY);
+        lblTitulo.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        panelEmojis.add(lblTitulo, BorderLayout.NORTH);
+
+        // Panel con grid de emojis
+        JPanel gridEmojis = new JPanel(new GridLayout(0, 8, 2, 2));
+        gridEmojis.setBackground(StyleUtil.BG_MEDIUM);
+        gridEmojis.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // Lista de emojis comunes organizados por categorías
+        String[] emojis = {
+            // Caras felices
+            "\uD83D\uDE00", "\uD83D\uDE01", "\uD83D\uDE02", "\uD83D\uDE03", "\uD83D\uDE04", "\uD83D\uDE05", "\uD83D\uDE06", "\uD83D\uDE09",
+            "\uD83D\uDE0A", "\uD83D\uDE0B", "\uD83D\uDE0C", "\uD83D\uDE0D", "\uD83D\uDE18", "\uD83D\uDE17", "\uD83D\uDE19", "\uD83D\uDE1A",
+            // Caras tristes/otras
+            "\uD83D\uDE14", "\uD83D\uDE1E", "\uD83D\uDE22", "\uD83D\uDE2D", "\uD83D\uDE29", "\uD83D\uDE21", "\uD83D\uDE20", "\uD83D\uDE24",
+            "\uD83D\uDE31", "\uD83D\uDE28", "\uD83D\uDE30", "\uD83D\uDE2F", "\uD83D\uDE33", "\uD83D\uDE16", "\uD83D\uDE1F", "\uD83D\uDE34",
+            // Gestos
+            "\uD83D\uDC4D", "\uD83D\uDC4E", "\uD83D\uDC4C", "\uD83D\uDC4A", "\u270C\uFE0F", "\uD83D\uDC4B", "\uD83D\uDC4F", "\uD83D\uDE4C",
+            "\uD83D\uDE4F", "\uD83D\uDCAA", "\u261D\uFE0F", "\u270B", "\uD83D\uDD90\uFE0F", "\uD83E\uDD1D", "\uD83E\uDD1E", "\uD83E\uDD18",
+            // Corazones y símbolos
+            "\u2764\uFE0F", "\uD83D\uDC9B", "\uD83D\uDC9A", "\uD83D\uDC99", "\uD83D\uDC9C", "\uD83D\uDDA4", "\uD83D\uDC94", "\u2728",
+            "\uD83C\uDF1F", "\uD83D\uDD25", "\uD83C\uDF89", "\uD83C\uDF8A", "\uD83C\uDF88", "\uD83D\uDCA5", "\uD83D\uDCAF", "\u2705",
+            // Objetos y otros
+            "\uD83D\uDCF1", "\uD83D\uDCBB", "\uD83C\uDFAE", "\uD83C\uDFB5", "\uD83C\uDFB6", "\uD83D\uDCF7", "\uD83C\uDF82", "\uD83C\uDF70",
+            "\u2615", "\uD83C\uDF7A", "\uD83C\uDF55", "\uD83C\uDF54", "\uD83D\uDE80", "\u2708\uFE0F", "\uD83D\uDE97", "\uD83C\uDFE0"
+        };
+
+        for (String emoji : emojis) {
+            JButton btnEmoji = new JButton(emoji);
+            btnEmoji.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20));
+            btnEmoji.setBackground(StyleUtil.BG_LIGHT);
+            btnEmoji.setForeground(StyleUtil.TEXT_PRIMARY);
+            btnEmoji.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            btnEmoji.setFocusPainted(false);
+            btnEmoji.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btnEmoji.setOpaque(true);
+
+            // Efecto hover
+            btnEmoji.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    btnEmoji.setBackground(StyleUtil.BG_HOVER);
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    btnEmoji.setBackground(StyleUtil.BG_LIGHT);
+                }
+            });
+
+            // Al hacer clic, insertar el emoji en el campo de texto
+            btnEmoji.addActionListener(e -> {
+                int pos = txtMensaje.getCaretPosition();
+                String textoActual = txtMensaje.getText();
+                String nuevoTexto = textoActual.substring(0, pos) + emoji + textoActual.substring(pos);
+                txtMensaje.setText(nuevoTexto);
+                txtMensaje.setCaretPosition(pos + emoji.length());
+                txtMensaje.requestFocus();
+                popupEmojis.setVisible(false);
+            });
+
+            gridEmojis.add(btnEmoji);
+        }
+
+        JScrollPane scrollEmojis = new JScrollPane(gridEmojis);
+        scrollEmojis.setBorder(null);
+        scrollEmojis.getViewport().setBackground(StyleUtil.BG_MEDIUM);
+        StyleUtil.styleScrollPane(scrollEmojis);
+        panelEmojis.add(scrollEmojis, BorderLayout.CENTER);
+
+        popupEmojis.add(panelEmojis);
+
+        // Mostrar el popup encima del botón
+        popupEmojis.show(source, 0, -popupEmojis.getPreferredSize().height - 5);
     }
 
     // =================================================================
@@ -755,10 +904,12 @@ public class ChatFrame extends JFrame {
             }
 
             modeloContactos.clear();
+            listaCompletaContactos.clear(); // Limpiar lista completa
 
             // Primero añadir los grupos preservados
             for (User grupo : gruposExistentes) {
                 modeloContactos.addElement(grupo);
+                listaCompletaContactos.add(grupo); // Guardar en lista completa
             }
 
             // Luego añadir los contactos nuevos
@@ -767,6 +918,7 @@ public class ChatFrame extends JFrame {
                 // No mostrarme a mí mismo y no añadir si es un grupo (ya están añadidos)
                 if (myName != null && !myName.equals(u.getUsername()) && !"grupo".equals(u.getActivityStatus())) {
                     modeloContactos.addElement(u);
+                    listaCompletaContactos.add(u); // Guardar en lista completa
                 }
             }
         });
@@ -825,12 +977,22 @@ public class ChatFrame extends JFrame {
 
             areaChat.setText(""); // Limpiar
             mensajesActuales.clear();
+            ultimaFechaMostrada = null; // Resetear fecha para separadores de día
 
             String myUsername = ClientSocket.getInstance().getMyUsername();
 
             for (Message m : historial) {
                 // Guardar para búsqueda
                 mensajesActuales.add(m);
+
+                // Verificar si necesitamos añadir separador de día
+                if (m.getTimestamp() != null) {
+                    java.time.LocalDate fechaMensaje = m.getTimestamp().toLocalDate();
+                    if (ultimaFechaMostrada == null || !fechaMensaje.equals(ultimaFechaMostrada)) {
+                        agregarSeparadorDia(fechaMensaje);
+                        ultimaFechaMostrada = fechaMensaje;
+                    }
+                }
 
                 // Mostrar el mensaje directamente (el servidor ya filtró los mensajes relevantes)
                 boolean esMio = m.getSenderName() != null && m.getSenderName().equals(myUsername);
@@ -849,10 +1011,10 @@ public class ChatFrame extends JFrame {
                     String fileSizeStr = formatFileSize(fileSize);
 
                     contenido = "<div style='background: rgba(79, 195, 247, 0.1); padding: 10px; border-radius: 8px; border-left: 3px solid #4FC3F7;'>" +
-                              "<span style='font-size: 24px;'>📎</span> " +
+                              "<b>[Archivo]</b> " +
                               "<a href='#download-" + fileId + "' style='color: #4FC3F7; text-decoration: none; font-weight: bold;'>" +
                               fileName + "</a><br/>" +
-                              "<span style='color: #999; font-size: 11px;'>Tamaño: " + fileSizeStr + " • Clic para descargar</span>" +
+                              "<span style='color: #999; font-size: 11px;'>Tamaño: " + fileSizeStr + " - Clic para descargar</span>" +
                               "</div>";
                 } else if (m.getType() == MessageType.TEXT_MESSAGE) {
                     contenido = EncryptionUtil.decrypt(contenido);
@@ -860,10 +1022,15 @@ public class ChatFrame extends JFrame {
 
                 String senderName = m.getSenderName() != null ? m.getSenderName() : "Usuario";
 
+                // Usar el timestamp del mensaje si está disponible
+                String timestamp = m.getTimestamp() != null
+                    ? m.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    : java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
                 if (esMio) {
-                    agregarBurbuja(senderName, contenido, true, m.getMessageId(), m.isDelivered(), m.isRead());
+                    agregarBurbujaConHora(senderName, contenido, true, m.getMessageId(), m.isDelivered(), m.isRead(), timestamp);
                 } else {
-                    agregarBurbuja(senderName, contenido, false);
+                    agregarBurbujaConHora(senderName, contenido, false, 0, false, false, timestamp);
                 }
             }
         });
@@ -911,6 +1078,16 @@ public class ChatFrame extends JFrame {
             // Si el mensaje corresponde al chat actual, mostrarlo
             if (mensajeDelChatActual) {
                 System.out.println("✅ Mostrando mensaje en chat actual");
+
+                // Verificar si necesitamos añadir separador de día
+                if (msg.getTimestamp() != null) {
+                    java.time.LocalDate fechaMensaje = msg.getTimestamp().toLocalDate();
+                    if (ultimaFechaMostrada == null || !fechaMensaje.equals(ultimaFechaMostrada)) {
+                        agregarSeparadorDia(fechaMensaje);
+                        ultimaFechaMostrada = fechaMensaje;
+                    }
+                }
+
                 String contenido = msg.getContent();
 
                 // Manejar archivos
@@ -931,10 +1108,10 @@ public class ChatFrame extends JFrame {
                     String fileSizeStr = formatFileSize(fileSize);
 
                     contenido = "<div style='background: rgba(79, 195, 247, 0.1); padding: 10px; border-radius: 8px; border-left: 3px solid #4FC3F7;'>" +
-                              "<span style='font-size: 24px;'>📎</span> " +
+                              "<b>[Archivo]</b> " +
                               "<a href='#download-" + fileId + "' style='color: #4FC3F7; text-decoration: none; font-weight: bold;'>" +
                               fileName + "</a><br/>" +
-                              "<span style='color: #999; font-size: 11px;'>Tamaño: " + fileSizeStr + " • Clic para descargar</span>" +
+                              "<span style='color: #999; font-size: 11px;'>Tamaño: " + fileSizeStr + " - Clic para descargar</span>" +
                               "</div>";
                 } else if (msg.getType() == MessageType.TEXT_MESSAGE) {
                     // Desencriptar el contenido si es un mensaje de texto
@@ -944,11 +1121,16 @@ public class ChatFrame extends JFrame {
                 // Obtener el nombre del remitente (protegido contra null)
                 String senderName = msg.getSenderName() != null ? msg.getSenderName() : "Usuario";
 
+                // Obtener timestamp del mensaje
+                String timestamp = msg.getTimestamp() != null
+                    ? msg.getTimestamp().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    : java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
                 // Si es mensaje mío del historial, mostrar con estado
                 if (esMio) {
-                    agregarBurbuja(senderName, contenido, true, msg.getMessageId(), msg.isDelivered(), msg.isRead());
+                    agregarBurbujaConHora(senderName, contenido, true, msg.getMessageId(), msg.isDelivered(), msg.isRead(), timestamp);
                 } else {
-                    agregarBurbuja(senderName, contenido, false);
+                    agregarBurbujaConHora(senderName, contenido, false, 0, false, false, timestamp);
 
                     // Enviar confirmación de lectura al servidor si el chat está abierto (solo para mensajes privados)
                     if (!msg.isGroupChat() && msg.getMessageId() > 0 && !msg.isRead()) {
@@ -1001,8 +1183,8 @@ public class ChatFrame extends JFrame {
     private void mostrarNotificacionMensaje(String remitente) {
         // Pequeña notificación en la barra de título
         String tituloActual = getTitle();
-        if (!tituloActual.contains("📩")) {
-            setTitle("📩 " + tituloActual + " - Mensaje de " + remitente);
+        if (!tituloActual.contains("*")) {
+            setTitle("* " + tituloActual + " - Mensaje de " + remitente);
         }
 
         // También podemos hacer que parpadee o emita un sonido
@@ -1017,18 +1199,23 @@ public class ChatFrame extends JFrame {
 
     // Versión completa con estado de mensaje
     private void agregarBurbuja(String usuario, String texto, boolean esMio, int messageId, boolean delivered, boolean read) {
-        // Obtener hora actual en formato HH:mm
-        String timestamp = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+        // Obtener fecha y hora actual en formato dd/MM/yyyy HH:mm
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 
         String html;
         if (esMio) {
-            // Mensaje mío: mostrar "Tú" + indicador de estado + hora
+            // Mensaje mío: mostrar "Tú" + contenido + hora + indicador de estado
             String statusIcon = getStatusIcon(delivered, read);
             String statusId = messageId > 0 ? "msg-status-" + messageId : "";
-            html = "<div class='msg-container'><div class='bubble-me'>" +
-                   "<span class='sender'>Tú</span>" +
-                   texto +
-                   "<span class='timestamp'>" + timestamp + " <span class='status' id='" + statusId + "'>" + statusIcon + "</span></span>" +
+
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-me'>" +
+                   "<div class='msg-header'><span class='sender'>Tú</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'>" +
+                   "<span class='timestamp'>" + timestamp + "</span>" +
+                   "<span class='status' id='" + statusId + "'>" + statusIcon + "</span>" +
+                   "</div>" +
                    "</div></div>";
 
             // Guardar en el mapa para futuras actualizaciones
@@ -1036,11 +1223,14 @@ public class ChatFrame extends JFrame {
                 messageSentMap.put(messageId, statusId);
             }
         } else {
-            // Mensaje de otro: mostrar nombre + hora
-            html = "<div class='msg-container'><div class='bubble-other'>" +
-                   "<span class='sender'>" + usuario + "</span>" +
-                   texto +
+            // Mensaje de otro: mostrar nombre del emisor + contenido + hora
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-other'>" +
+                   "<div class='msg-header'><span class='sender-other'>" + usuario + "</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'>" +
                    "<span class='timestamp'>" + timestamp + "</span>" +
+                   "</div>" +
                    "</div></div>";
         }
         try {
@@ -1050,15 +1240,86 @@ public class ChatFrame extends JFrame {
     }
 
     /**
+     * Versión del método agregarBurbuja que acepta un timestamp específico
+     */
+    private void agregarBurbujaConHora(String usuario, String texto, boolean esMio, int messageId, boolean delivered, boolean read, String timestamp) {
+        String html;
+        if (esMio) {
+            String statusIcon = getStatusIcon(delivered, read);
+            String statusId = messageId > 0 ? "msg-status-" + messageId : "";
+
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-me'>" +
+                   "<div class='msg-header'><span class='sender'>Tú</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'>" +
+                   "<span class='timestamp'>" + timestamp + "</span>" +
+                   "<span class='status' id='" + statusId + "'>" + statusIcon + "</span>" +
+                   "</div>" +
+                   "</div></div>";
+
+            if (messageId > 0) {
+                messageSentMap.put(messageId, statusId);
+            }
+        } else {
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-other'>" +
+                   "<div class='msg-header'><span class='sender-other'>" + usuario + "</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'>" +
+                   "<span class='timestamp'>" + timestamp + "</span>" +
+                   "</div>" +
+                   "</div></div>";
+        }
+        try {
+            kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
+            areaChat.setCaretPosition(doc.getLength());
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    /**
+     * Añade un separador de día en el chat
+     */
+    private void agregarSeparadorDia(java.time.LocalDate fecha) {
+        String textoFecha = formatearFechaSeparador(fecha);
+        String html = "<div class='day-separator'>" +
+                     "<span class='day-separator-label'>" + textoFecha + "</span>" +
+                     "</div>";
+        try {
+            kit.insertHTML(doc, doc.getLength(), html, 0, 0, null);
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    /**
+     * Formatea la fecha para el separador de día
+     */
+    private String formatearFechaSeparador(java.time.LocalDate fecha) {
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.time.LocalDate ayer = hoy.minusDays(1);
+
+        if (fecha.equals(hoy)) {
+            return "Hoy";
+        } else if (fecha.equals(ayer)) {
+            return "Ayer";
+        } else if (fecha.getYear() == hoy.getYear()) {
+            // Mismo año: mostrar día y mes
+            return fecha.format(java.time.format.DateTimeFormatter.ofPattern("d 'de' MMMM", new java.util.Locale("es", "ES")));
+        } else {
+            // Año diferente: mostrar fecha completa
+            return fecha.format(java.time.format.DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")));
+        }
+    }
+
+    /**
      * Obtiene el icono de estado según el estado del mensaje
      */
     private String getStatusIcon(boolean delivered, boolean read) {
         if (read) {
-            return "<span style='color: #4FC3F7;'>✓✓</span>"; // Azul: leído
+            return "<span class='status-read'>✓✓</span>"; // Azul: leído
         } else if (delivered) {
-            return "<span style='color: #999;'>✓✓</span>"; // Gris: entregado
+            return "<span class='status-delivered'>✓✓</span>"; // Gris claro: entregado
         } else {
-            return "<span style='color: #999;'>✓</span>"; // Gris: enviado
+            return "<span class='status-sent'>✓</span>"; // Gris: enviado
         }
     }
 
@@ -1129,7 +1390,7 @@ public class ChatFrame extends JFrame {
             // Mostrar notificación al usuario
             int opcion = JOptionPane.showConfirmDialog(
                 this,
-                "📬 " + senderName + " te ha enviado un mensaje.\n\n¿Deseas aceptar el chat y añadirlo a tus contactos?",
+                senderName + " te ha enviado un mensaje.\n\n¿Deseas aceptar el chat y añadirlo a tus contactos?",
                 "Nuevo mensaje de " + senderName,
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
@@ -1446,7 +1707,11 @@ public class ChatFrame extends JFrame {
      * Navega al resultado anterior
      */
     private void buscarAnterior() {
-        if (indicesResultados.isEmpty()) return;
+        // Si no hay resultados, primero buscar
+        if (indicesResultados.isEmpty()) {
+            buscarMensajes();
+            return;
+        }
 
         indiceResultadoActual--;
         if (indiceResultadoActual < 0) {
@@ -1459,7 +1724,11 @@ public class ChatFrame extends JFrame {
      * Navega al siguiente resultado
      */
     private void buscarSiguiente() {
-        if (indicesResultados.isEmpty()) return;
+        // Si no hay resultados, primero buscar
+        if (indicesResultados.isEmpty()) {
+            buscarMensajes();
+            return;
+        }
 
         indiceResultadoActual++;
         if (indiceResultadoActual >= indicesResultados.size()) {
@@ -1495,7 +1764,7 @@ public class ChatFrame extends JFrame {
                 if (msg.getType() == MessageType.TEXT_MESSAGE && contenido != null) {
                     contenido = EncryptionUtil.decrypt(contenido);
                 } else if (msg.getType() == MessageType.FILE_MESSAGE || msg.getType() == MessageType.ARCHIVO) {
-                    contenido = "📎 " + msg.getFileName();
+                    contenido = "[Archivo] " + msg.getFileName();
                 }
 
                 // Resaltar el término buscado
@@ -1526,7 +1795,7 @@ public class ChatFrame extends JFrame {
                 if (msg.getType() == MessageType.TEXT_MESSAGE && contenido != null) {
                     contenido = EncryptionUtil.decrypt(contenido);
                 } else if (msg.getType() == MessageType.FILE_MESSAGE || msg.getType() == MessageType.ARCHIVO) {
-                    contenido = "📎 " + msg.getFileName();
+                    contenido = "[Archivo] " + msg.getFileName();
                 }
 
                 String senderName = msg.getSenderName() != null ? msg.getSenderName() : "Usuario";
@@ -1569,21 +1838,23 @@ public class ChatFrame extends JFrame {
      * Agrega una burbuja durante la búsqueda (con posible resaltado de resultado actual)
      */
     private void agregarBurbujaBusqueda(String usuario, String texto, boolean esMio, boolean esResultadoActual) {
-        String timestamp = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+        String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
         String bordeExtra = esResultadoActual ? "border: 2px solid #FF9800;" : "";
 
         String html;
         if (esMio) {
-            html = "<div class='msg-container'><div class='bubble-me' style='" + bordeExtra + "'>" +
-                   "<span class='sender'>Tú</span>" +
-                   texto +
-                   "<span class='timestamp'>" + timestamp + "</span>" +
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-me' style='" + bordeExtra + "'>" +
+                   "<div class='msg-header'><span class='sender'>Tú</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'><span class='timestamp'>" + timestamp + "</span></div>" +
                    "</div></div>";
         } else {
-            html = "<div class='msg-container'><div class='bubble-other' style='" + bordeExtra + "'>" +
-                   "<span class='sender'>" + usuario + "</span>" +
-                   texto +
-                   "<span class='timestamp'>" + timestamp + "</span>" +
+            html = "<div class='msg-container'>" +
+                   "<div class='bubble-other' style='" + bordeExtra + "'>" +
+                   "<div class='msg-header'><span class='sender-other'>" + usuario + "</span></div>" +
+                   "<div class='msg-content'>" + texto + "</div>" +
+                   "<div class='msg-footer'><span class='timestamp'>" + timestamp + "</span></div>" +
                    "</div></div>";
         }
 
@@ -1596,11 +1867,11 @@ public class ChatFrame extends JFrame {
     }
 
     // =================================================================
-    // BÚSQUEDA GLOBAL DE MENSAJES (Panel Izquierdo)
+    // BÚSQUEDA/FILTRADO DE CHATS (Panel Izquierdo)
     // =================================================================
 
     /**
-     * Muestra u oculta el panel de búsqueda global
+     * Muestra u oculta el panel de búsqueda de chats
      */
     private void toggleBusquedaGlobal() {
         boolean visible = !panelBusquedaGlobal.isVisible();
@@ -1614,149 +1885,45 @@ public class ChatFrame extends JFrame {
     }
 
     /**
-     * Cierra el panel de búsqueda global
+     * Cierra el panel de búsqueda y restaura la lista completa
      */
     private void cerrarBusquedaGlobal() {
         panelBusquedaGlobal.setVisible(false);
         txtBusquedaGlobal.setText("");
-        // Restaurar la lista de contactos original
-        pedirListaContactos();
+        // Restaurar la lista completa de contactos
+        restaurarListaCompleta();
     }
 
     /**
-     * Ejecuta la búsqueda global de mensajes en todos los chats
+     * Filtra la lista de chats según el texto ingresado
      */
-    private void ejecutarBusquedaGlobal() {
-        String termino = txtBusquedaGlobal.getText().trim();
-        if (termino.isEmpty()) {
+    private void filtrarListaChats() {
+        String filtro = txtBusquedaGlobal.getText().trim().toLowerCase();
+
+        if (filtro.isEmpty()) {
+            // Si no hay filtro, mostrar todos
+            restaurarListaCompleta();
             return;
         }
 
-        // Enviar solicitud de búsqueda al servidor
-        Message msg = new Message();
-        msg.setType(MessageType.SEARCH_MESSAGES);
-        msg.setContent(termino);
-        ClientSocket.getInstance().send(msg);
+        // Filtrar la lista
+        modeloContactos.clear();
+        for (User u : listaCompletaContactos) {
+            String nombre = u.getUsername().toLowerCase();
+            if (nombre.contains(filtro)) {
+                modeloContactos.addElement(u);
+            }
+        }
     }
 
     /**
-     * Muestra los resultados de la búsqueda global de mensajes
+     * Restaura la lista completa de contactos sin filtro
      */
-    public void mostrarResultadosBusquedaGlobal(List<Message> mensajes) {
-        SwingUtilities.invokeLater(() -> {
-            if (mensajes == null || mensajes.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "No se encontraron mensajes con ese término.",
-                    "Sin resultados",
-                    JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-
-            // Crear un diálogo para mostrar los resultados
-            JDialog dialogo = new JDialog(this, "Resultados de búsqueda", true);
-            dialogo.setSize(500, 400);
-            dialogo.setLocationRelativeTo(this);
-
-            JPanel panelPrincipal = new JPanel(new BorderLayout());
-            panelPrincipal.setBackground(new Color(30, 30, 30));
-
-            // Título
-            JLabel lblTitulo = new JLabel("Se encontraron " + mensajes.size() + " mensaje(s)");
-            lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            lblTitulo.setForeground(StyleUtil.TEXT_PRIMARY);
-            lblTitulo.setBorder(new EmptyBorder(15, 15, 10, 15));
-            panelPrincipal.add(lblTitulo, BorderLayout.NORTH);
-
-            // Lista de resultados
-            DefaultListModel<String> modeloResultados = new DefaultListModel<>();
-            JList<String> listaResultados = new JList<>(modeloResultados);
-            listaResultados.setBackground(new Color(40, 40, 40));
-            listaResultados.setForeground(StyleUtil.TEXT_PRIMARY);
-            listaResultados.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            listaResultados.setSelectionBackground(new Color(0, 150, 136));
-            listaResultados.setSelectionForeground(StyleUtil.TEXT_PRIMARY);
-            listaResultados.setFixedCellHeight(50);
-
-            // Mapear índices a mensajes para poder abrir el chat
-            java.util.ArrayList<Message> mensajesLista = new java.util.ArrayList<>(mensajes);
-
-            for (Message m : mensajes) {
-                String contenido = m.getContent();
-                // Desencriptar el contenido
-                if (m.getType() == MessageType.TEXT_MESSAGE && contenido != null) {
-                    contenido = EncryptionUtil.decrypt(contenido);
-                }
-
-                // Truncar si es muy largo
-                if (contenido != null && contenido.length() > 50) {
-                    contenido = contenido.substring(0, 47) + "...";
-                }
-
-                String remitente = m.getSenderName() != null ? m.getSenderName() : "Usuario";
-                modeloResultados.addElement("💬 " + remitente + ": " + contenido);
-            }
-
-            // Evento al hacer doble clic: abrir el chat correspondiente
-            listaResultados.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        int index = listaResultados.getSelectedIndex();
-                        if (index >= 0 && index < mensajesLista.size()) {
-                            Message msgSeleccionado = mensajesLista.get(index);
-
-                            // Determinar con quién es el chat
-                            int myId = ClientSocket.getInstance().getMyUserId();
-                            int contactId;
-                            String contactName;
-
-                            if (msgSeleccionado.getSenderId() == myId) {
-                                // Yo envié el mensaje, abrir chat con el receptor
-                                contactId = msgSeleccionado.getReceiverId();
-                                // Buscar nombre del receptor en la lista de contactos
-                                contactName = buscarNombreUsuario(contactId);
-                            } else {
-                                // Otro me envió el mensaje, abrir chat con el emisor
-                                contactId = msgSeleccionado.getSenderId();
-                                contactName = msgSeleccionado.getSenderName();
-                            }
-
-                            if (contactName == null) {
-                                contactName = "Usuario";
-                            }
-
-                            // Crear usuario y cambiar al chat
-                            User contacto = new User(contactId, contactName, "activo");
-                            cambiarChat(contacto);
-
-                            // Cerrar diálogo
-                            dialogo.dispose();
-                            cerrarBusquedaGlobal();
-                        }
-                    }
-                }
-            });
-
-            JScrollPane scrollResultados = new JScrollPane(listaResultados);
-            scrollResultados.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
-            panelPrincipal.add(scrollResultados, BorderLayout.CENTER);
-
-            // Botón cerrar
-            JButton btnCerrar = new JButton("Cerrar");
-            btnCerrar.setBackground(new Color(60, 60, 60));
-            btnCerrar.setForeground(StyleUtil.TEXT_PRIMARY);
-            btnCerrar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-            btnCerrar.addActionListener(ev -> dialogo.dispose());
-
-            JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            panelBoton.setBackground(new Color(30, 30, 30));
-            panelBoton.setBorder(new EmptyBorder(0, 15, 15, 15));
-            panelBoton.add(btnCerrar);
-            panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
-
-            dialogo.setContentPane(panelPrincipal);
-            dialogo.setVisible(true);
-        });
+    private void restaurarListaCompleta() {
+        modeloContactos.clear();
+        for (User u : listaCompletaContactos) {
+            modeloContactos.addElement(u);
+        }
     }
 
     /**
@@ -1809,7 +1976,7 @@ public class ChatFrame extends JFrame {
         // IMPORTANTE: Usar el ID real del grupo (positivo) para que coincida con el historial
         User grupoComoUsuario = new User();
         grupoComoUsuario.setId(grupo.getId()); // ID real (positivo)
-        grupoComoUsuario.setUsername("👥 " + grupo.getNombre());
+        grupoComoUsuario.setUsername(grupo.getNombre());
         grupoComoUsuario.setActivityStatus("grupo");
 
         this.contactoActual = grupoComoUsuario;
@@ -1819,7 +1986,7 @@ public class ChatFrame extends JFrame {
         // Actualizar título (mostrará "?" si no tenemos los miembros cargados)
         int memberCount = grupo.getMiembros() != null ? grupo.getMiembros().size() : 0;
         String memberText = memberCount > 0 ? String.valueOf(memberCount) : "?";
-        lblTituloChat.setText("👥 " + grupo.getNombre() + " (" + memberText + " miembros)");
+        lblTituloChat.setText(grupo.getNombre() + " (" + memberText + " miembros)");
 
         // Limpiar chat
         areaChat.setText("");
@@ -1879,7 +2046,7 @@ public class ChatFrame extends JFrame {
         JPanel headerPanel = new JPanel(new BorderLayout(5, 5));
         headerPanel.setBackground(new Color(30, 30, 30));
 
-        JLabel lblNombre = new JLabel("👥 " + grupoActual.getNombre());
+        JLabel lblNombre = new JLabel(grupoActual.getNombre());
         lblNombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblNombre.setForeground(StyleUtil.TEXT_PRIMARY);
         headerPanel.add(lblNombre, BorderLayout.NORTH);
@@ -2143,7 +2310,7 @@ public class ChatFrame extends JFrame {
             if (chatActualEsGrupo && grupoActual != null && grupoActual.getId() == grupo.getId()) {
                 this.grupoActual = grupo;
                 int memberCount = grupo.getMiembros() != null ? grupo.getMiembros().size() : 0;
-                lblTituloChat.setText("👥 " + grupo.getNombre() + " (" + memberCount + " miembros)");
+                lblTituloChat.setText(grupo.getNombre() + " (" + memberCount + " miembros)");
                 System.out.println("✅ Actualizado título del grupo: " + memberCount + " miembros");
             }
         });
@@ -2180,7 +2347,7 @@ public class ChatFrame extends JFrame {
                     User grupoComoUsuario = new User();
                     // Usar ID negativo para grupos: -groupId
                     grupoComoUsuario.setId(-g.getId());
-                    grupoComoUsuario.setUsername("👥 " + g.getNombre());
+                    grupoComoUsuario.setUsername(g.getNombre());
                     grupoComoUsuario.setActivityStatus("grupo");
                     modeloContactos.addElement(grupoComoUsuario);
                 }
@@ -2205,10 +2372,10 @@ public class ChatFrame extends JFrame {
         if (esGrupo) {
             // Para grupos, el ID está negativo, convertir a positivo
             int realGroupId = -elemento.getId();
-            String nombreGrupo = elemento.getUsername().replace("👥 ", "");
+            String nombreGrupo = elemento.getUsername();
 
             // Menú para grupos
-            JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
+            JMenuItem itemAbrir = new JMenuItem("Abrir Chat");
             itemAbrir.setBackground(new Color(40, 40, 40));
             itemAbrir.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAbrir.addActionListener(e -> {
@@ -2216,7 +2383,7 @@ public class ChatFrame extends JFrame {
                 abrirChatGrupo(grupo);
             });
 
-            JMenuItem itemAdmin = new JMenuItem("⚙️ Administrar Grupo");
+            JMenuItem itemAdmin = new JMenuItem("Administrar Grupo");
             itemAdmin.setBackground(new Color(40, 40, 40));
             itemAdmin.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAdmin.addActionListener(e -> {
@@ -2224,7 +2391,7 @@ public class ChatFrame extends JFrame {
                 abrirVentanaGrupos();
             });
 
-            JMenuItem itemAbandonar = new JMenuItem("🚪 Abandonar Grupo");
+            JMenuItem itemAbandonar = new JMenuItem("Abandonar Grupo");
             itemAbandonar.setBackground(new Color(40, 40, 40));
             itemAbandonar.setForeground(new Color(255, 100, 100));
             itemAbandonar.addActionListener(e -> {
@@ -2248,12 +2415,12 @@ public class ChatFrame extends JFrame {
 
         } else {
             // Menú para usuarios
-            JMenuItem itemAbrir = new JMenuItem("💬 Abrir Chat");
+            JMenuItem itemAbrir = new JMenuItem("Abrir Chat");
             itemAbrir.setBackground(new Color(40, 40, 40));
             itemAbrir.setForeground(StyleUtil.TEXT_PRIMARY);
             itemAbrir.addActionListener(e -> cambiarChat(elemento));
 
-            JMenuItem itemEliminar = new JMenuItem("❌ Eliminar Contacto");
+            JMenuItem itemEliminar = new JMenuItem("Eliminar Contacto");
             itemEliminar.setBackground(new Color(40, 40, 40));
             itemEliminar.setForeground(new Color(255, 100, 100));
             itemEliminar.addActionListener(e -> {
