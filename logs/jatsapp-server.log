@@ -1513,3 +1513,1821 @@ Caused by: java.net.ConnectException: Connection timed out: connect
 2026-02-16 16:52:59.446 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
 2026-02-16 16:52:59.507 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
 2026-02-16 16:52:59.962 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 17:21:27.319 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 17:21:27.406 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 17:21:27.841 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 17:21:30.097 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 17:21:30.098 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:21:30.099 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:21:30.100 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:21:51.222 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://192.168.1.18:3306/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:21:51.224 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:22:12.246 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://192.168.1.18:3306/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 10 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 13 common frames omitted
+2026-02-16 17:22:12.249 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:22:12.249 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:22:12.254 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:28:38.187 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 17:28:38.246 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 17:28:38.770 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 17:28:40.160 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 17:28:40.160 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:28:40.170 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:28:40.170 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:28:40.240 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:28:40.242 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:28:40.243 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 10 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 13 common frames omitted
+2026-02-16 17:28:40.245 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:28:40.245 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:28:40.246 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:33:24.716 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 17:33:24.787 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 17:33:25.274 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 17:33:26.810 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 17:33:26.811 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:33:26.818 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:33:26.819 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:33:28.914 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://192.168.1.194:3309/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:33:28.915 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 17:33:30.953 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://192.168.1.194:3309/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 10 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 13 common frames omitted
+2026-02-16 17:33:30.953 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:33:30.954 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:33:30.955 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:34:48.963 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:34:48.965 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:34:48.965 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:34:48.969 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:34:48.969 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:34:48.985 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:34:48.986 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:34:49.070 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:34:49.074 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:34:49.076 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:34:49.078 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:34:49.078 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:34:49.080 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:35:22.201 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:35:22.203 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:35:22.203 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:35:22.206 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:35:22.206 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:35:22.208 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:35:22.209 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:35:22.315 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:35:22.318 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:35:22.320 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:35:22.323 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:35:22.324 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:35:22.329 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:35:23.312 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:35:23.314 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:35:23.315 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:35:23.318 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:35:23.318 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:35:23.319 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:35:23.319 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:35:23.400 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:35:23.403 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:35:23.405 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:35:23.407 [ServerCore-Thread] ERROR com.jatsapp.server.ServerCore - Error fatal iniciando el servidor en puerto 5555
+java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:511)
+	at java.base/sun.nio.ch.Net.bind(Net.java:500)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:630)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:326)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:222)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:138)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2026-02-16 17:37:58.906 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:37:58.908 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:37:58.908 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:37:58.912 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:37:58.912 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:37:58.913 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:37:58.914 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:37:59.009 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:37:59.013 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:37:59.017 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:37:59.019 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:37:59.021 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:37:59.025 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:37:59.953 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:37:59.955 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:37:59.955 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:37:59.959 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:37:59.959 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:37:59.959 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:37:59.959 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:38:00.045 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:38:00.048 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:38:00.049 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:38:00.051 [ServerCore-Thread] ERROR com.jatsapp.server.ServerCore - Error fatal iniciando el servidor en puerto 5555
+java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:511)
+	at java.base/sun.nio.ch.Net.bind(Net.java:500)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:630)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:326)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:222)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:138)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:50)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2026-02-16 17:38:12.072 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:38:12.074 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:38:12.074 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:38:12.078 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:38:12.079 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:38:12.079 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:38:12.079 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:38:12.160 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:38:12.163 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 12 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 15 common frames omitted
+2026-02-16 17:38:12.165 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://127.0.0.1:3309/?user=root
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 9 common frames omitted
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 12 common frames omitted
+2026-02-16 17:38:12.167 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:38:12.167 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:38:12.169 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:40:02.021 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:40:02.022 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:40:02.022 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:40:02.026 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:40:02.026 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:40:02.039 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:40:02.040 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:40:02.514 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:40:02.514 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-16 17:40:02.528 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:40:02.560 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:40:02.561 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:40:02.562 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:58:52.366 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:58:52.368 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-16 17:58:52.368 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-16 17:58:52.372 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:58:52.372 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-16 17:58:52.373 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:58:52.373 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:58:52.697 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:58:52.697 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-16 17:58:52.711 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:58:52.749 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:58:52.749 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:58:52.752 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:59:32.394 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 17:59:32.460 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 17:59:32.933 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 17:59:34.989 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 17:59:34.990 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 17:59:34.993 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 17:59:34.994 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 17:59:35.496 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:35.496 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-16 17:59:35.510 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:35.541 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 17:59:35.542 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 17:59:35.543 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 17:59:48.996 [AWT-EventQueue-0] INFO  c.j.server.ui.DatabaseViewerPanel - Refrescando todas las tablas de la base de datos
+2026-02-16 17:59:49.004 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:49.004 [AWT-EventQueue-0] ERROR c.j.server.ui.DatabaseViewerPanel - Error actualizando tabla usersTable
+java.sql.SQLException: No database selected
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeQuery(StatementImpl.java:1201)
+	at com.jatsapp.server.ui.DatabaseViewerPanel.refreshTableData(DatabaseViewerPanel.java:65)
+	at com.jatsapp.server.ui.ServerGUI.refreshTable(ServerGUI.java:497)
+	at com.jatsapp.server.ui.ServerGUI.updateTablesInPanel(ServerGUI.java:488)
+	at com.jatsapp.server.ui.ServerGUI.refreshDatabaseTables(ServerGUI.java:473)
+	at com.jatsapp.server.ui.ServerGUI.lambda$createDatabasePanel$0(ServerGUI.java:201)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4916)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4559)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4500)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+2026-02-16 17:59:51.416 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:51.417 [AWT-EventQueue-0] ERROR c.j.server.ui.DatabaseViewerPanel - Error actualizando tabla messagesTable
+java.sql.SQLException: No database selected
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeQuery(StatementImpl.java:1201)
+	at com.jatsapp.server.ui.DatabaseViewerPanel.refreshTableData(DatabaseViewerPanel.java:65)
+	at com.jatsapp.server.ui.ServerGUI.refreshTable(ServerGUI.java:497)
+	at com.jatsapp.server.ui.ServerGUI.updateTablesInPanel(ServerGUI.java:488)
+	at com.jatsapp.server.ui.ServerGUI.refreshDatabaseTables(ServerGUI.java:473)
+	at com.jatsapp.server.ui.ServerGUI.lambda$createDatabasePanel$0(ServerGUI.java:201)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4916)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4559)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4500)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+2026-02-16 17:59:52.806 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:52.806 [AWT-EventQueue-0] ERROR c.j.server.ui.DatabaseViewerPanel - Error actualizando tabla groupsTable
+java.sql.SQLException: No database selected
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeQuery(StatementImpl.java:1201)
+	at com.jatsapp.server.ui.DatabaseViewerPanel.refreshTableData(DatabaseViewerPanel.java:65)
+	at com.jatsapp.server.ui.ServerGUI.refreshTable(ServerGUI.java:497)
+	at com.jatsapp.server.ui.ServerGUI.updateTablesInPanel(ServerGUI.java:488)
+	at com.jatsapp.server.ui.ServerGUI.refreshDatabaseTables(ServerGUI.java:473)
+	at com.jatsapp.server.ui.ServerGUI.lambda$createDatabasePanel$0(ServerGUI.java:201)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4916)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4559)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4500)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+2026-02-16 17:59:53.516 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 17:59:53.518 [AWT-EventQueue-0] ERROR c.j.server.ui.DatabaseViewerPanel - Error actualizando tabla contactsTable
+java.sql.SQLException: No database selected
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeQuery(StatementImpl.java:1201)
+	at com.jatsapp.server.ui.DatabaseViewerPanel.refreshTableData(DatabaseViewerPanel.java:65)
+	at com.jatsapp.server.ui.ServerGUI.refreshTable(ServerGUI.java:497)
+	at com.jatsapp.server.ui.ServerGUI.updateTablesInPanel(ServerGUI.java:488)
+	at com.jatsapp.server.ui.ServerGUI.refreshDatabaseTables(ServerGUI.java:473)
+	at com.jatsapp.server.ui.ServerGUI.lambda$createDatabasePanel$0(ServerGUI.java:201)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2314)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:407)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6576)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3404)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6341)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2260)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:4958)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2318)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4916)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4559)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4500)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2304)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2671)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4790)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:725)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:702)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+2026-02-16 18:03:47.767 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 18:03:47.831 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 18:03:48.310 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 18:03:52.652 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 18:03:52.653 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 18:03:52.662 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 18:03:52.662 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 18:03:52.963 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:52.964 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-16 18:03:52.976 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:52.996 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-16 18:03:52.996 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-16 18:03:52.998 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-16 18:03:58.598 [AWT-EventQueue-0] INFO  c.j.server.ui.DatabaseViewerPanel - Refrescando todas las tablas de la base de datos
+2026-02-16 18:03:58.608 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:58.624 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla usersTable actualizada con 0 filas
+2026-02-16 18:03:58.635 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:58.636 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla messagesTable actualizada con 0 filas
+2026-02-16 18:03:58.644 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:58.645 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla groupsTable actualizada con 0 filas
+2026-02-16 18:03:58.653 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:03:58.654 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla contactsTable actualizada con 0 filas
+2026-02-16 18:06:59.046 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:06:59.075 [ServerCore-Thread] INFO  c.jatsapp.server.service.FileService - ✓ Carpeta server_files creada
+2026-02-16 18:06:59.101 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:06:59.103 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:06:59.107 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:07:34.299 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:07:34.320 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:07:34.342 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:07:34.372 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:07:34.377 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:07:36.214 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:07:36.215 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:08:28.942 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-16 18:08:28.943 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=joaquin
+2026-02-16 18:08:28.953 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:08:28.991 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:08:28.994 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Usuario joaquin no ha verificado su email
+2026-02-16 18:08:37.711 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:08:37.711 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:08:37.711 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:08:37.711 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:08:37.713 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:12:03.008 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:12:03.008 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:12:03.008 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:12:03.010 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:12:03.010 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:12:37.962 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:12:37.962 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:12:37.974 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:12:38.008 [ClientHandler-127.0.0.1] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: joaquin
+2026-02-16 18:14:12.604 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:14:12.605 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: joaquinmunozsalazar@gmail.com
+2026-02-16 18:14:12.615 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:14:12.624 [ClientHandler-127.0.0.1] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: joaquin
+2026-02-16 18:15:49.257 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:15:49.257 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:15:49.268 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:15:49.281 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:15:49.287 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:15:50.570 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:15:50.570 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:18:18.500 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:18:18.502 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:18:18.503 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:18:20.187 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:18:20.187 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:18:20.188 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:18:20.188 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:18:20.188 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:18:21.077 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:18:21.077 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:18:21.078 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:18:21.079 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:18:21.079 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:18:22.758 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:18:22.758 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:18:22.758 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:18:22.758 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:18:22.760 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:18:25.934 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:18:25.935 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:18:25.935 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:18:25.935 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:18:25.935 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:18:28.536 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:18:28.536 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:18:28.536 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:18:28.537 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:18:28.537 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:19:30.006 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:19:30.006 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:19:30.013 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:19:30.042 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:19:30.047 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:19:31.822 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:19:31.822 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:19:53.662 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:19:53.662 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:19:53.662 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:19:53.662 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:19:53.663 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:22:24.798 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:22:24.798 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:22:24.799 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:22:24.799 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:22:24.799 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:22:58.038 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:22:58.038 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:22:58.054 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:22:58.075 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:22:58.081 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:22:59.374 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:22:59.374 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:28:09.487 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:28:09.489 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:28:09.489 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:28:20.858 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:28:20.858 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:28:20.858 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:28:20.860 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:28:20.860 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:28:41.294 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:28:41.294 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:28:41.301 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:28:41.316 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:28:41.319 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:28:42.478 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:28:42.478 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:30:46.099 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:30:46.099 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:30:46.099 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:30:47.446 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:30:47.446 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:30:47.447 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:30:47.451 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:30:47.452 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:30:48.374 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:30:48.375 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:30:48.375 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:30:48.375 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:30:48.376 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:30:50.249 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:30:50.249 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:30:50.249 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:30:50.249 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:30:50.250 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:30:50.640 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:30:50.640 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:30:50.641 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:30:50.641 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:30:50.641 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:30:52.960 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:30:52.960 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:30:52.961 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:30:52.961 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:30:52.961 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:31:09.625 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:31:09.625 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:31:09.636 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:31:09.657 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:31:09.660 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:31:10.766 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:31:10.766 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:33:03.419 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:33:03.419 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:33:03.419 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:33:05.879 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:33:05.880 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:33:05.880 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:33:05.881 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:33:05.881 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:33:25.818 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:33:25.818 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:33:25.829 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:33:25.845 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:33:25.850 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:33:27.030 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:33:27.030 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:34:54.132 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:34:54.132 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:34:54.132 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:35:09.405 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:35:09.406 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:35:09.406 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:35:09.407 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:35:09.407 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:35:34.793 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:35:34.793 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:35:34.803 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:35:34.815 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:35:34.820 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:35:35.967 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:35:35.967 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:35:59.524 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=VERIFY_2FA
+2026-02-16 18:35:59.524 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Verificando código 2FA para nuevo usuario: joaquin
+2026-02-16 18:35:59.537 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:35:59.540 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Código 2FA incorrecto para usuario: joaquin
+2026-02-16 18:36:18.149 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-16 18:36:18.150 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=joaquin
+2026-02-16 18:36:18.161 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:36:18.169 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:36:18.169 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Usuario joaquin no ha verificado su email
+2026-02-16 18:37:44.751 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:37:44.752 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:37:44.752 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:37:46.078 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:37:46.078 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:37:46.079 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:37:46.079 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:37:46.080 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:38:02.925 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:38:02.925 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:38:02.934 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:02.946 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:02.949 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:38:04.173 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:38:04.173 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:38:18.001 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=VERIFY_2FA
+2026-02-16 18:38:18.001 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Verificando código 2FA para nuevo usuario: joaquin
+2026-02-16 18:38:18.014 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:18.030 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:18.036 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Email verificado para usuario: joaquin
+2026-02-16 18:38:32.512 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-16 18:38:32.512 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=joaquin
+2026-02-16 18:38:32.519 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.524 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.529 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.533 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 15 conectado. Total clientes activos: 1
+2026-02-16 18:38:32.537 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.537 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 1 clientes: joaquin -> activo
+2026-02-16 18:38:32.537 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Login completado exitosamente: UserID=15, Username=joaquin
+2026-02-16 18:38:32.692 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-16 18:38:32.692 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: joaquin
+2026-02-16 18:38:32.702 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.715 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 chats relevantes a UserID: 15
+2026-02-16 18:38:32.715 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_GROUPS
+2026-02-16 18:38:32.715 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando grupos para UserID: 15
+2026-02-16 18:38:32.727 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.731 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 grupos a UserID: 15
+2026-02-16 18:38:32.732 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-16 18:38:32.732 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: joaquin
+2026-02-16 18:38:32.740 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:38:32.743 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 chats relevantes a UserID: 15
+2026-02-16 18:38:53.012 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-16 18:39:23.006 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-16 18:39:53.000 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-16 18:40:23.010 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-16 18:40:53.005 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-16 18:40:58.151 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:40:58.152 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cerrando conexión para UserID: 15 (joaquin)
+2026-02-16 18:40:58.158 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:40:58.161 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 15 desconectado. Total clientes activos: 0
+2026-02-16 18:40:58.168 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:40:58.169 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 0 clientes: joaquin -> desconectado
+2026-02-16 18:40:58.169 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:41:10.667 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:41:10.667 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:41:10.668 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:41:10.668 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:41:10.669 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:41:13.175 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:41:13.176 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-16 18:41:13.176 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:41:13.176 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:41:13.176 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:41:15.921 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:41:15.921 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:41:15.922 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:41:15.922 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:41:15.923 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:41:36.830 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:41:36.830 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:41:36.843 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:41:36.863 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:41:36.867 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:41:38.359 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:41:38.359 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:42:04.032 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=VERIFY_2FA
+2026-02-16 18:42:04.032 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Verificando código 2FA para nuevo usuario: joaquin
+2026-02-16 18:42:04.044 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:42:04.056 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:42:04.059 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Email verificado para usuario: joaquin
+2026-02-16 18:43:14.527 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:43:14.527 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:43:14.529 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:43:49.818 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:43:49.819 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:43:49.819 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:43:49.820 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:43:49.820 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:44:07.905 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:44:07.905 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:44:07.915 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:44:07.931 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:44:07.935 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:44:09.164 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:44:09.165 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:44:23.147 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=VERIFY_2FA
+2026-02-16 18:44:23.147 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Verificando código 2FA para nuevo usuario: joaquin
+2026-02-16 18:44:23.156 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:44:23.175 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:44:23.180 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Email verificado para usuario: joaquin
+2026-02-16 18:45:43.603 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-16 18:45:43.603 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-16 18:45:43.604 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-16 18:45:56.421 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-16 18:45:56.421 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-16 18:45:56.421 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada
+2026-02-16 18:45:56.422 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-16 18:45:56.422 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-16 18:46:13.740 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=REGISTER
+2026-02-16 18:46:13.741 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Registrando nuevo usuario: joaquin con email: munozsalazarjoaquin@gmail.com
+2026-02-16 18:46:13.749 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:13.774 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:13.780 [ClientHandler-127.0.0.1] DEBUG c.j.server.service.EmailService - Enviando email a: munozsalazarjoaquin@gmail.com con asunto: Verificación de cuenta JatsApp
+2026-02-16 18:46:15.045 [ClientHandler-127.0.0.1] INFO  c.j.server.service.EmailService - ✉️ Correo enviado exitosamente a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:46:15.045 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Usuario registrado, código de verificación enviado a: munozsalazarjoaquin@gmail.com
+2026-02-16 18:46:28.922 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=VERIFY_2FA
+2026-02-16 18:46:28.922 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Verificando código 2FA para nuevo usuario: joaquin
+2026-02-16 18:46:28.931 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:28.945 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:28.949 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Email verificado para usuario: joaquin
+2026-02-16 18:46:37.185 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-16 18:46:37.185 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=joaquin
+2026-02-16 18:46:37.192 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.203 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.206 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.214 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 18 conectado. Total clientes activos: 1
+2026-02-16 18:46:37.217 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.217 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 1 clientes: joaquin -> activo
+2026-02-16 18:46:37.217 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Login completado exitosamente: UserID=18, Username=joaquin
+2026-02-16 18:46:37.309 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-16 18:46:37.309 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: joaquin
+2026-02-16 18:46:37.315 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.316 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 chats relevantes a UserID: 18
+2026-02-16 18:46:37.317 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_GROUPS
+2026-02-16 18:46:37.317 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando grupos para UserID: 18
+2026-02-16 18:46:37.324 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.326 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 grupos a UserID: 18
+2026-02-16 18:46:37.345 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-16 18:46:37.345 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: joaquin
+2026-02-16 18:46:37.354 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:37.355 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 chats relevantes a UserID: 18
+2026-02-16 18:46:41.392 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-16 18:46:41.392 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cliente solicita desconexión: UserID=18
+2026-02-16 18:46:41.392 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cerrando conexión para UserID: 18 (joaquin)
+2026-02-16 18:46:41.401 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:41.407 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 18 desconectado. Total clientes activos: 0
+2026-02-16 18:46:41.413 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-16 18:46:41.414 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 0 clientes: joaquin -> desconectado
+2026-02-16 18:46:41.414 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1

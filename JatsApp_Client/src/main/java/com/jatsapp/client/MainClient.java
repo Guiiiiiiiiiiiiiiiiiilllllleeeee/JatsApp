@@ -35,7 +35,7 @@ public class MainClient {
 
             try {
                 // CORRECCIÓN: Puerto cambiado a 5555 (el mismo que ServerCore)
-                ClientSocket.getInstance().connect("192.168.1.18", 5555);
+                ClientSocket.getInstance().connect("127.0.0.1", 5555);
 
                 // Abrir pantalla de Login
                 new LoginFrame();

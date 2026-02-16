@@ -23,6 +23,9 @@ public class RegisterFrame extends JFrame {
         super("JatsApp - Crear Cuenta");
         StyleUtil.applyDarkTheme();
 
+        // Registrar este frame en ClientSocket para recibir respuestas
+        ClientSocket.getInstance().setRegisterFrame(this);
+
         setSize(450, 700);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -218,18 +221,12 @@ public class RegisterFrame extends JFrame {
         lblStatus.setForeground(StyleUtil.TEXT_SECONDARY);
 
         try {
+            System.out.println("📤 Enviando mensaje REGISTER al servidor...");
             ClientSocket.getInstance().send(msg);
-
-            // Mostrar éxito
-            lblStatus.setText("¡Cuenta creada! Redirigiendo...");
-            lblStatus.setForeground(StyleUtil.SUCCESS);
-
-            // Volver al login después de un momento
-            Timer timer = new Timer(1500, e -> abrirLogin());
-            timer.setRepeats(false);
-            timer.start();
-
+            System.out.println("📤 Mensaje REGISTER enviado. Esperando respuesta...");
+            // No cerrar automáticamente - esperar respuesta del servidor (require_2FA o REGISTER_FAIL)
         } catch (Exception ex) {
+            System.err.println("❌ Error enviando REGISTER: " + ex.getMessage());
             showError("Error de conexión con el servidor.");
             btnRegister.setEnabled(true);
         }
@@ -242,8 +239,96 @@ public class RegisterFrame extends JFrame {
 
     private void abrirLogin() {
         SwingUtilities.invokeLater(() -> {
+            // Limpiar referencia en ClientSocket antes de ir a login
+            ClientSocket.getInstance().setRegisterFrame(null);
             new LoginFrame();
             this.dispose();
+        });
+    }
+
+    // =======================================================
+    // MÉTODOS DE RESPUESTA (Llamados por ClientSocket)
+    // =======================================================
+
+    /**
+     * Llamado cuando el servidor requiere verificación 2FA después del registro
+     */
+    public void onRequire2FA() {
+        System.out.println("📱 RegisterFrame.onRequire2FA() llamado!");
+
+        // Ya estamos en el EDT porque handleMessage usa SwingUtilities.invokeLater
+        lblStatus.setText("Verifica tu correo electrónico...");
+        lblStatus.setForeground(StyleUtil.WARNING);
+        btnRegister.setEnabled(false);
+
+        System.out.println("📱 Creando VerificationDialog...");
+        // El diálogo es modal, bloqueará hasta que se cierre
+        new VerificationDialog(this);
+        System.out.println("📱 VerificationDialog cerrado.");
+    }
+
+    /**
+     * Llamado cuando el registro falla
+     */
+    public void onRegisterFail(String reason) {
+        SwingUtilities.invokeLater(() -> {
+            showError(reason);
+            btnRegister.setEnabled(true);
+        });
+    }
+
+    /**
+     * Llamado cuando la verificación es exitosa - mostrar panel verificado y volver al login
+     */
+    public void onVerificationSuccess() {
+        System.out.println("✅ RegisterFrame.onVerificationSuccess() llamado!");
+        SwingUtilities.invokeLater(() -> {
+            // Crear diálogo de verificación exitosa
+            JDialog successDialog = new JDialog(this, "Verificación Completada", true);
+            successDialog.setSize(350, 200);
+            successDialog.setLocationRelativeTo(this);
+            successDialog.setResizable(false);
+
+            JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            panel.setBackground(StyleUtil.BG_DARK);
+            panel.setBorder(new EmptyBorder(30, 30, 30, 30));
+
+            // Icono de verificado
+            JLabel iconLabel = new JLabel("✅", SwingConstants.CENTER);
+            iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
+            iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(iconLabel);
+
+            panel.add(Box.createVerticalStrut(15));
+
+            // Texto de verificado
+            JLabel textLabel = new JLabel("¡Cuenta Verificada!");
+            textLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            textLabel.setForeground(StyleUtil.SUCCESS);
+            textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(textLabel);
+
+            panel.add(Box.createVerticalStrut(5));
+
+            JLabel subTextLabel = new JLabel("Redirigiendo al login...");
+            subTextLabel.setFont(StyleUtil.FONT_SMALL);
+            subTextLabel.setForeground(StyleUtil.TEXT_SECONDARY);
+            subTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(subTextLabel);
+
+            successDialog.setContentPane(panel);
+
+            // Timer para cerrar el diálogo y abrir login después de 2 segundos
+            Timer timer = new Timer(2000, e -> {
+                successDialog.dispose();
+                abrirLogin();
+            });
+            timer.setRepeats(false);
+            timer.start();
+
+            // Mostrar el diálogo
+            successDialog.setVisible(true);
         });
     }
 }

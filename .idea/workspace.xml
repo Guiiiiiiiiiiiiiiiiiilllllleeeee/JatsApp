@@ -6,7 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server.log" afterDir="false" />
@@ -43,12 +49,12 @@
     &quot;assignee&quot;: &quot;Guiiiiiiiiiiiiiiiiiilllllleeeee&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git",
-    "accountId": "804ec656-8dda-4da6-b048-aed0a5a2b84c"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git&quot;,
+    &quot;accountId&quot;: &quot;804ec656-8dda-4da6-b048-aed0a5a2b84c&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -93,6 +99,17 @@
       <workItem from="1771080626915" duration="14000" />
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/MainServer.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

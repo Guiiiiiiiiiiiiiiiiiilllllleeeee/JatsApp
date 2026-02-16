@@ -1,9 +1,6 @@
 package com.jatsapp.client.network;
 
-import com.jatsapp.client.view.ChatFrame;
-import com.jatsapp.client.view.LoginFrame;
-import com.jatsapp.client.view.ContactsFrame;
-import com.jatsapp.client.view.GroupsFrame;
+import com.jatsapp.client.view.*;
 import com.jatsapp.common.Group;
 import com.jatsapp.common.Message;
 import com.jatsapp.common.MessageType;
@@ -29,6 +26,7 @@ public class ClientSocket {
     private ChatFrame chatFrame;
     private ContactsFrame contactsFrame;
     private GroupsFrame groupsFrame;
+    private RegisterFrame registerFrame;
 
     private String myUsername;
     private int myUserId = -1;  // ID del usuario logueado
@@ -155,6 +153,7 @@ public class ClientSocket {
     }
 
     public void setLoginFrame(LoginFrame frame) { this.loginFrame = frame; }
+    public void setRegisterFrame(RegisterFrame frame) { this.registerFrame = frame; }
     public void setChatFrame(ChatFrame frame) { this.chatFrame = frame; }
     public ChatFrame getChatFrame() { return this.chatFrame; }
     public void setContactsFrame(ContactsFrame frame) { this.contactsFrame = frame; }
@@ -208,10 +207,32 @@ public class ClientSocket {
     }
 
     private void handleMessage(Message msg) {
+        System.out.println("📨 handleMessage: tipo=" + msg.getType());
+
         switch (msg.getType()) {
             // --- RESPUESTAS DE LOGIN/REGISTRO ---
             case require_2FA:
-                if (loginFrame != null) loginFrame.onRequire2FA();
+                System.out.println("🔐 Recibido require_2FA");
+                System.out.println("   registerFrame=" + registerFrame + ", visible=" + (registerFrame != null ? registerFrame.isVisible() : "null"));
+                System.out.println("   loginFrame=" + loginFrame + ", visible=" + (loginFrame != null ? loginFrame.isVisible() : "null"));
+
+                // Verificar qué frame está visible/activo para determinar el contexto
+                // Priorizar RegisterFrame si está visible (significa que estamos en proceso de registro)
+                if (registerFrame != null && registerFrame.isVisible()) {
+                    System.out.println("   -> Llamando a registerFrame.onRequire2FA()");
+                    registerFrame.onRequire2FA();
+                } else if (loginFrame != null && loginFrame.isVisible()) {
+                    System.out.println("   -> Llamando a loginFrame.onRequire2FA()");
+                    loginFrame.onRequire2FA();
+                } else if (registerFrame != null) {
+                    System.out.println("   -> Llamando a registerFrame.onRequire2FA() (fallback)");
+                    registerFrame.onRequire2FA();
+                } else if (loginFrame != null) {
+                    System.out.println("   -> Llamando a loginFrame.onRequire2FA() (fallback)");
+                    loginFrame.onRequire2FA();
+                } else {
+                    System.out.println("   ❌ No hay frame disponible para mostrar 2FA!");
+                }
                 break;
 
             case LOGIN_OK:
@@ -228,8 +249,12 @@ public class ClientSocket {
                 if (loginFrame != null) loginFrame.onLoginFail(msg.getContent());
                 break;
 
-            case REGISTER_FAIL: // Usamos el mismo método de fail para simplificar o uno específico
-                JOptionPane.showMessageDialog(loginFrame, "Error Registro: " + msg.getContent());
+            case REGISTER_FAIL:
+                if (registerFrame != null) {
+                    registerFrame.onRegisterFail(msg.getContent());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error Registro: " + msg.getContent());
+                }
                 break;
 
             // --- CHAT ---
@@ -472,6 +497,49 @@ public class ClientSocket {
                             msg.getContent(),
                             "Notificación de Grupo", JOptionPane.INFORMATION_MESSAGE);
                     });
+                }
+                break;
+
+            case VERIFY_2FA_OK:
+                // Verificación 2FA exitosa
+                System.out.println("✅ Verificación 2FA exitosa - Recibido VERIFY_2FA_OK");
+                System.out.println("   registerFrame=" + registerFrame + ", visible=" + (registerFrame != null ? registerFrame.isVisible() : "null"));
+                System.out.println("   loginFrame=" + loginFrame);
+
+                // Si venimos de RegisterFrame, notificar y luego ir a login
+                if (registerFrame != null) {
+                    System.out.println("   -> Llamando registerFrame.onVerificationSuccess()");
+                    SwingUtilities.invokeLater(() -> registerFrame.onVerificationSuccess());
+                }
+                // Si venimos de LoginFrame, continuar con el login normal
+                else if (loginFrame != null) {
+                    System.out.println("   -> Llamando loginFrame.onLoginSuccess()");
+                    SwingUtilities.invokeLater(() -> loginFrame.onLoginSuccess());
+                } else {
+                    System.out.println("   ⚠️ No hay frame disponible para continuar!");
+                    // Mostrar mensaje genérico
+                    SwingUtilities.invokeLater(() -> {
+                        JOptionPane.showMessageDialog(null,
+                            "¡Cuenta verificada correctamente!\nAhora puedes iniciar sesión.",
+                            "✅ Verificación Exitosa",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    });
+                }
+                break;
+
+            case VERIFY_2FA_FAIL:
+                // Verificación 2FA fallida
+                System.out.println("❌ Verificación 2FA fallida");
+                JOptionPane.showMessageDialog(null,
+                    "Código de verificación incorrecto o expirado.\nIntenta nuevamente.",
+                    "Error de Verificación",
+                    JOptionPane.ERROR_MESSAGE);
+
+                // Volver a mostrar el diálogo si es necesario
+                if (loginFrame != null) {
+                    SwingUtilities.invokeLater(() -> new VerificationDialog(loginFrame));
+                } else if (registerFrame != null) {
+                    SwingUtilities.invokeLater(() -> new VerificationDialog(registerFrame));
                 }
                 break;
 

@@ -168,6 +168,8 @@ public class LoginFrame extends JFrame {
     }
 
     private void irARegistro() {
+        // Limpiar referencia en ClientSocket antes de ir a registro
+        ClientSocket.getInstance().setLoginFrame(null);
         new RegisterFrame();
         this.dispose();
     }
