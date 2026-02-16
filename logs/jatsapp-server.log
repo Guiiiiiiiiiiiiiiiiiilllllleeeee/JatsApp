@@ -1396,3 +1396,120 @@
 2026-02-14 16:56:32.475 [Thread-0] INFO  com.jatsapp.server.ServerCore - Desconectando 0 clientes activos...
 2026-02-14 16:56:32.475 [ServerCore-Thread] DEBUG com.jatsapp.server.ServerCore - Accept interrumpido por shutdown del servidor
 2026-02-14 16:56:32.476 [Thread-0] INFO  com.jatsapp.server.MainServer - Servidor terminado correctamente
+2026-02-16 16:47:44.982 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 16:47:45.093 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 16:47:45.648 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 16:51:42.915 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 16:51:42.980 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 16:51:43.430 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 16:51:46.307 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 16:51:46.308 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 16:51:46.316 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 16:51:46.316 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 16:51:49.328 [AWT-EventQueue-0] INFO  com.jatsapp.server.ui.ServerGUI - Deteniendo servidor desde GUI...
+2026-02-16 16:51:49.329 [AWT-EventQueue-0] INFO  com.jatsapp.server.ServerCore - Deteniendo servidor...
+2026-02-16 16:51:49.329 [AWT-EventQueue-0] INFO  com.jatsapp.server.ServerCore - Desconectando 0 clientes activos...
+2026-02-16 16:52:11.901 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 16:52:11.961 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 16:52:12.408 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-16 16:52:14.909 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-16 16:52:14.909 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-16 16:52:14.910 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada correctamente
+2026-02-16 16:52:14.910 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-16 16:52:18.435 [AWT-EventQueue-0] INFO  com.jatsapp.server.ui.ServerGUI - Deteniendo servidor desde GUI...
+2026-02-16 16:52:18.435 [AWT-EventQueue-0] INFO  com.jatsapp.server.ServerCore - Deteniendo servidor...
+2026-02-16 16:52:18.435 [AWT-EventQueue-0] INFO  com.jatsapp.server.ServerCore - Desconectando 0 clientes activos...
+2026-02-16 16:52:20.578 [AWT-EventQueue-0] INFO  com.jatsapp.server.ui.ServerGUI - Logs de GUI limpiados
+2026-02-16 16:52:36.066 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error conectando a BD: jdbc:mysql://192.168.1.18:3306/jatsapp_db?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 16:52:36.091 [ServerCore-Thread] ERROR c.jatsapp.server.dao.DatabaseManager - Error inicializando tablas de BD
+com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:815)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:438)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:241)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:189)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:613)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:199)
+	at com.jatsapp.server.dao.DatabaseManager.getConnection(DatabaseManager.java:57)
+	at com.jatsapp.server.dao.DatabaseManager.initTables(DatabaseManager.java:78)
+	at com.jatsapp.server.dao.DatabaseManager.<init>(DatabaseManager.java:27)
+	at com.jatsapp.server.dao.DatabaseManager.getInstance(DatabaseManager.java:32)
+	at com.jatsapp.server.dao.UserDAO.setAllUsersOffline(UserDAO.java:173)
+	at com.jatsapp.server.ServerCore.startServer(ServerCore.java:48)
+	at com.jatsapp.server.ui.ServerGUI.lambda$startServer$0(ServerGUI.java:317)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:104)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:149)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:165)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:88)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:120)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:935)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:805)
+	... 13 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:535)
+	at java.base/sun.nio.ch.Net.connect(Net.java:524)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:574)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:282)
+	at java.base/java.net.Socket.connect(Socket.java:665)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:62)
+	... 16 common frames omitted
+2026-02-16 16:52:59.446 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-16 16:52:59.507 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-16 16:52:59.962 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente

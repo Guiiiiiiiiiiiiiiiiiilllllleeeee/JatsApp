@@ -5,20 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/migrate_utf8mb4.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ContactsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-activity.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/logs/jatsapp-server.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/MessageDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/MessageDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,12 +43,12 @@
     &quot;assignee&quot;: &quot;Guiiiiiiiiiiiiiiiiiilllllleeeee&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git&quot;,
-    &quot;accountId&quot;: &quot;e0e25b11-af51-4550-b717-5ed126a73dba&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Guiiiiiiiiiiiiiiiiiilllllleeeee/JatsApp.git",
+    "accountId": "804ec656-8dda-4da6-b048-aed0a5a2b84c"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -92,13 +82,6 @@
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\java\com\jatsapp\common" />
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client" />
     </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

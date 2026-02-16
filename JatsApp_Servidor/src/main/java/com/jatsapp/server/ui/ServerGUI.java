@@ -87,14 +87,14 @@ public class ServerGUI extends JFrame {
         startButton = new JButton("▶️ Iniciar Servidor");
         startButton.setPreferredSize(new Dimension(160, 35));
         startButton.setBackground(new Color(0, 122, 204));
-        startButton.setForeground(Color.WHITE);
+        startButton.setForeground(new Color(135,206,250));
         startButton.setFocusPainted(false);
         startButton.addActionListener(e -> startServer());
 
         stopButton = new JButton("⏹️ Detener Servidor");
         stopButton.setPreferredSize(new Dimension(160, 35));
         stopButton.setBackground(new Color(232, 17, 35));
-        stopButton.setForeground(Color.WHITE);
+        stopButton.setForeground(Color.RED);
         stopButton.setFocusPainted(false);
         stopButton.setEnabled(false);
         stopButton.addActionListener(e -> stopServer());
@@ -102,7 +102,7 @@ public class ServerGUI extends JFrame {
         clearLogsButton = new JButton("🗑️ Limpiar Logs");
         clearLogsButton.setPreferredSize(new Dimension(140, 35));
         clearLogsButton.setBackground(new Color(100, 100, 100));
-        clearLogsButton.setForeground(Color.WHITE);
+        clearLogsButton.setForeground(Color.BLACK);
         clearLogsButton.setFocusPainted(false);
         clearLogsButton.addActionListener(e -> clearLogs());
 
@@ -196,7 +196,7 @@ public class ServerGUI extends JFrame {
         JButton refreshButton = new JButton("🔄 Refrescar Datos");
         refreshButton.setPreferredSize(new Dimension(150, 30));
         refreshButton.setBackground(new Color(0, 122, 204));
-        refreshButton.setForeground(Color.WHITE);
+        refreshButton.setForeground(Color.BLACK);
         refreshButton.setFocusPainted(false);
         refreshButton.addActionListener(e -> refreshDatabaseTables());
 
