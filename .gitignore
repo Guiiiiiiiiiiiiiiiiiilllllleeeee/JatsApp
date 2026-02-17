@@ -11,3 +11,11 @@ target/
 *.iml
 .vscode/
 .idea/workspace.xml
+.idea/workspace.xml
+logs/jatsapp-activity.log
+logs/jatsapp-server-errors.log
+logs/jatsapp-server.log
+.idea/workspace.xml
+logs/jatsapp-activity.log
+logs/jatsapp-server-errors.log
+logs/jatsapp-server.log
