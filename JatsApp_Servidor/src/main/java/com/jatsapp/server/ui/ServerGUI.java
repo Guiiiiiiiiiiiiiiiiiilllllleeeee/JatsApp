@@ -1,6 +1,7 @@
 package com.jatsapp.server.ui;
 
 import com.jatsapp.server.ServerCore;
+import com.jatsapp.server.dao.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,7 +191,7 @@ public class ServerGUI extends JFrame {
         panel.add(dbTabs, BorderLayout.CENTER);
 
         // Botón para refrescar datos
-        JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         refreshPanel.setBackground(new Color(40, 40, 40));
 
         JButton refreshButton = new JButton("🔄 Refrescar Datos");
@@ -200,6 +201,15 @@ public class ServerGUI extends JFrame {
         refreshButton.setFocusPainted(false);
         refreshButton.addActionListener(e -> refreshDatabaseTables());
 
+        // Botón para eliminar todos los datos
+        JButton clearDataButton = new JButton("🗑️ Eliminar Datos BD");
+        clearDataButton.setPreferredSize(new Dimension(170, 30));
+        clearDataButton.setBackground(new Color(200, 50, 50));
+        clearDataButton.setForeground(Color.WHITE);
+        clearDataButton.setFocusPainted(false);
+        clearDataButton.addActionListener(e -> clearAllDatabaseData());
+
+        refreshPanel.add(clearDataButton);
         refreshPanel.add(refreshButton);
         panel.add(refreshPanel, BorderLayout.SOUTH);
 
@@ -392,6 +402,83 @@ public class ServerGUI extends JFrame {
             activityArea.setText("");
             errorsArea.setText("");
             logger.info("Logs de GUI limpiados");
+        }
+    }
+
+    private void clearAllDatabaseData() {
+        // Mostrar advertencia muy clara
+        int firstConfirm = JOptionPane.showConfirmDialog(this,
+            "⚠️ ADVERTENCIA: Esta acción eliminará TODOS los datos de la base de datos:\n\n" +
+            "• Todos los usuarios\n" +
+            "• Todos los mensajes\n" +
+            "• Todos los grupos\n" +
+            "• Todos los contactos\n" +
+            "• Todos los miembros de grupo\n\n" +
+            "Esta acción NO se puede deshacer.\n\n" +
+            "¿Está seguro de que desea continuar?",
+            "Confirmar Eliminación de Datos",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (firstConfirm == JOptionPane.YES_OPTION) {
+            // Segunda confirmación
+            int secondConfirm = JOptionPane.showConfirmDialog(this,
+                "🔴 ÚLTIMA ADVERTENCIA 🔴\n\n" +
+                "¿Está ABSOLUTAMENTE seguro de que desea eliminar\n" +
+                "TODOS los datos de la base de datos?\n\n" +
+                "Escriba 'ELIMINAR' en el siguiente cuadro para confirmar.",
+                "Confirmación Final",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.ERROR_MESSAGE);
+
+            if (secondConfirm == JOptionPane.OK_OPTION) {
+                String input = JOptionPane.showInputDialog(this,
+                    "Escriba 'ELIMINAR' para confirmar:",
+                    "Confirmación de Seguridad",
+                    JOptionPane.WARNING_MESSAGE);
+
+                if ("ELIMINAR".equals(input)) {
+                    // Ejecutar eliminación
+                    try {
+                        boolean success = DatabaseManager.getInstance().clearAllData();
+
+                        if (success) {
+                            logger.warn("TODOS LOS DATOS DE LA BD HAN SIDO ELIMINADOS POR EL ADMINISTRADOR");
+                            activityLogger.warn("BASE DE DATOS VACIADA POR ADMINISTRADOR");
+
+                            JOptionPane.showMessageDialog(this,
+                                "✅ Todos los datos han sido eliminados correctamente.\n\n" +
+                                "La base de datos está ahora vacía.",
+                                "Operación Completada",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                            // Refrescar las tablas para mostrar que están vacías
+                            refreshDatabaseTables();
+
+                            appendToLogsArea("===========================================\n");
+                            appendToLogsArea("🗑️ BASE DE DATOS VACIADA\n");
+                            appendToLogsArea("===========================================\n");
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                "❌ Error al eliminar los datos de la base de datos.\n" +
+                                "Consulte los logs para más información.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception e) {
+                        logger.error("Error eliminando datos de la BD desde GUI", e);
+                        JOptionPane.showMessageDialog(this,
+                            "❌ Error al eliminar los datos:\n" + e.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                        "Operación cancelada. Los datos no han sido eliminados.",
+                        "Operación Cancelada",
+                        JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         }
     }
 

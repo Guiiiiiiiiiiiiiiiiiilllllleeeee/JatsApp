@@ -67,14 +67,15 @@ public class LoginFrame extends JFrame {
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
         userPanel.setOpaque(false);
         userPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userPanel.setMaximumSize(new Dimension(300, 80));
+        userPanel.setMaximumSize(new Dimension(300, 85));
 
         JLabel lblUser = StyleUtil.createLabel("Usuario", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         userPanel.add(lblUser);
         userPanel.add(Box.createVerticalStrut(8));
 
         txtUser = StyleUtil.createStyledTextField("Introduce tu usuario");
-        txtUser.setMaximumSize(new Dimension(300, 45));
+        txtUser.setMaximumSize(new Dimension(300, 50));
+        txtUser.setPreferredSize(new Dimension(300, 50));
         userPanel.add(txtUser);
 
         contentPanel.add(userPanel);
@@ -85,14 +86,15 @@ public class LoginFrame extends JFrame {
         passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.Y_AXIS));
         passPanel.setOpaque(false);
         passPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passPanel.setMaximumSize(new Dimension(300, 80));
+        passPanel.setMaximumSize(new Dimension(300, 85));
 
         JLabel lblPass = StyleUtil.createLabel("Contraseña", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         passPanel.add(lblPass);
         passPanel.add(Box.createVerticalStrut(8));
 
         txtPass = StyleUtil.createStyledPasswordField("Introduce tu contraseña");
-        txtPass.setMaximumSize(new Dimension(300, 45));
+        txtPass.setMaximumSize(new Dimension(300, 50));
+        txtPass.setPreferredSize(new Dimension(300, 50));
         passPanel.add(txtPass);
 
         contentPanel.add(passPanel);
@@ -191,20 +193,37 @@ public class LoginFrame extends JFrame {
 
     public void onLoginSuccess() {
         SwingUtilities.invokeLater(() -> {
-            this.dispose();
-            System.out.println("✅ Login correcto. Abriendo ChatFrame...");
-            ChatFrame chatFrame = new ChatFrame();
-            Message requestChats = new Message();
-            requestChats.setType(MessageType.GET_RELEVANT_CHATS);
-            ClientSocket.getInstance().send(requestChats);
+            // Mostrar mensaje de éxito
+            lblStatus.setText("¡Inicio de sesión correcto!");
+            lblStatus.setForeground(StyleUtil.SUCCESS);
+            btnLogin.setEnabled(false);
+
+            // Pequeña pausa para que el usuario vea el mensaje
+            Timer timer = new Timer(800, e -> {
+                this.dispose();
+                System.out.println("✅ Login correcto. Abriendo ChatFrame...");
+                ChatFrame chatFrame = new ChatFrame();
+                Message requestChats = new Message();
+                requestChats.setType(MessageType.GET_RELEVANT_CHATS);
+                ClientSocket.getInstance().send(requestChats);
+            });
+            timer.setRepeats(false);
+            timer.start();
         });
     }
 
     public void onLoginFail(String reason) {
         SwingUtilities.invokeLater(() -> {
+            // Mostrar error en el label de estado
             showError(reason);
             btnLogin.setEnabled(true);
             txtPass.setText("");
+
+            // Mostrar también un diálogo para que sea más visible
+            JOptionPane.showMessageDialog(this,
+                reason,
+                "Error de inicio de sesión",
+                JOptionPane.ERROR_MESSAGE);
         });
     }
 }

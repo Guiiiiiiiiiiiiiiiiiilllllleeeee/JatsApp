@@ -125,7 +125,7 @@ public class ClientHandler implements Runnable {
                 } else {
                     logger.warn("Credenciales inválidas para usuario: {} desde {}", msg.getSenderName(), clientAddress);
                     activityLogger.info("LOGIN FALLIDO | IP: {} | Usuario: {}", clientAddress, msg.getSenderName());
-                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Datos incorrectos"));
+                    sendMessage(new Message(MessageType.LOGIN_FAIL, "Usuario o contraseña incorrectos"));
                 }
                 break;
 
@@ -814,16 +814,26 @@ public class ClientHandler implements Runnable {
             logger.debug("Cerrando conexión para cliente no autenticado: {}", clientAddress);
         }
 
+        // Cerrar streams y socket de forma segura
+        // Primero verificar si el socket ya está cerrado para evitar excepciones innecesarias
+        boolean socketAlreadyClosed = socket == null || socket.isClosed();
+
         try {
             if (in != null) in.close();
         } catch (IOException e) {
             logger.debug("Error cerrando input stream", e);
         }
+
         try {
-            if (out != null) out.close();
+            // Solo intentar cerrar output si el socket no estaba ya cerrado
+            if (out != null && !socketAlreadyClosed) {
+                out.close();
+            }
         } catch (IOException e) {
-            logger.debug("Error cerrando output stream", e);
+            // Es normal que falle si el cliente cerró la conexión abruptamente
+            logger.debug("Error cerrando output stream (cliente probablemente desconectado): {}", e.getMessage());
         }
+
         try {
             if (socket != null && !socket.isClosed()) socket.close();
         } catch (IOException e) {

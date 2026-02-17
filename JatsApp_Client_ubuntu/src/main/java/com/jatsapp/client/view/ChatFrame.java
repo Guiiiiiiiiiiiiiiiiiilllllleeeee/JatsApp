@@ -1315,11 +1315,11 @@ public class ChatFrame extends JFrame {
      */
     private String getStatusIcon(boolean delivered, boolean read) {
         if (read) {
-            return "<span class='status-read'>✓✓</span>"; // Azul: leído
+            return "<span class='status-read'>vv</span>"; // Azul: leído
         } else if (delivered) {
-            return "<span class='status-delivered'>✓✓</span>"; // Gris claro: entregado
+            return "<span class='status-delivered'>vv</span>"; // Gris claro: entregado
         } else {
-            return "<span class='status-sent'>✓</span>"; // Gris: enviado
+            return "<span class='status-sent'>v</span>"; // Gris: enviado
         }
     }
 
@@ -2261,7 +2261,7 @@ public class ChatFrame extends JFrame {
         }
 
         // Botón abandonar grupo
-        JButton btnLeave = new JButton("🚪 Abandonar Grupo");
+        JButton btnLeave = new JButton("Abandonar Grupo");
         btnLeave.setBackground(new Color(100, 100, 100));
         btnLeave.setForeground(StyleUtil.TEXT_PRIMARY);
         btnLeave.setCursor(new Cursor(Cursor.HAND_CURSOR));

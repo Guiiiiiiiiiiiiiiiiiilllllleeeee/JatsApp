@@ -269,6 +269,8 @@ public class ServerCore {
         logger.info("Grupo {} tiene {} miembros, enviando mensaje...", msg.getReceiverId(), memberIds.size());
 
         int deliveredCount = 0;
+        int totalRecipients = memberIds.size() - 1; // Excluir al emisor
+
         for (Integer memberId : memberIds) {
             // No enviar al emisor
             if (memberId.equals(msg.getSenderId())) {
@@ -287,7 +289,25 @@ public class ServerCore {
         }
 
         logger.info("Mensaje de grupo {} entregado a {}/{} miembros online",
-                   msg.getReceiverId(), deliveredCount, memberIds.size() - 1);
+                   msg.getReceiverId(), deliveredCount, totalRecipients);
+
+        // 3. Enviar confirmación de entrega al emisor
+        // Si al menos un miembro lo recibió, marcar como entregado
+        if (deliveredCount > 0) {
+            messageDAO.markAsDelivered(msg.getMessageId());
+
+            ClientHandler sender = connectedClients.get(msg.getSenderId());
+            if (sender != null) {
+                Message deliveryConfirmation = new Message(MessageType.MESSAGE_DELIVERED, "");
+                deliveryConfirmation.setMessageId(msg.getMessageId());
+                deliveryConfirmation.setDelivered(true);
+                // Indicar cuántos recibieron vs total (ej: "3/5")
+                deliveryConfirmation.setContent(deliveredCount + "/" + totalRecipients);
+                sender.sendMessage(deliveryConfirmation);
+                logger.debug("Confirmación de entrega de grupo enviada al emisor {} ({}/{})",
+                           msg.getSenderId(), deliveredCount, totalRecipients);
+            }
+        }
     }
 
     // Método para obtener número de clientes conectados (usado por MainServer)

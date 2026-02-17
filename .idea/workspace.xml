@@ -6,12 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" afterDir="false" />
@@ -59,6 +71,9 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="38vao7MjaWyhd4iqlpMCKTano3N" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />

@@ -296,6 +296,12 @@ public class ClientSocket {
             case ADD_CONTACT_OK:
                 // Contacto añadido exitosamente
                 System.out.println("✅ Contacto añadido correctamente");
+                JOptionPane.showMessageDialog(chatFrame,
+                    "Contacto añadido correctamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+                // Solicitar la lista actualizada de contactos para actualizar la ventana principal
+                sendMessage(new Message(MessageType.GET_CONTACTS, ""));
                 break;
 
             case ADD_CONTACT_FAIL:
@@ -462,6 +468,12 @@ public class ClientSocket {
 
                 // Siempre recargar la lista de grupos para que aparezcan nuevos grupos
                 send(new Message(MessageType.GET_GROUPS, ""));
+
+                // Actualizar el ChatFrame si tiene el grupo afectado abierto
+                // Esto asegura que la info del grupo (incluyendo roles de admin) se actualice inmediatamente
+                if (chatFrame != null && msg.getGroup() != null) {
+                    chatFrame.actualizarInfoGrupoActual(msg.getGroup());
+                }
 
                 if (groupsFrame != null && groupsFrame.isVisible()) {
                     groupsFrame.mostrarNotificacion(msg.getContent(), msg.getGroup());

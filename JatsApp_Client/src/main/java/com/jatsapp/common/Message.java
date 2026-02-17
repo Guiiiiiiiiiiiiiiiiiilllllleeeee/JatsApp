@@ -37,6 +37,7 @@ public class Message implements Serializable {
 
     // --- Estado del mensaje (confirmaciones de lectura) ---
     private int messageId;               // ID del mensaje en la base de datos
+    private int clientTempId;            // ID temporal del cliente para rastrear antes de recibir messageId
     private boolean delivered;           // true = mensaje entregado al receptor
     private boolean read;                // true = mensaje leído por el receptor
     private transient LocalDateTime deliveredTime; // Cuándo se entregó
@@ -118,6 +119,9 @@ public class Message implements Serializable {
 
     public int getMessageId() { return messageId; }
     public void setMessageId(int messageId) { this.messageId = messageId; }
+
+    public int getClientTempId() { return clientTempId; }
+    public void setClientTempId(int clientTempId) { this.clientTempId = clientTempId; }
 
     public boolean isDelivered() { return delivered; }
     public void setDelivered(boolean delivered) { this.delivered = delivered; }

@@ -63,7 +63,15 @@ public class VerificationDialog extends JDialog {
         txtCodigo = new JTextField(10);
         txtCodigo.setFont(new Font("Consolas", Font.BOLD, 24));
         txtCodigo.setHorizontalAlignment(JTextField.CENTER);
-        txtCodigo.setPreferredSize(new Dimension(200, 50));
+        txtCodigo.setPreferredSize(new Dimension(220, 55));
+        txtCodigo.setMinimumSize(new Dimension(220, 55));
+        txtCodigo.setBackground(StyleUtil.BG_LIGHT);
+        txtCodigo.setForeground(StyleUtil.TEXT_PRIMARY);
+        txtCodigo.setCaretColor(StyleUtil.TEXT_PRIMARY);
+        txtCodigo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(StyleUtil.BORDER_LIGHT, 1),
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
         centerPanel.add(txtCodigo);
 
         add(centerPanel, BorderLayout.CENTER);

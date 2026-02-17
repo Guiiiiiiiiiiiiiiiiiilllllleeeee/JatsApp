@@ -104,4 +104,51 @@ public class DatabaseManager {
             logger.error("Error leyendo schema.sql", e);
         }
     }
+
+    /**
+     * Elimina todos los datos de la base de datos (usuarios, mensajes, grupos, contactos, miembros).
+     * Las tablas se mantienen pero quedan vacías.
+     * @return true si se eliminaron los datos correctamente, false en caso de error
+     */
+    public boolean clearAllData() {
+        logger.warn("⚠️ INICIANDO BORRADO DE TODOS LOS DATOS DE LA BASE DE DATOS");
+
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            // Desactivar las restricciones de clave foránea temporalmente
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
+
+            // Eliminar datos de todas las tablas en el orden correcto
+            stmt.execute("DELETE FROM miembros_grupo");
+            logger.info("✓ Tabla miembros_grupo vaciada");
+
+            stmt.execute("DELETE FROM mensajes");
+            logger.info("✓ Tabla mensajes vaciada");
+
+            stmt.execute("DELETE FROM contactos");
+            logger.info("✓ Tabla contactos vaciada");
+
+            stmt.execute("DELETE FROM grupos");
+            logger.info("✓ Tabla grupos vaciada");
+
+            stmt.execute("DELETE FROM usuarios");
+            logger.info("✓ Tabla usuarios vaciada");
+
+            // Reiniciar los AUTO_INCREMENT
+            stmt.execute("ALTER TABLE usuarios AUTO_INCREMENT = 1");
+            stmt.execute("ALTER TABLE mensajes AUTO_INCREMENT = 1");
+            stmt.execute("ALTER TABLE grupos AUTO_INCREMENT = 1");
+
+            // Reactivar las restricciones de clave foránea
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
+
+            logger.warn("✅ TODOS LOS DATOS HAN SIDO ELIMINADOS DE LA BASE DE DATOS");
+            return true;
+
+        } catch (SQLException e) {
+            logger.error("❌ Error eliminando datos de la base de datos", e);
+            return false;
+        }
+    }
 }

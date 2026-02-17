@@ -145,7 +145,7 @@ public class ChatFrame extends JFrame {
             }
         });
 
-        JButton btnCerrarBusquedaGlobal = new JButton("✕");
+        JButton btnCerrarBusquedaGlobal = new JButton("X");
         btnCerrarBusquedaGlobal.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnCerrarBusquedaGlobal.setBackground(null);
         btnCerrarBusquedaGlobal.setForeground(StyleUtil.TEXT_SECONDARY);
@@ -1315,11 +1315,11 @@ public class ChatFrame extends JFrame {
      */
     private String getStatusIcon(boolean delivered, boolean read) {
         if (read) {
-            return "<span class='status-read'>✓✓</span>"; // Azul: leído
+            return "<span class='status-read'>vv</span>"; // Azul: leído
         } else if (delivered) {
-            return "<span class='status-delivered'>✓✓</span>"; // Gris claro: entregado
+            return "<span class='status-delivered'>vv</span>"; // Gris claro: entregado
         } else {
-            return "<span class='status-sent'>✓</span>"; // Gris: enviado
+            return "<span class='status-sent'>v</span>"; // Gris: enviado
         }
     }
 
@@ -2001,13 +2001,11 @@ public class ChatFrame extends JFrame {
 
         System.out.println("🔄 abrirChatGrupo: Solicitado historial para grupo ID=" + grupo.getId() + ", isGroupChat=true");
 
-        // Si no tenemos los miembros, solicitar info del grupo
-        if (grupo.getMiembros() == null || grupo.getMiembros().isEmpty()) {
-            Message msgInfo = new Message();
-            msgInfo.setType(MessageType.GET_GROUP_INFO);
-            msgInfo.setReceiverId(grupo.getId());
-            ClientSocket.getInstance().send(msgInfo);
-        }
+        // Siempre solicitar info actualizada del grupo (roles de admin, miembros, etc.)
+        Message msgInfo = new Message();
+        msgInfo.setType(MessageType.GET_GROUP_INFO);
+        msgInfo.setReceiverId(grupo.getId());
+        ClientSocket.getInstance().send(msgInfo);
 
         txtMensaje.requestFocus();
     }
@@ -2068,7 +2066,7 @@ public class ChatFrame extends JFrame {
         }
 
         JLabel lblInfo = new JLabel("<html>" + memberCount + " miembros<br/>" +
-                                   "<span style='color: #FFD700;'>👑 Admins (" + adminCount + "): " + adminNames + "</span>" +
+                                   "<span style='color: #FFD700;'>[Admin] Admins (" + adminCount + "): " + adminNames + "</span>" +
                                    "</html>");
         lblInfo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblInfo.setForeground(new Color(180, 180, 180));
@@ -2093,7 +2091,7 @@ public class ChatFrame extends JFrame {
             for (User u : grupoActual.getMiembros()) {
                 String displayName;
                 if (u.isGroupAdmin()) {
-                    displayName = "👑 " + u.getUsername() + " (Admin)";
+                    displayName = "* " + u.getUsername() + " (Admin)";
                 } else {
                     displayName = "     " + u.getUsername();
                 }
@@ -2185,7 +2183,7 @@ public class ChatFrame extends JFrame {
             botonesPanel.add(btnRemoveMember);
 
             // Botón promover a admin
-            JButton btnPromoteAdmin = new JButton("👑 Hacer Admin");
+            JButton btnPromoteAdmin = new JButton("Hacer Admin");
             btnPromoteAdmin.setBackground(new Color(255, 193, 7));
             btnPromoteAdmin.setForeground(Color.BLACK);
             btnPromoteAdmin.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -2261,7 +2259,7 @@ public class ChatFrame extends JFrame {
         }
 
         // Botón abandonar grupo
-        JButton btnLeave = new JButton("🚪 Abandonar Grupo");
+        JButton btnLeave = new JButton("Abandonar Grupo");
         btnLeave.setBackground(new Color(100, 100, 100));
         btnLeave.setForeground(StyleUtil.TEXT_PRIMARY);
         btnLeave.setCursor(new Cursor(Cursor.HAND_CURSOR));

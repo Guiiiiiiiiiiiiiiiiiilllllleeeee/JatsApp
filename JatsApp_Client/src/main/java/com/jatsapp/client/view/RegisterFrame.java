@@ -72,14 +72,15 @@ public class RegisterFrame extends JFrame {
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
         userPanel.setOpaque(false);
         userPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userPanel.setMaximumSize(new Dimension(320, 70));
+        userPanel.setMaximumSize(new Dimension(320, 80));
 
         JLabel lblUser = StyleUtil.createLabel("Nombre de usuario", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         userPanel.add(lblUser);
         userPanel.add(Box.createVerticalStrut(6));
 
         txtUser = StyleUtil.createStyledTextField("Elige un nombre de usuario");
-        txtUser.setMaximumSize(new Dimension(320, 45));
+        txtUser.setMaximumSize(new Dimension(320, 50));
+        txtUser.setPreferredSize(new Dimension(320, 50));
         userPanel.add(txtUser);
 
         contentPanel.add(userPanel);
@@ -90,14 +91,15 @@ public class RegisterFrame extends JFrame {
         emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));
         emailPanel.setOpaque(false);
         emailPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        emailPanel.setMaximumSize(new Dimension(320, 70));
+        emailPanel.setMaximumSize(new Dimension(320, 80));
 
         JLabel lblEmail = StyleUtil.createLabel("Correo electrónico", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         emailPanel.add(lblEmail);
         emailPanel.add(Box.createVerticalStrut(6));
 
         txtEmail = StyleUtil.createStyledTextField("tu@email.com");
-        txtEmail.setMaximumSize(new Dimension(320, 45));
+        txtEmail.setMaximumSize(new Dimension(320, 50));
+        txtEmail.setPreferredSize(new Dimension(320, 50));
         emailPanel.add(txtEmail);
 
         contentPanel.add(emailPanel);
@@ -108,14 +110,15 @@ public class RegisterFrame extends JFrame {
         passPanel.setLayout(new BoxLayout(passPanel, BoxLayout.Y_AXIS));
         passPanel.setOpaque(false);
         passPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passPanel.setMaximumSize(new Dimension(320, 70));
+        passPanel.setMaximumSize(new Dimension(320, 80));
 
         JLabel lblPass = StyleUtil.createLabel("Contraseña", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         passPanel.add(lblPass);
         passPanel.add(Box.createVerticalStrut(6));
 
         txtPass = StyleUtil.createStyledPasswordField("Mínimo 6 caracteres");
-        txtPass.setMaximumSize(new Dimension(320, 45));
+        txtPass.setMaximumSize(new Dimension(320, 50));
+        txtPass.setPreferredSize(new Dimension(320, 50));
         passPanel.add(txtPass);
 
         contentPanel.add(passPanel);
@@ -126,14 +129,15 @@ public class RegisterFrame extends JFrame {
         confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.Y_AXIS));
         confirmPanel.setOpaque(false);
         confirmPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        confirmPanel.setMaximumSize(new Dimension(320, 70));
+        confirmPanel.setMaximumSize(new Dimension(320, 80));
 
         JLabel lblConfirm = StyleUtil.createLabel("Confirmar contraseña", StyleUtil.FONT_SMALL, StyleUtil.TEXT_SECONDARY);
         confirmPanel.add(lblConfirm);
         confirmPanel.add(Box.createVerticalStrut(6));
 
         txtConfirmPass = StyleUtil.createStyledPasswordField("Repite tu contraseña");
-        txtConfirmPass.setMaximumSize(new Dimension(320, 45));
+        txtConfirmPass.setMaximumSize(new Dimension(320, 50));
+        txtConfirmPass.setPreferredSize(new Dimension(320, 50));
         confirmPanel.add(txtConfirmPass);
 
         contentPanel.add(confirmPanel);

@@ -574,11 +574,11 @@ public class GroupsFrame extends JFrame {
 
                 // Marcar a los admins con corona
                 if (u.isGroupAdmin()) {
-                    prefix = "👑 ";
+                    prefix = "* ";
                 }
 
-                // Indicador de estado
-                String statusIcon = "activo".equals(u.getActivityStatus()) ? "🟢 " : "⚫ ";
+                // Indicador de estado (sin emoji)
+                String statusIcon = "activo".equals(u.getActivityStatus()) ? "[ON] " : "";
 
                 label.setText(prefix + statusIcon + u.getUsername() + (u.isGroupAdmin() ? " (Admin)" : ""));
                 label.setFont(StyleUtil.FONT_BODY);
