@@ -1,27 +1,3 @@
-2026-02-18 13:32:44.075 [main] ERROR com.jatsapp.server.MainServer - Error leyendo comandos de consola
-java.io.IOException: Controlador no válido
-	at java.base/java.io.FileInputStream.readBytes(Native Method)
-	at java.base/java.io.FileInputStream.read(FileInputStream.java:294)
-	at java.base/java.lang.System$In.read(System.java:1849)
-	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:328)
-	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:388)
-	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:279)
-	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:322)
-	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:186)
-	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:175)
-	at java.base/java.io.BufferedReader.fill(BufferedReader.java:166)
-	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:333)
-	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:400)
-	at com.jatsapp.server.MainServer.main(MainServer.java:45)
-	Suppressed: java.io.IOException: Controlador no válido
-		at java.base/java.io.FileDescriptor.close0(Native Method)
-		at java.base/java.io.FileDescriptor.close(FileDescriptor.java:304)
-		at java.base/java.io.FileInputStream$1.close(FileInputStream.java:520)
-		at java.base/java.io.FileDescriptor.closeAll(FileDescriptor.java:362)
-		at java.base/java.io.FileInputStream.close(FileInputStream.java:518)
-		at java.base/java.io.BufferedInputStream.close(BufferedInputStream.java:526)
-		at java.base/sun.nio.cs.StreamDecoder.implClose(StreamDecoder.java:374)
-		at java.base/sun.nio.cs.StreamDecoder.close(StreamDecoder.java:207)
-		at java.base/java.io.InputStreamReader.close(InputStreamReader.java:190)
-		at java.base/java.io.BufferedReader.close(BufferedReader.java:529)
-		at com.jatsapp.server.MainServer.main(MainServer.java:40)
+2026-02-19 10:00:25.000 [ClientHandler-172.19.16.12] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: guillermo
+2026-02-19 10:01:38.805 [ClientHandler-172.19.16.12] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: guillermo
+2026-02-19 10:01:40.288 [ClientHandler-172.19.16.12] ERROR com.jatsapp.server.ClientHandler - Error registrando usuario: guillermo
