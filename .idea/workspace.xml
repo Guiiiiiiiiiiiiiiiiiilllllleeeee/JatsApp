@@ -5,37 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build-all.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/util/EncryptionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/util/EncryptionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/util/StyleUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/util/StyleUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ContactRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ContactRenderer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ContactsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ContactsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/Group.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/MessageType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/research.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/research.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/send.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/send.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/setting.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/setting.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/service/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
