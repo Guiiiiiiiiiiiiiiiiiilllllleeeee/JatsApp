@@ -1,19 +1,23 @@
 package com.jatsapp.client;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.jatsapp.client.network.ClientSocket; // Asumo que esta clase existe, pásamela luego
+import com.jatsapp.client.network.ClientSocket;
 import com.jatsapp.client.view.LoginFrame;
-import com.jatsapp.common.Message;
-import com.jatsapp.common.MessageType;
-import com.jatsapp.client.view.ChatFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 
 public class MainClient {
 
+    private static String serverIp = "127.0.0.1";
+    private static int serverPort = 5555;
+
     public static void main(String[] args) {
+
+        // Cargar configuración de conexión
+        loadConfig();
 
         // --- Configuración de Estilo (FlatLaf) ---
         try {
@@ -32,22 +36,50 @@ public class MainClient {
         // --- Arranque de la UI y Red ---
         SwingUtilities.invokeLater(() -> {
             System.out.println("🚀 Iniciando JatsApp Client...");
+            System.out.println("📡 Conectando a: " + serverIp + ":" + serverPort);
 
             try {
-                // CORRECCIÓN: Puerto cambiado a 5555 (el mismo que ServerCore)
-                ClientSocket.getInstance().connect("127.0.0.1", 5555);
+                ClientSocket.getInstance().connect(serverIp, serverPort);
 
                 // Abrir pantalla de Login
                 new LoginFrame();
 
             } catch (IOException e) {
-                // Si el servidor está apagado, mostramos aviso y cerramos
                 JOptionPane.showMessageDialog(null,
-                        "No se pudo conectar al servidor en 172.19.16.12:5555.\n¿Está encendido?",
+                        "No se pudo conectar al servidor en " + serverIp + ":" + serverPort + "\n¿Está encendido?",
                         "Error de Conexión",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
         });
+    }
+
+    private static void loadConfig() {
+        Properties props = new Properties();
+
+        // 1. Intentar cargar desde archivo externo (junto al JAR)
+        File externalConfig = new File("config.properties");
+        if (externalConfig.exists()) {
+            try (FileInputStream fis = new FileInputStream(externalConfig)) {
+                props.load(fis);
+                System.out.println("✓ Configuración cargada desde: " + externalConfig.getAbsolutePath());
+            } catch (Exception e) {
+                System.err.println("Error cargando config externo: " + e.getMessage());
+            }
+        } else {
+            // 2. Cargar desde recursos internos
+            try (InputStream input = MainClient.class.getClassLoader().getResourceAsStream("config.properties")) {
+                if (input != null) {
+                    props.load(input);
+                    System.out.println("✓ Configuración cargada desde recursos internos");
+                }
+            } catch (Exception e) {
+                System.err.println("Error cargando config interno: " + e.getMessage());
+            }
+        }
+
+        // Leer valores (o usar defaults)
+        serverIp = props.getProperty("server.ip", "127.0.0.1");
+        serverPort = Integer.parseInt(props.getProperty("server.port", "5555"));
     }
 }

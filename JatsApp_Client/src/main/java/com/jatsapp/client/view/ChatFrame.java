@@ -89,6 +89,12 @@ public class ChatFrame extends JFrame {
         setMinimumSize(new Dimension(900, 600));
 
         // Layout Principal: Un panel dividido (Izquierda: Lista, Derecha: Chat)
+        JLabel lblCliente = new JLabel("Cliente Windows");
+        lblCliente.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblCliente.setForeground(Color.GRAY);
+        lblCliente.setHorizontalAlignment(SwingConstants.CENTER);
+        add(lblCliente, BorderLayout.NORTH);
+
         JSplitPane splitPane = new JSplitPane();
         splitPane.setDividerLocation(320);
         splitPane.setDividerSize(1);

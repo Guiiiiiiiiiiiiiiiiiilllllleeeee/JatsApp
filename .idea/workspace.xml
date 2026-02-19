@@ -5,26 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440c5ec-6db7-4acf-8904-416c83b6fd7b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/build-all.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/client/view/VerificationDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ServerCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/MainClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/network/ClientSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/util/EncryptionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/util/EncryptionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/util/StyleUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/util/StyleUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ChatFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ContactRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ContactRenderer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/ContactsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/ContactsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/GroupsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/LoginFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/client/view/RegisterFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/client/view/VerificationDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Group.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/Group.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/MessageType.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/MessageType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/java/com/jatsapp/common/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/java/com/jatsapp/common/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/research.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/research.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/send.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/send.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Client_ubuntu/src/main/resources/images/setting.png" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Client_Ubuntu/src/main/resources/images/setting.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/dao/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/ui/ServerGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/resources/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/JatsApp_Servidor/src/main/java/com/jatsapp/server/service/EmailService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-activity.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-activity.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/jatsapp-server.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/jatsapp-server.log" afterDir="false" />
@@ -91,18 +99,26 @@
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/guill/Documents/GitHub/JatsApp&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\guill\Documents\GitHub\JatsApp" />
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\resources\images" />
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\java\com\jatsapp" />
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client\src\main\java\com\jatsapp\common" />
       <recent name="C:\Users\guill\Documents\GitHub\JatsApp\JatsApp_Client" />
     </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

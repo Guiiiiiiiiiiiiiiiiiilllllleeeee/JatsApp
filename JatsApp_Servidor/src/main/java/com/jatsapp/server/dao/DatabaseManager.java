@@ -36,13 +36,28 @@ public class DatabaseManager {
 
     private void loadProperties() {
         properties = new Properties();
+
+        // 1. Intentar cargar desde archivo externo (junto al JAR)
+        java.io.File externalConfig = new java.io.File("config.properties");
+        if (externalConfig.exists()) {
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(externalConfig)) {
+                properties.load(fis);
+                logger.info("✓ Configuración cargada desde archivo externo: {}", externalConfig.getAbsolutePath());
+                logger.debug("DB URL: {}", properties.getProperty("db.url"));
+                return;
+            } catch (Exception e) {
+                logger.warn("Error cargando config externo, intentando interno...", e);
+            }
+        }
+
+        // 2. Si no existe externo, cargar desde recursos internos (dentro del JAR)
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
                 logger.error("FATAL: config.properties no encontrado");
                 throw new RuntimeException("Falta config.properties");
             }
             properties.load(input);
-            logger.info("✓ Configuración cargada correctamente");
+            logger.info("✓ Configuración cargada desde recursos internos");
             logger.debug("DB URL: {}", properties.getProperty("db.url"));
         } catch (Exception ex) {
             logger.error("Error cargando config.properties", ex);

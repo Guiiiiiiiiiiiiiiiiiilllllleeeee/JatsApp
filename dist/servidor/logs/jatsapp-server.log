@@ -1,0 +1,210 @@
+2026-02-18 13:32:44.062 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-18 13:32:44.065 [main] INFO  com.jatsapp.server.MainServer -     JatsApp Server - Iniciando
+2026-02-18 13:32:44.066 [main] INFO  com.jatsapp.server.MainServer - ===========================================
+2026-02-18 13:32:44.071 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-18 13:32:44.075 [main] INFO  com.jatsapp.server.MainServer - Servidor listo. Escribe 'exit' y pulsa Enter para detener.
+2026-02-18 13:32:44.077 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada desde archivo externo: C:\Users\guill\Documents\GitHub\JatsApp\dist\servidor\config.properties
+2026-02-18 13:32:44.075 [main] ERROR com.jatsapp.server.MainServer - Error leyendo comandos de consola
+java.io.IOException: Controlador no válido
+	at java.base/java.io.FileInputStream.readBytes(Native Method)
+	at java.base/java.io.FileInputStream.read(FileInputStream.java:294)
+	at java.base/java.lang.System$In.read(System.java:1849)
+	at java.base/java.io.BufferedInputStream.read1(BufferedInputStream.java:328)
+	at java.base/java.io.BufferedInputStream.read(BufferedInputStream.java:388)
+	at java.base/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:279)
+	at java.base/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:322)
+	at java.base/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:186)
+	at java.base/java.io.InputStreamReader.read(InputStreamReader.java:175)
+	at java.base/java.io.BufferedReader.fill(BufferedReader.java:166)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:333)
+	at java.base/java.io.BufferedReader.readLine(BufferedReader.java:400)
+	at com.jatsapp.server.MainServer.main(MainServer.java:45)
+	Suppressed: java.io.IOException: Controlador no válido
+		at java.base/java.io.FileDescriptor.close0(Native Method)
+		at java.base/java.io.FileDescriptor.close(FileDescriptor.java:304)
+		at java.base/java.io.FileInputStream$1.close(FileInputStream.java:520)
+		at java.base/java.io.FileDescriptor.closeAll(FileDescriptor.java:362)
+		at java.base/java.io.FileInputStream.close(FileInputStream.java:518)
+		at java.base/java.io.BufferedInputStream.close(BufferedInputStream.java:526)
+		at java.base/sun.nio.cs.StreamDecoder.implClose(StreamDecoder.java:374)
+		at java.base/sun.nio.cs.StreamDecoder.close(StreamDecoder.java:207)
+		at java.base/java.io.InputStreamReader.close(InputStreamReader.java:190)
+		at java.base/java.io.BufferedReader.close(BufferedReader.java:529)
+		at com.jatsapp.server.MainServer.main(MainServer.java:40)
+2026-02-18 13:32:44.079 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-18 13:32:44.079 [main] INFO  com.jatsapp.server.MainServer - Proceso principal terminado
+2026-02-18 13:32:45.174 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:45.174 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-18 13:32:45.203 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:45.238 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-18 13:32:45.238 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-18 13:32:45.244 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-18 13:32:50.758 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-18 13:32:50.763 [ServerCore-Thread] INFO  c.jatsapp.server.service.FileService - ✓ Carpeta server_files creada
+2026-02-18 13:32:50.774 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada desde archivo externo
+2026-02-18 13:32:50.779 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-18 13:32:50.810 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-18 13:32:57.624 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-18 13:32:57.624 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=guillermo
+2026-02-18 13:32:57.645 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:57.745 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:57.787 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:57.883 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 1 conectado. Total clientes activos: 1
+2026-02-18 13:32:57.913 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:57.920 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 1 clientes: guillermo -> activo
+2026-02-18 13:32:57.920 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Login completado exitosamente: UserID=1, Username=guillermo
+2026-02-18 13:32:59.159 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-18 13:32:59.159 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: guillermo
+2026-02-18 13:32:59.177 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:59.198 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 1 chats relevantes a UserID: 1
+2026-02-18 13:32:59.198 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_GROUPS
+2026-02-18 13:32:59.199 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando grupos para UserID: 1
+2026-02-18 13:32:59.214 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:32:59.230 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 2 grupos a UserID: 1
+2026-02-18 13:33:00.657 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-18 13:33:00.657 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: guillermo
+2026-02-18 13:33:00.677 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:33:00.685 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 1 chats relevantes a UserID: 1
+2026-02-18 13:33:02.261 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-18 13:33:02.261 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cliente solicita desconexión: UserID=1
+2026-02-18 13:33:02.262 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cerrando conexión para UserID: 1 (guillermo)
+2026-02-18 13:33:02.278 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:33:02.302 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 1 desconectado. Total clientes activos: 0
+2026-02-18 13:33:02.315 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:33:02.317 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 0 clientes: guillermo -> desconectado
+2026-02-18 13:33:02.317 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-18 13:34:02.944 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-18 13:34:02.945 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-18 13:34:02.945 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada desde archivo externo
+2026-02-18 13:34:02.946 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-18 13:34:02.947 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-18 13:34:09.870 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-18 13:34:09.870 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-18 13:34:09.871 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-18 13:34:09.872 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-18 13:34:09.872 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-18 13:34:52.284 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-18 13:34:52.286 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-18 13:34:52.287 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada desde archivo externo
+2026-02-18 13:34:52.287 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-18 13:34:52.289 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-18 13:34:54.376 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-18 13:34:54.376 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-18 13:34:54.379 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-18 13:34:54.380 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-18 13:34:54.380 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-18 13:36:19.879 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-18 13:36:19.880 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-18 13:36:19.881 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada desde archivo externo
+2026-02-18 13:36:19.882 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-18 13:36:19.886 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-18 13:36:22.149 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-18 13:36:22.149 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Intento de operación sin login desde 127.0.0.1
+2026-02-18 13:36:22.152 [ClientHandler-127.0.0.1] WARN  com.jatsapp.server.ClientHandler - Cliente 127.0.0.1 desconectado inesperadamente
+2026-02-18 13:36:22.152 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Cerrando conexión para cliente no autenticado: 127.0.0.1
+2026-02-18 13:36:22.152 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1
+2026-02-18 13:37:19.819 [main] INFO  com.jatsapp.server.MainServerGUI - Iniciando JatsApp Server con interfaz gráfica...
+2026-02-18 13:37:19.917 [main] DEBUG com.jatsapp.server.MainServerGUI - Look and Feel configurado: Windows
+2026-02-18 13:37:20.485 [AWT-EventQueue-0] INFO  com.jatsapp.server.MainServerGUI - Interfaz gráfica del servidor iniciada correctamente
+2026-02-18 13:37:21.789 [ServerCore-Thread] INFO  com.jatsapp.server.ui.ServerGUI - Iniciando servidor desde GUI...
+2026-02-18 13:37:21.791 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Limpiando estados de conexión anteriores...
+2026-02-18 13:37:21.796 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Configuración cargada desde archivo externo: C:\Users\guill\Documents\GitHub\JatsApp\dist\servidor\config.properties
+2026-02-18 13:37:21.797 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - 🛠️ Verificando estructura de base de datos...
+2026-02-18 13:37:22.672 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:22.673 [ServerCore-Thread] WARN  c.jatsapp.server.dao.DatabaseManager - ⚠️ No se encontró schema.sql. Saltando creación de tablas.
+2026-02-18 13:37:22.698 [ServerCore-Thread] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:22.712 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - ✓ Servidor iniciado en puerto 5555
+2026-02-18 13:37:22.713 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Esperando conexiones...
+2026-02-18 13:37:22.716 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Sistema de heartbeat iniciado (intervalo: 30s)
+2026-02-18 13:37:26.897 [AWT-EventQueue-0] INFO  c.j.server.ui.DatabaseViewerPanel - Refrescando todas las tablas de la base de datos
+2026-02-18 13:37:26.925 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:26.963 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla usersTable actualizada con 3 filas
+2026-02-18 13:37:26.986 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:27.002 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla messagesTable actualizada con 12 filas
+2026-02-18 13:37:27.024 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:27.026 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla groupsTable actualizada con 2 filas
+2026-02-18 13:37:27.050 [AWT-EventQueue-0] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:27.052 [AWT-EventQueue-0] DEBUG c.j.server.ui.DatabaseViewerPanel - Tabla contactsTable actualizada con 1 filas
+2026-02-18 13:37:33.177 [ServerCore-Thread] INFO  com.jatsapp.server.ServerCore - Nueva conexión entrante desde: 127.0.0.1
+2026-02-18 13:37:33.190 [ServerCore-Thread] DEBUG c.jatsapp.server.service.FileService - Carpeta server_files ya existe
+2026-02-18 13:37:33.210 [ServerCore-Thread] DEBUG c.j.server.service.EmailService - Configuración de email cargada desde archivo externo
+2026-02-18 13:37:33.214 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ClientHandler iniciado para: 127.0.0.1
+2026-02-18 13:37:33.230 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Streams establecidos con cliente: 127.0.0.1
+2026-02-18 13:37:42.496 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=LOGIN
+2026-02-18 13:37:42.498 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Intento de login desde 127.0.0.1: Usuario=guillermo
+2026-02-18 13:37:42.639 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:42.711 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:42.834 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:42.848 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 1 conectado. Total clientes activos: 1
+2026-02-18 13:37:42.919 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:42.927 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 1 clientes: guillermo -> activo
+2026-02-18 13:37:42.928 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - ✓ Login completado exitosamente: UserID=1, Username=guillermo
+2026-02-18 13:37:44.154 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-18 13:37:44.154 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: guillermo
+2026-02-18 13:37:44.189 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:44.202 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 1 chats relevantes a UserID: 1
+2026-02-18 13:37:44.204 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_GROUPS
+2026-02-18 13:37:44.204 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando grupos para UserID: 1
+2026-02-18 13:37:44.248 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:44.268 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 2 grupos a UserID: 1
+2026-02-18 13:37:45.326 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_RELEVANT_CHATS
+2026-02-18 13:37:45.327 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Procesando solicitud de chats relevantes para el usuario: guillermo
+2026-02-18 13:37:45.349 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:45.357 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 1 chats relevantes a UserID: 1
+2026-02-18 13:37:46.818 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_HISTORY
+2026-02-18 13:37:46.819 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando historial: UserID 1 con Usuario 2
+2026-02-18 13:37:46.862 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:46.884 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 6 mensajes de historial a UserID: 1
+2026-02-18 13:37:49.957 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=TEXT_MESSAGE
+2026-02-18 13:37:49.958 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje de texto: UserID 1 -> UserID 2
+2026-02-18 13:37:49.959 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando mensaje privado: UserID 1 -> UserID 2
+2026-02-18 13:37:49.999 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:50.028 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Destinatario offline. Mensaje 13 guardado para recuperar después.
+2026-02-18 13:37:52.724 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:37:53.206 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_CONTACTS
+2026-02-18 13:37:53.207 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando contactos para UserID: 1
+2026-02-18 13:37:53.249 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:37:53.274 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 0 contactos a UserID: 1
+2026-02-18 13:38:04.869 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=ADD_CONTACT
+2026-02-18 13:38:04.888 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:38:04.906 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Contacto añadido: UserID 1 añadió a nica
+2026-02-18 13:38:04.942 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:38:05.880 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=GET_CONTACTS
+2026-02-18 13:38:05.881 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Solicitando contactos para UserID: 1
+2026-02-18 13:38:05.913 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:38:05.918 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Enviados 1 contactos a UserID: 1
+2026-02-18 13:38:22.727 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:38:52.723 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:39:22.721 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:39:52.721 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:40:22.731 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:40:52.718 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:41:22.720 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:41:52.729 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:42:22.730 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:42:52.717 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:43:22.731 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:43:52.715 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:44:22.730 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:44:52.717 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:45:22.721 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:45:52.720 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:46:22.719 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:46:52.723 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:47:22.728 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:47:52.731 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:48:22.719 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:48:52.723 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:49:22.724 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:49:52.725 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:50:22.734 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:50:52.729 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:51:22.730 [pool-1-thread-1] DEBUG com.jatsapp.server.ServerCore - Verificando 1 clientes conectados...
+2026-02-18 13:51:48.672 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Mensaje recibido de 127.0.0.1: Tipo=DISCONNECT
+2026-02-18 13:51:48.672 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cliente solicita desconexión: UserID=1
+2026-02-18 13:51:48.672 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ClientHandler - Cerrando conexión para UserID: 1 (guillermo)
+2026-02-18 13:51:48.733 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:51:48.741 [ClientHandler-127.0.0.1] INFO  com.jatsapp.server.ServerCore - Usuario ID 1 desconectado. Total clientes activos: 0
+2026-02-18 13:51:48.759 [ClientHandler-127.0.0.1] INFO  c.jatsapp.server.dao.DatabaseManager - ✓ Conexión a base de datos establecida
+2026-02-18 13:51:48.763 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ServerCore - Enviando STATUS_UPDATE a 0 clientes: guillermo -> desconectado
+2026-02-18 13:51:48.764 [ClientHandler-127.0.0.1] DEBUG com.jatsapp.server.ClientHandler - Conexión cerrada completamente para: 127.0.0.1

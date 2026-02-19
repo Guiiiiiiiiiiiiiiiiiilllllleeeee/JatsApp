@@ -21,10 +21,23 @@ public class EmailService {
     }
 
     private void loadConfig() {
+        // 1. Intentar cargar desde archivo externo (junto al JAR)
+        java.io.File externalConfig = new java.io.File("config.properties");
+        if (externalConfig.exists()) {
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(externalConfig)) {
+                configProps.load(fis);
+                logger.debug("Configuración de email cargada desde archivo externo");
+                return;
+            } catch (Exception e) {
+                logger.warn("Error cargando config externo para email", e);
+            }
+        }
+
+        // 2. Si no existe externo, cargar desde recursos internos
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input != null) {
                 configProps.load(input);
-                logger.debug("Configuración de email cargada");
+                logger.debug("Configuración de email cargada desde recursos internos");
             } else {
                 logger.warn("No se encontró config.properties para EmailService");
             }
